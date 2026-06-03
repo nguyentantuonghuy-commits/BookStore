@@ -1,0 +1,342 @@
+<div class="ebook-container animate-fade-in">
+
+  <!-- Header Section -->
+  <div class="page-header mb-4">
+    <div class="header-title">
+      <i class="bi bi-journal-plus text-gold fs-2"></i>
+      <div>
+        <h3 class="mb-0 fw-bold text-dark">Quản Lý Sản Phẩm Ebook</h3>
+        <p class="text-muted fs-7 mb-0">Hệ thống thêm mới, cập nhật và đồng bộ sách của cửa hàng.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 1: Add new books (Full Width Top Card) -->
+  <div class="card form-card border-0 rounded-4 shadow-sm mb-4 overflow-hidden">
+    <div class="card-header bg-transparent border-0 pt-4 px-4 pb-2">
+      <h5 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+        <i class="bi" [ngClass]="isEditing() ? 'bi-pencil-square text-warning' : 'bi-plus-circle-fill text-gold'"></i>
+        <span>{{ isEditing() ? 'Cập Nhật Sách' : 'Thêm Sách Mới' }}</span>
+      </h5>
+    </div>
+
+    <div class="card-body px-4 pb-4 pt-3">
+      <form (submit)="onSubmit()" #ebookForm="ngForm">
+        <div class="row g-4">
+          
+          <!-- Cột trái bên trong Card: Hình ảnh & Nút thao tác -->
+          <div class="col-lg-3 col-md-4 d-flex flex-column align-items-center justify-content-between border-end-md pb-3 pb-md-0">
+            <div class="d-flex flex-column align-items-center w-100 gap-3">
+              <!-- Hiển thị bìa sách dạng 3D cao cấp -->
+              <div class="book-preview-container">
+                <div class="book-preview-3d shadow-lg">
+                  <img [src]="formEbook().image" alt="Bìa sách preview" (error)="formEbook().image = '/image/ebooknew1.jpg'" />
+                  <div class="book-spine"></div>
+                </div>
+              </div>
+              
+              <!-- Chọn ảnh từ thiết bị cục bộ & URL -->
+              <div class="w-100 px-2">
+                <label class="form-label fs-9 fw-bold text-uppercase text-secondary mb-1">Ảnh bìa sách (Image)</label>
+                <div class="d-flex gap-2 mb-2">
+                  <button type="button" class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center gap-1 flex-grow-1 py-1.5" (click)="fileInput.click()">
+                    <i class="bi bi-folder2-open text-gold"></i>
+                    <span class="fs-9 fw-bold">Chọn từ máy tính</span>
+                  </button>
+                  <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" style="display: none;" />
+                </div>
+                <div class="input-icon-group input-group-sm">
+                  <i class="bi bi-link-45deg input-icon"></i>
+                  <input type="text" id="image" name="image" class="form-control" 
+                    [(ngModel)]="formEbook().image" placeholder="Hoặc dán URL ảnh bìa..." required />
+                </div>
+              </div>
+            </div>
+
+            <!-- Nút Lưu/Hủy nằm ngay dưới ảnh bìa giống format hình -->
+            <div class="w-100 px-2 mt-4 d-flex flex-column gap-2">
+              <button type="submit" class="btn btn-submit w-100" [ngClass]="isEditing() ? 'btn-edit' : 'btn-add'">
+                <i class="bi" [ngClass]="isEditing() ? 'bi-check-circle-fill' : 'bi-plus-circle-fill'"></i>
+                <span>{{ isEditing() ? 'Lưu Thay Đổi' : 'Thêm Mới' }}</span>
+              </button>
+              <button type="button" class="btn btn-cancel w-100" (click)="resetForm()">
+                <i class="bi bi-x-circle"></i>
+                <span>{{ isEditing() ? 'Hủy' : 'Hủy Bỏ' }}</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Cột phải bên trong Card: Các trường thông tin (Dạng Grid giống hình vẽ) -->
+          <div class="col-lg-9 col-md-8">
+            <div class="row g-3">
+              
+              <!-- Dòng 1: Title, Category, Author (Mỗi ô chiếm 4 cột trên màn hình lớn) -->
+              <div class="col-md-4">
+                <label for="title" class="form-label fs-9 fw-bold text-uppercase text-secondary mb-1">Tên cuốn sách (Title book)</label>
+                <div class="input-icon-group">
+                  <i class="bi bi-book input-icon"></i>
+                  <input type="text" id="title" name="title" class="form-control" 
+                    [(ngModel)]="formEbook().title" placeholder="Nhập tên sách..." required />
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <label for="categorySelect" class="form-label fs-9 fw-bold text-uppercase text-secondary mb-1">Danh mục (Category)</label>
+                <div class="input-icon-group">
+                  <i class="bi bi-tags input-icon"></i>
+                  <select id="categorySelect" name="categorySelect" class="form-select" 
+                    [value]="selectedCategoryType() === 'NEW' ? 'CUSTOM_NEW_CAT' : formEbook().category"
+                    (change)="onCategoryTypeChange($event)">
+                    <option *ngFor="let cat of categories()" [value]="cat">{{ cat }}</option>
+                    <option value="CUSTOM_NEW_CAT" class="text-gold fw-bold">+ Thêm danh mục mới...</option>
+                  </select>
+                </div>
+                
+                <!-- Nhập danh mục mới khi chọn CUSTOM_NEW_CAT -->
+                <div class="mt-2 animate-slide-down" *ngIf="selectedCategoryType() === 'NEW'">
+                  <div class="input-group input-group-sm">
+                    <input type="text" id="customCategory" name="customCategory" class="form-control custom-cat-input" 
+                      [(ngModel)]="customCategoryName" placeholder="Tên danh mục mới..." />
+                    <button type="button" class="btn btn-secondary" (click)="selectedCategoryType.set('SELECT')">Hủy</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <label for="author" class="form-label fs-9 fw-bold text-uppercase text-secondary mb-1">Tác giả (Author)</label>
+                <div class="input-icon-group">
+                  <i class="bi bi-person input-icon"></i>
+                  <input type="text" id="author" name="author" class="form-control" 
+                    [(ngModel)]="formEbook().author" placeholder="Tên tác giả..." required />
+                </div>
+              </div>
+
+              <!-- Dòng 2: Pages, Price, Discount, Stock, Publish Date, Translator (Mỗi ô chiếm 2 cột trên màn hình lớn) -->
+              <div class="col-lg-2 col-md-4 col-6">
+                <label for="pages" class="form-label fs-9 fw-bold text-uppercase text-secondary mb-1">Số trang (Pages)</label>
+                <div class="input-icon-group">
+                  <i class="bi bi-file-earmark-text input-icon"></i>
+                  <input type="number" id="pages" name="pages" class="form-control" 
+                    [(ngModel)]="formEbook().pages" min="0" required />
+                </div>
+              </div>
+
+              <div class="col-lg-2 col-md-4 col-6">
+                <label for="price" class="form-label fs-9 fw-bold text-uppercase text-secondary mb-1">Giá bán (Price)</label>
+                <div class="input-icon-group">
+                  <i class="bi bi-cash input-icon"></i>
+                  <input type="number" id="price" name="price" class="form-control" 
+                    [(ngModel)]="formEbook().price" min="0" required />
+                </div>
+              </div>
+
+              <div class="col-lg-2 col-md-4 col-6">
+                <label for="discount" class="form-label fs-9 fw-bold text-uppercase text-secondary mb-1">Giảm giá (Discount)</label>
+                <div class="input-icon-group">
+                  <i class="bi bi-percent input-icon"></i>
+                  <input type="text" id="discount" name="discount" class="form-control" 
+                    [(ngModel)]="formEbook().discount" placeholder="0" required />
+                </div>
+              </div>
+
+              <div class="col-lg-2 col-md-4 col-6">
+                <label for="stock" class="form-label fs-9 fw-bold text-uppercase text-secondary mb-1">Tồn kho (Stock)</label>
+                <div class="input-icon-group">
+                  <i class="bi bi-archive input-icon"></i>
+                  <input type="number" id="stock" name="stock" class="form-control" 
+                    [(ngModel)]="formEbook().stock" min="0" required />
+                </div>
+              </div>
+
+              <div class="col-lg-2 col-md-4 col-6">
+                <label for="publishDate" class="form-label fs-9 fw-bold text-uppercase text-secondary mb-1">Xuất bản (Publish Date)</label>
+                <div class="input-icon-group">
+                  <i class="bi bi-calendar input-icon"></i>
+                  <input type="text" id="publishDate" name="publishDate" class="form-control" 
+                    [(ngModel)]="formEbook().publishDate" required />
+                </div>
+              </div>
+
+              <div class="col-lg-2 col-md-4 col-6">
+                <label for="translator" class="form-label fs-9 fw-bold text-uppercase text-secondary mb-1">Dịch giả (Translator)</label>
+                <div class="input-icon-group">
+                  <i class="bi bi-translate input-icon"></i>
+                  <input type="text" id="translator" name="translator" class="form-control" 
+                    [(ngModel)]="formEbook().translator" placeholder="Chưa dịch..." />
+                </div>
+              </div>
+
+              <!-- Dòng 3: Description (Textarea chiếm toàn bộ chiều rộng bên dưới) -->
+              <div class="col-12">
+                <label for="description" class="form-label fs-9 fw-bold text-uppercase text-secondary mb-1">Mô tả tóm tắt sách (Description)</label>
+                <div class="input-icon-group">
+                  <i class="bi bi-chat-left-text input-icon" style="top: 15px; transform: none;"></i>
+                  <textarea id="description" name="description" class="form-control text-area" 
+                    [(ngModel)]="formEbook().description" rows="3" placeholder="Nhập nội dung mô tả sách..." required></textarea>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- CARD 2: List Ebook (Full Width Bottom Card) -->
+  <div class="card table-card border-0 rounded-4 shadow-sm overflow-hidden">
+    
+    <!-- Bộ lọc & Tìm kiếm -->
+    <div class="card-header bg-transparent border-0 pt-4 px-4 pb-2 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
+      <h5 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+        <i class="bi bi-table text-gold"></i>
+        <span>Danh Sách Ebook (List Ebook)</span>
+      </h5>
+      
+      <!-- Tìm kiếm & Khôi phục -->
+      <div class="d-flex gap-2 align-items-center flex-wrap">
+        <button type="button" class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1 py-1.5 px-3 rounded-pill" (click)="resetDatabase()" title="Khôi phục danh sách sách mẫu ban đầu">
+          <i class="bi bi-arrow-counterclockwise"></i>
+          <span class="fs-9 fw-bold">Khôi phục sách mặc định</span>
+        </button>
+        <div class="search-box">
+          <i class="bi bi-search search-icon"></i>
+          <input type="text" class="form-control search-input" 
+            [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event); currentPage.set(1)" 
+            placeholder="Tìm theo tên sách, tác giả..." />
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body px-4 pb-4 pt-2">
+      <!-- Table -->
+      <div class="table-responsive">
+        <table class="table table-hover align-middle custom-table">
+          <thead>
+            <tr>
+              <th style="width: 5%">#</th>
+              <th style="width: 40%">Tên Ebook (Title)</th>
+              <th style="width: 15%">Tác giả (Author)</th>
+              <th style="width: 15%">Danh mục (Category)</th>
+              <th style="width: 10%" class="text-end">Giá (Price)</th>
+              <th style="width: 5%" class="text-center">K.Mại (Discount)</th>
+              <th style="width: 5%" class="text-center">Kho (Stock)</th>
+              <th style="width: 5%" class="text-center">Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let book of pagedEbooks(); let i = index">
+              <!-- STT -->
+              <td class="text-muted fw-semibold">{{ (currentPage() - 1) * pageSize() + i + 1 }}</td>
+              
+              <!-- Title with cover -->
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  <div class="table-book-cover shadow-sm">
+                    <img [src]="book.image" alt="bìa" (error)="book.image = '/image/ebooknew1.jpg'" />
+                  </div>
+                  <div class="table-book-info">
+                    <span class="book-title-cell fw-bold text-dark text-truncate" [title]="book.title">
+                      {{ book.title }}
+                    </span>
+                    <span class="book-pages-cell text-muted fs-8">
+                      {{ book.pages }} trang • Năm {{ book.publishDate }}
+                    </span>
+                  </div>
+                </div>
+              </td>
+              
+              <!-- Author -->
+              <td class="fw-semibold text-secondary">{{ book.author }}</td>
+              
+              <!-- Category badge mapping -->
+              <td>
+                <span class="badge badge-cat-pill">
+                  {{ book.category === 'new' ? 'KGVH Hồ Chí Minh' : 
+                     book.category === 'featured' ? 'Kinh tế' : 
+                     book.category === 'upcoming' ? 'Văn hóa xã hội' : 
+                     book.category === 'combo' ? 'Lịch sử - Chính trị' : book.category }}
+                </span>
+              </td>
+              
+              <!-- Price -->
+              <td class="text-end fw-bold text-primary">{{ formatPrice(book.price) }}</td>
+              
+              <!-- Discount -->
+              <td class="text-center">
+                <span class="badge bg-danger bg-opacity-10 text-danger" *ngIf="book.discount && book.discount !== '0%'">
+                  -{{ book.discount }}
+                </span>
+                <span class="text-muted fs-8" *ngIf="!book.discount || book.discount === '0%'">-</span>
+              </td>
+              
+              <!-- Stock -->
+              <td class="text-center">
+                <span class="fw-bold" [ngClass]="book.stock <= 5 ? 'text-danger' : 'text-dark'">
+                  {{ book.stock }}
+                </span>
+              </td>
+              
+              <!-- Action Buttons -->
+              <td>
+                <div class="d-flex justify-content-center gap-2">
+                  <button class="btn btn-action edit-btn" title="Chỉnh sửa" (click)="editBook(book)">
+                    <i class="bi bi-pencil-fill"></i>
+                  </button>
+                  <button class="btn btn-action delete-btn" title="Xóa sách" (click)="deleteBook(book.id)">
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Empty result -->
+            <tr *ngIf="filteredEbooks().length === 0">
+              <td colspan="8" class="text-center py-5 text-muted">
+                <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
+                <span>Không tìm thấy sách nào phù hợp với điều kiện tìm kiếm.</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 mt-4 pt-3 border-top" *ngIf="filteredEbooks().length > pageSize()">
+        <div class="text-muted fs-8">
+          Đang hiển thị <strong>{{ (currentPage() - 1) * pageSize() + 1 }}</strong> - 
+          <strong>{{ Math.min(currentPage() * pageSize(), filteredEbooks().length) }}</strong> trên tổng số 
+          <strong>{{ filteredEbooks().length }}</strong> cuốn sách.
+        </div>
+
+        <nav>
+          <ul class="pagination pagination-sm mb-0 gap-1">
+            <li class="page-item" [class.disabled]="currentPage() === 1">
+              <button class="page-link border-0 rounded-circle d-flex align-items-center justify-content-center" 
+                (click)="setPage(currentPage() - 1)" style="width: 32px; height: 32px;">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+            </li>
+
+            <li class="page-item" *ngFor="let p of [].constructor(totalPages()); let idx = index" 
+              [class.active]="currentPage() === idx + 1">
+              <button class="page-link border-0 rounded-circle d-flex align-items-center justify-content-center fw-semibold" 
+                (click)="setPage(idx + 1)" style="width: 32px; height: 32px;">
+                {{ idx + 1 }}
+              </button>
+            </li>
+
+            <li class="page-item" [class.disabled]="currentPage() === totalPages()">
+              <button class="page-link border-0 rounded-circle d-flex align-items-center justify-content-center" 
+                (click)="setPage(currentPage() + 1)" style="width: 32px; height: 32px;">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,462 @@
+:host {
+  display: block;
+  font-family: var(--font-sans);
+  background-color: #f8fafc; /* Beautiful soft bright background */
+}
+
+.dashboard-wrapper {
+  min-height: 100vh;
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================
+   BRIGHT PREMIUM SIDEBAR DESIGN
+   ========================================== */
+.sidebar {
+  width: 280px;
+  background-color: #ffffff !important;
+  min-height: 100vh;
+  box-shadow: 4px 0 24px rgba(15, 23, 42, 0.02);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  border-right: 1px solid var(--border-color) !important;
+}
+
+/* Override text-white classes in HTML safely */
+.sidebar * {
+  color: var(--text-main) !important;
+}
+
+.sidebar h5 {
+  color: var(--text-main) !important;
+  font-family: var(--font-serif);
+  font-weight: 700;
+}
+
+.sidebar small,
+.sidebar .text-white-50 {
+  color: var(--text-muted) !important;
+  opacity: 0.8 !important;
+}
+
+.avatar-container {
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  background: var(--primary-color) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+
+.status-indicator {
+  width: 14px;
+  height: 14px;
+  border: 2.5px solid #ffffff !important;
+  background-color: #10b981 !important;
+}
+
+.sidebar .nav-link {
+  color: var(--text-muted) !important;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  font-size: 13.5px;
+  display: flex;
+  align-items: center;
+  background-color: transparent !important;
+}
+
+.sidebar .nav-link i {
+  color: var(--text-muted) !important;
+  transition: color 0.2s;
+}
+
+.sidebar .nav-link.active {
+  background-color: #f1f5f9 !important;
+  color: var(--primary-color) !important;
+  border-left: 3px solid var(--accent-color) !important;
+  border-radius: 0 8px 8px 0;
+  box-shadow: none !important;
+}
+
+.sidebar .nav-link.active i,
+.sidebar .nav-link.active span {
+  color: var(--primary-color) !important;
+}
+
+.sidebar .nav-link:hover:not(.active) {
+  background-color: #f8fafc !important;
+  color: var(--primary-color) !important;
+}
+
+.sidebar .nav-link:hover:not(.active) i {
+  color: var(--primary-color) !important;
+}
+
+.sidebar .border-top {
+  border-top: 1px solid var(--border-color) !important;
+}
+
+.sidebar .profile-section {
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.hover-white:hover {
+  background-color: #f8fafc !important;
+}
+
+/* Topbar Styles */
+.topbar {
+  background-color: #ffffff !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.topbar h2 {
+  font-family: var(--font-serif);
+  font-weight: 800;
+  color: var(--text-main) !important;
+}
+
+.btn-notification {
+  border: 1px solid var(--border-color);
+  background-color: #ffffff;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.btn-notification:hover {
+  background-color: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.notification-badge {
+  padding: 4px;
+  top: 6px !important;
+  right: 12px !important;
+  border: 2px solid #ffffff;
+  background-color: var(--accent-color) !important;
+}
+
+.btn-logout {
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+  background-color: var(--primary-color);
+  color: #ffffff !important;
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+/* ==========================================
+   BRIGHT ELEVATED METRIC CARDS
+   ========================================== */
+.stat-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  background: #ffffff !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md) !important;
+  border-color: var(--primary-color) !important;
+}
+
+/* Forces all stat text to be dark slate for extreme clarity */
+.stat-card * {
+  color: var(--text-main) !important;
+}
+
+.stat-card .text-white-50 {
+  color: var(--text-muted) !important;
+  opacity: 0.85 !important;
+}
+
+.stat-icon-wrapper {
+  background-color: #f1f5f9 !important;
+  border: 1px solid var(--border-color);
+  transition: transform 0.3s ease;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color) !important;
+}
+
+.stat-card:hover .stat-icon-wrapper {
+  transform: scale(1.08);
+  background-color: var(--primary-color) !important;
+  color: #ffffff !important;
+}
+
+.stat-card-shape {
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(197, 168, 128, 0.05) 0%, rgba(197, 168, 128, 0) 70%);
+  bottom: -50px;
+  right: -50px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.tracking-wider {
+  letter-spacing: 1px;
+}
+
+.fs-7 {
+  font-size: 0.8rem;
+}
+
+.fs-8 {
+  font-size: 0.725rem;
+}
+
+/* Tables in Admin */
+.custom-admin-table th {
+  border-bottom: 2px solid var(--border-color);
+  color: var(--text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  padding: 1rem;
+}
+
+.custom-admin-table td {
+  padding: 1.1rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-main);
+  font-size: 0.85rem;
+}
+
+.custom-admin-table tr:hover td {
+  background-color: #f8fafc;
+}
+
+/* Badge custom colors */
+.badge-success {
+  background-color: #f1ebd9;
+  color: var(--accent-hover);
+}
+
+.badge-warning {
+  background-color: #f1f5f9;
+  color: var(--text-muted);
+}
+
+.badge-danger {
+  background-color: #ffe4e6;
+  color: #be123c;
+}
+
+/* Top selling books */
+.top-selling-item {
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+  border: 1px solid var(--border-color) !important;
+}
+
+.top-selling-item:hover {
+  background-color: #f8fafc;
+  border-color: var(--primary-color) !important;
+  transform: translateX(4px);
+}
+
+.top-selling-img-box {
+  width: 50px;
+  height: 70px;
+  flex-shrink: 0;
+  background-color: #f8fafc;
+  border: 1px solid var(--border-color);
+}
+
+.top-selling-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .sidebar {
+    width: 80px;
+    padding: 0.75rem !important;
+  }
+  .sidebar .profile-section h5,
+  .sidebar .profile-section small,
+  .sidebar .menu-name,
+  .sidebar .border-top span {
+    display: none !important;
+  }
+  .sidebar .nav-link {
+    justify-content: center;
+    padding: 0.75rem !important;
+  }
+  .sidebar .nav-link i {
+    margin-right: 0 !important;
+  }
+}
+
+/* Premium Dashboard custom styles */
+.card {
+  background-color: #ffffff !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.card-header {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.card-header h5 {
+  font-family: var(--font-serif);
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.chart-container-box {
+  background: #ffffff !important;
+  border: 1px solid var(--border-color);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.005);
+}
+
+.dashboard-book-row {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: #ffffff;
+  border: 1px solid var(--border-color) !important;
+}
+
+.dashboard-book-row:hover {
+  transform: translateX(6px);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--primary-color) !important;
+}
+
+.avatar-circle {
+  transition: transform 0.2s ease;
+}
+
+.staff-item {
+  transition: all 0.2s ease;
+  border: 1px solid var(--border-color) !important;
+  background-color: #ffffff;
+}
+
+.staff-item:hover {
+  background-color: #f8fafc;
+  border-color: var(--primary-color) !important;
+}
+
+/* Donut Chart styles */
+.circle-bg {
+  stroke-linecap: round;
+}
+
+.circle {
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.35s ease;
+}
+
+.review-item {
+  transition: all 0.25s ease;
+  border: 1px solid var(--border-color) !important;
+  background-color: #ffffff;
+}
+
+.review-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--primary-color) !important;
+}
+
+.review-item .stars i {
+  color: var(--accent-color) !important;
+}
+
+/* Customer weekly bar chart styles */
+.customer-chart-wrapper {
+  background: #ffffff !important;
+  border: 1px solid var(--border-color);
+}
+
+.customer-chart-wrapper > div > div:hover .bar-tooltip {
+  opacity: 1 !important;
+  bottom: 100% !important;
+}
+
+.customer-chart-wrapper > div > div:hover div {
+  transform: scale(1.05);
+  filter: brightness(1.02);
+}
+
+.customer-chart-wrapper .rounded-pill {
+  background: var(--primary-color) !important;
+}
+
+.customer-chart-wrapper > div > div:nth-child(odd) .rounded-pill {
+  background: var(--accent-color) !important; /* Elegant alternating gold/black bars */
+}
+
+/* SVG Line Paths */
+svg line {
+  stroke: var(--border-color) !important;
+}
+
+svg path[stroke='#0d6efd'] {
+  stroke: var(--primary-color) !important; /* Black line graph */
+}
+
+svg fill[fill='#0d6efd'] {
+  fill: var(--primary-color) !important;
+}
+
+svg circle[fill='#0d6efd'] {
+  fill: var(--primary-color) !important;
+}
+
+svg circle[stroke='#ffffff'] {
+  stroke: #ffffff !important;
+}
+
+svg path[fill='url(#salesGrad)'] {
+  fill: url(#salesGradLuxury) !important;
+}
+
+/* Task Checkbox Styling in Light Theme */
+.form-check-input:checked {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.form-check-input:focus {
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.05) !important;
+  border-color: var(--primary-color) !important;
+}

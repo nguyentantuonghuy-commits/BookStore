@@ -1,0 +1,305 @@
+<div class="container py-5 cart-container animate-fade-in">
+  <div class="row g-4">
+    <!-- Cột trái: Bảng giỏ hàng -->
+    <div class="col-lg-8" *ngIf="carts().length > 0 && !showEmptySuggestions(); else emptyCart">
+      <div class="card glass-card glow-on-hover border-0 shadow-sm rounded-4 p-3 p-md-4">
+        <h3 class="fw-bold mb-4 text-dark d-flex align-items-center text-gradient-luxury">
+          <i class="bi bi-cart3 me-2 text-primary"></i> Giỏ Hàng Của Bạn
+        </h3>
+
+        <!-- Bảng sản phẩm trên Desktop (Ẩn trên Mobile/Tablet) -->
+        <div class="table-responsive d-none d-lg-block">
+          <table class="table align-middle custom-table">
+            <thead>
+              <tr>
+                <th scope="col" width="40">
+                  <div class="form-check custom-checkbox">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [checked]="allSelected()"
+                      (change)="onSelectAllChange($event)"
+                      id="selectAll"
+                    />
+                    <label class="form-check-label" for="selectAll"></label>
+                  </div>
+                </th>
+                <th scope="col">Sản phẩm</th>
+                <th scope="col">Tên sách</th>
+                <th scope="col" class="text-center">Số lượng</th>
+                <th scope="col" class="text-end">Giá &amp; Thành tiền</th>
+                <th scope="col" class="text-center">Xóa</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of carts(); let i = index" [class.active-row]="item.active">
+                <td>
+                  <div class="form-check custom-checkbox">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [checked]="item.active"
+                      (change)="toggleBuy(item)"
+                      id="checkItem-{{ i }}"
+                    />
+                    <label class="form-check-label" for="checkItem-{{ i }}"></label>
+                  </div>
+                </td>
+                <td>
+                  <div class="product-img-box rounded-3 overflow-hidden shadow-sm">
+                    <img [src]="item.image" [alt]="item.title" class="img-fluid" />
+                  </div>
+                </td>
+                <td>
+                  <h6
+                    class="product-title mb-0 fw-semibold text-dark text-wrap"
+                    style="max-width: 250px"
+                  >
+                    {{ item.title }}
+                  </h6>
+                </td>
+                <td>
+                  <div
+                    class="quantity-control d-flex align-items-center justify-content-center mx-auto"
+                  >
+                    <button
+                      class="btn btn-qty btn-sm"
+                      (click)="decreaseQuantity(item)"
+                      [disabled]="item.quantity <= 1"
+                    >
+                      <i class="bi bi-dash"></i>
+                    </button>
+                    <span class="qty-number mx-2 fw-bold text-dark">{{ item.quantity }}</span>
+                    <button class="btn btn-qty btn-sm" (click)="increaseQuantity(item)">
+                      <i class="bi bi-plus"></i>
+                    </button>
+                  </div>
+                </td>
+                <td class="text-end">
+                  <span class="fw-bold text-primary fs-5 d-block">
+                    {{ formatPrice(item.price) }} đ
+                  </span>
+                  <small class="text-muted d-block mt-1" *ngIf="item.quantity > 1" style="font-size: 0.75rem;">
+                    Đơn giá: {{ formatPrice(item.unitPrice) }} đ
+                  </small>
+                </td>
+                <td class="text-center">
+                  <button class="btn btn-remove rounded-circle" (click)="removeItem(item)">
+                    <i class="bi bi-trash text-danger"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Danh sách dạng Card trên Mobile/Tablet (Ẩn trên Desktop) -->
+        <div class="mobile-cart-list d-block d-lg-none">
+          <div
+            class="mobile-cart-item card border border-light rounded-4 p-3 mb-3 shadow-sm position-relative overflow-hidden animate-fade-in"
+            *ngFor="let item of carts(); let i = index"
+            [class.active-item-card]="item.active"
+          >
+            <!-- HÀNG 1: Checkbox + Ảnh + Tên Sách -->
+            <div class="d-flex align-items-start gap-3 mb-3" style="position: relative; z-index: 12;">
+              <!-- Checkbox -->
+              <div class="flex-shrink-0 pt-1">
+                <input
+                  class="form-check-input custom-checkbox-input"
+                  type="checkbox"
+                  [checked]="item.active"
+                  (change)="toggleBuy(item)"
+                />
+              </div>
+
+              <!-- Ảnh sản phẩm -->
+              <div class="product-img-box rounded-3 overflow-hidden flex-shrink-0 shadow-xs" style="width: 55px; height: 75px;">
+                <img [src]="item.image" [alt]="item.title" class="img-fluid w-100 h-100 object-fit-cover" />
+              </div>
+
+              <!-- Tiêu đề sách -->
+              <div class="flex-grow-1 min-w-0">
+                <h6 class="product-title mb-1 fw-bold text-dark text-wrap" style="display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 0.9rem; line-height: 1.3;">
+                  {{ item.title }}
+                </h6>
+                <span class="badge bg-light text-secondary fs-8 mt-1" *ngIf="item.discount && item.discount !== '0%'">
+                  Giảm {{ item.discount }}
+                </span>
+              </div>
+            </div>
+
+            <!-- HÀNG 2: Giá cả & Số lượng (Chiếm trọn bề ngang cực kỳ rộng rãi, chống chồng chéo tuyệt đối trên đt dưới 500px) -->
+            <div class="d-flex align-items-center justify-content-between border-top pt-3 gap-2" style="position: relative; z-index: 20;">
+              <!-- Cột giá tiền -->
+              <div class="d-flex flex-column text-start">
+                <span class="fw-bold text-primary fs-6 mb-0">{{ formatPrice(item.price) }} đ</span>
+                <small class="text-muted fs-8" *ngIf="item.quantity > 1" style="font-size: 0.7rem;">
+                  Đơn giá: {{ formatPrice(item.unitPrice) }} đ
+                </small>
+              </div>
+
+              <div class="d-flex align-items-center gap-2">
+                <!-- Bộ điều khiển số lượng (To, z-index 30, cực kỳ nhạy và dễ chạm trên Mobile) -->
+                <div class="mobile-quantity-box d-flex align-items-center rounded-3 bg-light p-1 shadow-xs" style="position: relative; z-index: 25;">
+                  <button
+                    type="button"
+                    class="btn btn-mobile-qty"
+                    (click)="decreaseQuantity(item)"
+                    [disabled]="item.quantity <= 1"
+                  >
+                    <i class="bi bi-dash"></i>
+                  </button>
+                  <span class="mobile-qty-val mx-2 fw-bold text-dark fs-7" style="min-width: 20px; text-align: center;">{{ item.quantity }}</span>
+                  <button
+                    type="button"
+                    class="btn btn-mobile-qty"
+                    (click)="increaseQuantity(item)"
+                  >
+                    <i class="bi bi-plus"></i>
+                  </button>
+                </div>
+
+                <!-- Nút xóa nhanh -->
+                <button
+                  type="button"
+                  class="btn btn-remove-mobile text-danger rounded-circle bg-danger bg-opacity-10"
+                  (click)="removeItem(item)"
+                  style="width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer;"
+                >
+                  <i class="bi bi-trash fs-6"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mã giảm giá -->
+        <div class="mt-4 pt-3 border-top d-flex flex-wrap align-items-center justify-content-between gap-3">
+          <div class="d-flex align-items-center gap-2 flex-grow-1" style="max-width: 400px">
+            <input
+              type="text"
+              class="form-control coupon-input rounded-pill px-3 py-2"
+              placeholder="Mã giảm giá..."
+            />
+            <button class="btn btn-outline-primary btn-coupon rounded-pill px-4 py-2 text-nowrap">
+              Áp dụng
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cột phải: Tổng thanh toán -->
+    <div class="col-lg-4" *ngIf="carts().length > 0 && !showEmptySuggestions()">
+      <div
+        class="card checkout-summary glass-card glow-on-hover border-0 shadow-sm rounded-4 p-4 position-sticky"
+        style="top: 2rem"
+      >
+        <h4 class="fw-bold mb-4 text-dark text-uppercase border-bottom pb-3 text-gradient-luxury">Tổng Thanh Toán</h4>
+
+        <div class="summary-details d-flex flex-column gap-3 mb-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="text-secondary fw-medium">Tạm tính:</span>
+            <span class="fw-bold text-dark fs-5">{{ formatPrice(totalPrice()) }} đ</span>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-start border-bottom pb-3">
+            <span class="text-secondary fw-medium">Chi phí vận chuyển:</span>
+            <div class="text-end">
+              <span class="fw-bold text-dark d-block"
+                >Flat rate: {{ formatPrice(shippingCost) }} đ</span
+              >
+              <small class="text-muted d-block mt-1">Shipping to Vietnam.</small>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center pt-2">
+            <span class="text-dark fw-bold fs-5">Tổng cộng:</span>
+            <span class="fw-bold text-primary fs-3">
+              {{ formatPrice(totalPrice() > 0 ? totalPrice() + shippingCost : 0) }} đ
+            </span>
+          </div>
+        </div>
+
+        <button
+          class="btn btn-primary w-100 rounded-pill py-3 fw-bold shadow-md btn-checkout"
+          [disabled]="totalPrice() === 0"
+          (click)="checkout()"
+        >
+          THANH TOÁN
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Giao diện Premium khi giỏ hàng trống -->
+  <ng-template #emptyCart>
+    <div class="empty-cart-premium-box glass-card glow-on-hover p-4 p-md-5 rounded-4 border-0 shadow-lg text-center animate-fade-in mb-5">
+      
+      <!-- Banner thông báo khi đã thêm sản phẩm từ gợi ý -->
+      <div class="alert alert-success d-flex align-items-center justify-content-between p-3 rounded-4 mb-5 border-0 shadow-sm animate-fade-in" style="background-color: #fbf8f5; border-left: 4px solid #bfa07a !important;" *ngIf="carts().length > 0">
+        <div class="d-flex align-items-center gap-3 text-start">
+          <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #ffffff; color: #bfa07a; border: 1px solid #e4e2dd; flex-shrink: 0;">
+            <i class="bi bi-bag-check-fill fs-5"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold text-dark mb-1">Đã thêm sản phẩm thành công vào giỏ hàng!</h6>
+            <span class="text-secondary fs-7">Hiện đang có {{ carts().length }} sản phẩm trong giỏ của bạn.</span>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary rounded-pill px-4 py-2 fw-bold" style="background-color: #bfa07a; border-color: #bfa07a; color: #ffffff;" (click)="showCartList()">
+          XEM GIỎ HÀNG <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+      </div>
+
+      <div class="empty-cart-glow-wrapper mb-4 position-relative d-inline-block">
+        <div class="glow-effect position-absolute top-50 start-50 translate-middle rounded-circle"></div>
+        <div class="empty-cart-icon rounded-circle d-flex align-items-center justify-content-center mx-auto position-relative z-index-1">
+          <i class="bi bi-cart-x-fill text-primary"></i>
+        </div>
+      </div>
+      <h2 class="fw-bold text-dark mb-2">Giỏ hàng của bạn đang trống</h2>
+      <p class="text-secondary max-w-500 mx-auto mb-4 fs-6">
+        Hãy lấp đầy giỏ hàng của bạn bằng những trang sách đầy ắp tri thức bổ ích và những ưu đãi hấp dẫn đang chờ bạn tại Sachweb nhé!
+      </p>
+      <a routerLink="/" class="btn btn-primary btn-explore-glow rounded-pill px-5 py-3 fw-bold mb-5 shadow-lg">
+        <i class="bi bi-arrow-left-circle-fill me-2 fs-5"></i> KHÁM PHÁ CỬA HÀNG NGAY
+      </a>
+
+      <!-- Đề xuất các sách HOT ngay bên dưới cực kỳ hữu ích -->
+      <div class="recommended-section pt-5 border-top border-light">
+        <h4 class="fw-bold text-dark mb-4 text-start d-flex align-items-center gap-2 text-gradient-luxury">
+          <i class="bi bi-fire text-danger"></i> Gợi Ý Sách Bán Chạy Nhất Cho Bạn
+        </h4>
+        <div class="row g-3 g-md-4">
+          <div class="col-6 col-md-3" *ngFor="let book of recommendedBooks()">
+            <div class="card recommended-book-card glass-card glow-on-hover shimmer-hover h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative">
+              <!-- Nút thêm nhanh -->
+              <button 
+                type="button" 
+                class="btn btn-add-quick position-absolute rounded-circle shadow-sm" 
+                (click)="addRecommendedToCart(book)"
+                title="Thêm nhanh vào giỏ"
+              >
+                <i class="bi bi-cart-plus-fill"></i>
+              </button>
+              <a [routerLink]="['/book', book.id]" class="text-decoration-none d-block">
+                <div class="rec-img-box position-relative overflow-hidden">
+                  <img [src]="book.image" [alt]="book.title" class="img-fluid w-100 h-100 object-fit-cover" />
+                </div>
+                <div class="card-body p-3 d-flex flex-column text-start">
+                  <h6 class="book-title-rec mb-1 fw-bold text-dark text-truncate" [title]="book.title">{{ book.title }}</h6>
+                  <small class="text-muted text-truncate mb-2">{{ book.author }}</small>
+                  <div class="mt-auto pt-2 border-top border-light d-flex justify-content-between align-items-center flex-wrap gap-1">
+                    <span class="fw-bold text-primary fs-7">{{ formatPrice(cartService.discountPrice(book.price, book.discount)) }}đ</span>
+                    <span class="text-decoration-line-through text-muted fs-8">{{ formatPrice(book.price) }}đ</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

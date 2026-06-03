@@ -1,0 +1,94 @@
+<nav class="navbar navbar-expand-lg navbar-light custom-navbar">
+  <div class="container">
+    <a class="navbar-brand" routerLink="/">
+      <img src="/image/logosw.png" alt="Sách Web" height="50" />
+    </a>
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#collapsibleNavId"
+      aria-controls="collapsibleNavId"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="collapsibleNavId">
+      <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" routerLink="/" aria-current="page">Trang chủ</a>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="#">Giới thiệu</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Tin tức</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Liên hệ</a></li>
+      </ul>
+
+      <form class="search-form me-3" (ngSubmit)="onSearch()">
+        <div class="search-input-group">
+          <i class="bi bi-search search-icon"></i>
+          <input
+            class="search-input"
+            type="text"
+            placeholder="Tìm nhanh sách theo tên, tác giả..."
+            [(ngModel)]="searching"
+            name="searching"
+            (input)="onSearch()"
+          />
+          <button class="btn-search" type="submit">
+            <span>Tìm kiếm</span>
+          </button>
+        </div>
+      </form>
+
+      <ul class="navbar-nav mt-lg-0 align-items-center gap-2">
+        <!-- Khi chưa đăng nhập -->
+        <ng-container *ngIf="!authService.currentUser()">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/login" style="color: var(--text-main); font-weight: 500;">Đăng nhập</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link btn-register-nav px-3 py-1 rounded-pill" routerLink="/register">Đăng ký</a>
+          </li>
+        </ng-container>
+
+        <!-- Khi đã đăng nhập -->
+        <li class="nav-item dropdown" *ngIf="authService.currentUser()">
+          <a
+            class="nav-link dropdown-toggle fw-bold d-flex align-items-center gap-1"
+            href="#"
+            id="dropdownId"
+            data-bs-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            style="color: var(--text-main);"
+          >
+            <i class="bi bi-person-circle fs-5 text-primary-theme"></i>
+            <span>{{ authService.currentUser().name }}</span>
+          </a>
+          <div class="dropdown-menu dropdown-menu-end shadow-sm border" aria-labelledby="dropdownId">
+            <a class="dropdown-item d-flex align-items-center gap-2" routerLink="/dashboard" *ngIf="authService.currentUser().role === 'admin'">
+              <i class="bi bi-speedometer2"></i> Dashboard Admin
+            </a>
+            <hr class="dropdown-divider" *ngIf="authService.currentUser().role === 'admin'" />
+            <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="javascript:void(0)" (click)="logout()">
+              <i class="bi bi-box-arrow-right"></i> Đăng xuất
+            </a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link position-relative me-4 my-auto cart-link" routerLink="/cart">
+            <i class="bi bi-cart3"></i>
+            <span
+              class="position-absolute rounded-circle d-flex align-items-center justify-content-center text-danger px-1"
+            >
+              {{ cartService.totalItems() }}
+            </span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

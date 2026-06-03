@@ -1,0 +1,88 @@
+<div class="auth-page">
+  <div class="auth-card">
+
+    <!-- Cột trái: Hình ảnh nghệ thuật -->
+    <div class="img-col">
+      <img src="/image/login_side_art.png" alt="Thư viện" class="cover-img" />
+      <div class="img-overlay"></div>
+      <div class="img-content">
+        <div class="img-badge">📚 Sachweb.vn</div>
+        <h2 class="img-quote">"Một cuốn sách thực sự tốt dạy cho tôi nhiều điều hơn là chỉ đọc nó."</h2>
+        <p class="img-author">— Henry David Thoreau</p>
+      </div>
+    </div>
+
+    <!-- Cột phải: Form đăng nhập -->
+    <div class="form-col">
+      <div class="form-inner">
+
+        <!-- Logo -->
+        <div class="text-center mb-4">
+          <a routerLink="/" class="logo-link">
+            <img src="/image/logosw.png" alt="Sách Web" height="52" class="logo" />
+          </a>
+          <h3 class="form-title">Chào Mừng Trở Lại</h3>
+          <p class="form-subtitle">Đăng nhập để tiếp tục hành trình tri thức của bạn.</p>
+        </div>
+
+        <!-- Form -->
+        <form (submit)="onSubmit()" #loginForm="ngForm" novalidate>
+
+          <!-- Email -->
+          <div class="field-group">
+            <label for="email" class="field-label">Tài khoản hoặc Email</label>
+            <div class="field-wrap">
+              <i class="bi bi-person-fill field-icon"></i>
+              <input type="text" id="email" name="email" class="field-input"
+                placeholder="Nhập tài khoản hoặc email" [(ngModel)]="email" required />
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="field-group">
+            <label for="password" class="field-label">Mật khẩu</label>
+            <div class="field-wrap">
+              <i class="bi bi-shield-lock-fill field-icon"></i>
+              <input [type]="showPassword() ? 'text' : 'password'" id="password"
+                name="password" class="field-input has-toggle"
+                placeholder="••••••••" [(ngModel)]="password" required />
+              <button type="button" class="toggle-pw"
+                (click)="togglePasswordVisibility()" title="Hiện/Ẩn mật khẩu">
+                <i class="bi" [ngClass]="showPassword() ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Error alert -->
+          <div class="error-box" *ngIf="errorMessage()">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>{{ errorMessage() }}</span>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="submit-btn">
+            <span>ĐĂNG NHẬP</span>
+            <i class="bi bi-arrow-right-circle-fill"></i>
+          </button>
+
+          <!-- Register link -->
+          <p class="switch-link">
+            Chưa có tài khoản?
+            <a routerLink="/register" class="gold-link">Đăng ký ngay</a>
+          </p>
+
+          <!-- Admin shortcut -->
+          <div class="admin-box">
+            <span class="admin-label"><i class="bi bi-lightning-charge-fill"></i> Đăng nhập nhanh:</span>
+            <button type="button" class="admin-btn"
+              (click)="email = 'admin'; password = 'admin123'; onSubmit()">
+              Đăng Nhập Admin
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
