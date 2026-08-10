@@ -212,11 +212,12 @@ npm run build
 
 ## 👤 Tác Giả & Liên Hệ (Author Info)
 
-* **Họ và tên**: [Họ và tên của bạn]
+* **Họ và tên**: Nguyễn Tấn Tường Huy
 * **Vị trí ứng tuyển**: Frontend / Fullstack Developer Intern
-* **Email**: [Email của bạn]
-* **LinkedIn / GitHub**: [Link profile GitHub / LinkedIn của bạn]
+* **Email**: [nguyentantuonghuy@gmail.com](mailto:nguyentantuonghuy@gmail.com)
+* **GitHub**: [https://github.com/nguyentantuonghuy26082006](https://github.com/nguyentantuonghuy26082006)
 
 ---
 
-*Cảm ơn bạn đã ghé thăm repository! Chúc bạn có kỳ thực tập thành công rực rỡ!* 🚀
+*Cảm ơn bạn đã ghé thăm repository! Chúc bạn một ngày làm việc hiệu quả!* 🚀
+
