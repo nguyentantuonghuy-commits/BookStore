@@ -1,5 +1,150 @@
 <div class="container py-5 cart-container animate-fade-in">
-  <div class="row g-4">
+  <!-- GIAO DIỆN ĐẶT HÀNG THÀNH CÔNG (PREMIUM STYLE - REVERTED TWO-COLUMN WITH ADDITIONAL EFFECTS) -->
+  <div *ngIf="isCheckoutSuccess()" class="checkout-success-container animate-scale-in my-4 position-relative">
+
+    <div class="row g-4 justify-content-center">
+
+      <!-- Cột trái: Thông điệp cảm ơn & Trạng thái hành trình đơn hàng -->
+      <div class="col-lg-6 animate-slide-left">
+        <div
+          class="success-main-card glass-card h-100 border-0 p-4 p-md-5 d-flex flex-column justify-content-between position-relative overflow-hidden">
+          <!-- Background Ambient Blobs -->
+          <div class="blob blob-gold"></div>
+          <div class="blob blob-navy"></div>
+
+          <div class="text-center my-auto py-3">
+            <div class="success-badge-premium mb-3">
+              <span class="gold-sparkle">✦</span> Giao dịch an toàn <span class="gold-sparkle">✦</span>
+            </div>
+
+            <!-- Icon thành công với các ngôi sao lấp lánh xung quanh -->
+            <div class="checkmark-showcase mb-4 position-relative d-block mx-auto">
+              <div class="star-sparkle star-1">✦</div>
+              <div class="star-sparkle star-2">✦</div>
+              <div class="star-sparkle star-3">✦</div>
+              <div class="star-sparkle star-4">✦</div>
+
+              <div class="luxury-checkmark-container">
+                <svg class="luxury-check-svg" viewBox="0 0 52 52">
+                  <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+                  <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                </svg>
+              </div>
+            </div>
+
+            <h2 class="success-title text-gradient-luxury mb-3">Đặt Hàng Thành Công</h2>
+            <p class="success-desc text-secondary mb-4 mb-md-5">
+              Cảm ơn bạn đã tin tưởng lựa chọn tri thức tại <strong>Sachweb.vn</strong>. Chúng tôi đã tiếp nhận thông
+              tin đơn hàng và đang xử lý chuẩn bị gửi đến bạn.
+            </p>
+
+            <!-- Stepper hành trình đơn hàng tối giản cực đẹp -->
+            <div class="order-stepper-premium mx-auto" style="max-width: 380px;">
+              <div class="stepper-track"></div>
+              <div class="stepper-track-active"></div>
+
+              <div class="step-item active">
+                <div class="step-icon"><i class="bi bi-file-earmark-check-fill"></i></div>
+                <div class="step-content">
+                  <div class="step-label">Đã đặt hàng</div>
+                  <div class="step-time">{{ orderDate() }}</div>
+                </div>
+              </div>
+
+              <div class="step-item current">
+                <div class="step-icon"><i class="bi bi-box-seam-fill"></i></div>
+                <div class="step-content">
+                  <div class="step-label">Đang xử lý</div>
+                  <div class="step-info">Đang đóng gói và bàn giao đối tác vận chuyển</div>
+                </div>
+              </div>
+
+              <div class="step-item">
+                <div class="step-icon"><i class="bi bi-truck"></i></div>
+                <div class="step-content">
+                  <div class="step-label">Đang giao hàng</div>
+                  <div class="step-info">Dự kiến giao hàng trong 2-3 ngày tới</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-footer text-center pt-4 border-top border-light-gold">
+            <button (click)="continueShopping()" class="btn btn-luxury-primary w-100 rounded-pill py-3 fw-bold">
+              <i class="bi bi-arrow-left-circle-fill me-2 fs-5"></i> TIẾP TỤC MUA SẮM
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cột phải: Hóa đơn điện tử (E-Receipt) phong cách luxury -->
+      <div class="col-lg-5 animate-slide-right">
+        <div class="receipt-card position-relative p-4 p-md-5 border-0 d-flex flex-column h-100">
+          <!-- Receipt Top Accent -->
+          <div class="receipt-header-pattern"></div>
+
+          <div class="receipt-logo mb-4 d-flex justify-content-between align-items-center">
+            <img src="/image/logosw.png" alt="Sách Web" height="30" class="logo-gray" />
+            <span class="receipt-type-badge">HÓA ĐƠN ĐIỆN TỬ</span>
+          </div>
+
+          <div class="receipt-meta-info mb-4 fs-7">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted">Mã giao dịch:</span>
+              <span class="font-monospace fw-bold text-dark">{{ orderNumber() }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-muted">Ngày đặt:</span>
+              <span class="text-dark">{{ orderDate() }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-muted">Hình thức:</span>
+              <span class="text-dark">Thanh toán khi nhận hàng (COD)</span>
+            </div>
+          </div>
+
+          <!-- Danh sách sản phẩm -->
+          <div class="receipt-items-section mb-4 flex-grow-1">
+            <h6 class="fw-bold text-dark mb-3 border-bottom pb-2 fs-8 letter-spacing-1">SẢN PHẨM ĐÃ MUA</h6>
+            <div class="receipt-items-scroll-ultimate">
+              <div *ngFor="let item of purchasedItems()" class="receipt-item d-flex align-items-center gap-3">
+                <img [src]="item.image" alt="book cover" class="receipt-item-img-ultimate" />
+                <div class="flex-grow-1 min-w-0">
+                  <div class="receipt-item-title fs-7 mb-1" [title]="item.title">{{ item.title }}</div>
+                  <div class="text-muted fs-8">SL: {{ item.quantity }} × {{ formatPrice(item.unitPrice) }} đ</div>
+                </div>
+                <div class="text-dark fw-bold fs-7 text-nowrap">{{ formatPrice(item.price) }} đ</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tổng chi phí -->
+          <div class="receipt-totals-section border-top border-dashed pt-3 mt-auto">
+            <div class="d-flex justify-content-between mb-2 fs-7">
+              <span class="text-muted">Tạm tính:</span>
+              <span class="text-dark fw-semibold">{{ formatPrice(lastOrderTotal() - shippingCost) }} đ</span>
+            </div>
+            <div class="d-flex justify-content-between mb-3 fs-7">
+              <span class="text-muted">Phí giao hàng:</span>
+              <span class="text-dark fw-semibold">{{ formatPrice(shippingCost) }} đ</span>
+            </div>
+
+            <!-- Khung giá trị tổng cộng nổi bật -->
+            <div class="total-seal-box p-3 rounded-3 d-flex justify-content-between align-items-center mb-2">
+              <span class="fw-bold text-dark fs-7">TỔNG CỘNG:</span>
+              <span class="fw-bold text-primary fs-4">{{ formatPrice(lastOrderTotal()) }} đ</span>
+            </div>
+          </div>
+
+          <!-- Jagged Cut bottom design -->
+          <div class="receipt-jagged-bottom-ultimate"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row g-4" *ngIf="!isCheckoutSuccess()">
     <!-- Cột trái: Bảng giỏ hàng -->
     <div class="col-lg-8" *ngIf="carts().length > 0 && !showEmptySuggestions(); else emptyCart">
       <div class="card glass-card glow-on-hover border-0 shadow-sm rounded-4 p-3 p-md-4">
@@ -14,13 +159,8 @@
               <tr>
                 <th scope="col" width="40">
                   <div class="form-check custom-checkbox">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      [checked]="allSelected()"
-                      (change)="onSelectAllChange($event)"
-                      id="selectAll"
-                    />
+                    <input class="form-check-input" type="checkbox" [checked]="allSelected()"
+                      (change)="onSelectAllChange($event)" id="selectAll" />
                     <label class="form-check-label" for="selectAll"></label>
                   </div>
                 </th>
@@ -35,13 +175,8 @@
               <tr *ngFor="let item of carts(); let i = index" [class.active-row]="item.active">
                 <td>
                   <div class="form-check custom-checkbox">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      [checked]="item.active"
-                      (change)="toggleBuy(item)"
-                      id="checkItem-{{ i }}"
-                    />
+                    <input class="form-check-input" type="checkbox" [checked]="item.active" (change)="toggleBuy(item)"
+                      id="checkItem-{{ i }}" />
                     <label class="form-check-label" for="checkItem-{{ i }}"></label>
                   </div>
                 </td>
@@ -51,28 +186,27 @@
                   </div>
                 </td>
                 <td>
-                  <h6
-                    class="product-title mb-0 fw-semibold text-dark text-wrap"
-                    style="max-width: 250px"
-                  >
+                  <h6 class="product-title mb-0 fw-semibold text-dark text-wrap" style="max-width: 250px">
                     {{ item.title }}
                   </h6>
                 </td>
                 <td>
-                  <div
-                    class="quantity-control d-flex align-items-center justify-content-center mx-auto"
-                  >
-                    <button
-                      class="btn btn-qty btn-sm"
-                      (click)="decreaseQuantity(item)"
-                      [disabled]="item.quantity <= 1"
-                    >
+                  <div class="quantity-control d-flex align-items-center justify-content-center mx-auto">
+                    <button class="btn btn-qty btn-sm" (click)="decreaseQuantity(item)" [disabled]="item.quantity <= 1">
                       <i class="bi bi-dash"></i>
                     </button>
                     <span class="qty-number mx-2 fw-bold text-dark">{{ item.quantity }}</span>
-                    <button class="btn btn-qty btn-sm" (click)="increaseQuantity(item)">
+                    <button class="btn btn-qty btn-sm" (click)="increaseQuantity(item)" [disabled]="item.quantity >= getBookStock(item.productId)">
                       <i class="bi bi-plus"></i>
                     </button>
+                  </div>
+                  <div class="text-center mt-1">
+                    <small class="text-danger fw-semibold d-block" *ngIf="item.quantity > getBookStock(item.productId)" style="font-size: 0.7rem;">
+                      <i class="bi bi-exclamation-circle-fill me-1"></i>Vượt quá tồn kho (Còn {{ getBookStock(item.productId) }})
+                    </small>
+                    <small class="text-muted d-block" *ngIf="item.quantity <= getBookStock(item.productId)" style="font-size: 0.7rem;">
+                      Còn lại: {{ getBookStock(item.productId) }} cuốn
+                    </small>
                   </div>
                 </td>
                 <td class="text-end">
@@ -97,39 +231,44 @@
         <div class="mobile-cart-list d-block d-lg-none">
           <div
             class="mobile-cart-item card border border-light rounded-4 p-3 mb-3 shadow-sm position-relative overflow-hidden animate-fade-in"
-            *ngFor="let item of carts(); let i = index"
-            [class.active-item-card]="item.active"
-          >
+            *ngFor="let item of carts(); let i = index" [class.active-item-card]="item.active">
             <!-- HÀNG 1: Checkbox + Ảnh + Tên Sách -->
             <div class="d-flex align-items-start gap-3 mb-3" style="position: relative; z-index: 12;">
               <!-- Checkbox -->
               <div class="flex-shrink-0 pt-1">
-                <input
-                  class="form-check-input custom-checkbox-input"
-                  type="checkbox"
-                  [checked]="item.active"
-                  (change)="toggleBuy(item)"
-                />
+                <input class="form-check-input custom-checkbox-input" type="checkbox" [checked]="item.active"
+                  (change)="toggleBuy(item)" />
               </div>
 
               <!-- Ảnh sản phẩm -->
-              <div class="product-img-box rounded-3 overflow-hidden flex-shrink-0 shadow-xs" style="width: 55px; height: 75px;">
+              <div class="product-img-box rounded-3 overflow-hidden flex-shrink-0 shadow-xs"
+                style="width: 55px; height: 75px;">
                 <img [src]="item.image" [alt]="item.title" class="img-fluid w-100 h-100 object-fit-cover" />
               </div>
 
               <!-- Tiêu đề sách -->
               <div class="flex-grow-1 min-w-0">
-                <h6 class="product-title mb-1 fw-bold text-dark text-wrap" style="display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 0.9rem; line-height: 1.3;">
+                <h6 class="product-title mb-1 fw-bold text-dark text-wrap"
+                  style="display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 0.9rem; line-height: 1.3;">
                   {{ item.title }}
                 </h6>
-                <span class="badge bg-light text-secondary fs-8 mt-1" *ngIf="item.discount && item.discount !== '0%'">
-                  Giảm {{ item.discount }}
-                </span>
+                <div class="d-flex flex-wrap gap-1 mt-1">
+                  <span class="badge bg-light text-secondary fs-8" *ngIf="item.discount && item.discount !== '0%'">
+                    Giảm {{ item.discount }}
+                  </span>
+                  <span class="badge bg-danger-subtle text-danger fs-8" *ngIf="item.quantity > getBookStock(item.productId)">
+                    Vượt tồn kho (Còn {{ getBookStock(item.productId) }})
+                  </span>
+                  <span class="badge bg-success-subtle text-success fs-8" *ngIf="item.quantity <= getBookStock(item.productId)">
+                    Tồn: {{ getBookStock(item.productId) }}
+                  </span>
+                </div>
               </div>
             </div>
 
             <!-- HÀNG 2: Giá cả & Số lượng (Chiếm trọn bề ngang cực kỳ rộng rãi, chống chồng chéo tuyệt đối trên đt dưới 500px) -->
-            <div class="d-flex align-items-center justify-content-between border-top pt-3 gap-2" style="position: relative; z-index: 20;">
+            <div class="d-flex align-items-center justify-content-between border-top pt-3 gap-2"
+              style="position: relative; z-index: 20;">
               <!-- Cột giá tiền -->
               <div class="d-flex flex-column text-start">
                 <span class="fw-bold text-primary fs-6 mb-0">{{ formatPrice(item.price) }} đ</span>
@@ -140,32 +279,24 @@
 
               <div class="d-flex align-items-center gap-2">
                 <!-- Bộ điều khiển số lượng (To, z-index 30, cực kỳ nhạy và dễ chạm trên Mobile) -->
-                <div class="mobile-quantity-box d-flex align-items-center rounded-3 bg-light p-1 shadow-xs" style="position: relative; z-index: 25;">
-                  <button
-                    type="button"
-                    class="btn btn-mobile-qty"
-                    (click)="decreaseQuantity(item)"
-                    [disabled]="item.quantity <= 1"
-                  >
+                <div class="mobile-quantity-box d-flex align-items-center rounded-3 bg-light p-1 shadow-xs"
+                  style="position: relative; z-index: 25;">
+                  <button type="button" class="btn btn-mobile-qty" (click)="decreaseQuantity(item)"
+                    [disabled]="item.quantity <= 1">
                     <i class="bi bi-dash"></i>
                   </button>
-                  <span class="mobile-qty-val mx-2 fw-bold text-dark fs-7" style="min-width: 20px; text-align: center;">{{ item.quantity }}</span>
-                  <button
-                    type="button"
-                    class="btn btn-mobile-qty"
-                    (click)="increaseQuantity(item)"
-                  >
+                  <span class="mobile-qty-val mx-2 fw-bold text-dark fs-7"
+                    style="min-width: 20px; text-align: center;">{{ item.quantity }}</span>
+                  <button type="button" class="btn btn-mobile-qty" (click)="increaseQuantity(item)"
+                    [disabled]="item.quantity >= getBookStock(item.productId)">
                     <i class="bi bi-plus"></i>
                   </button>
                 </div>
 
                 <!-- Nút xóa nhanh -->
-                <button
-                  type="button"
-                  class="btn btn-remove-mobile text-danger rounded-circle bg-danger bg-opacity-10"
+                <button type="button" class="btn btn-remove-mobile text-danger rounded-circle bg-danger bg-opacity-10"
                   (click)="removeItem(item)"
-                  style="width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer;"
-                >
+                  style="width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer;">
                   <i class="bi bi-trash fs-6"></i>
                 </button>
               </div>
@@ -174,27 +305,61 @@
         </div>
 
         <!-- Mã giảm giá -->
-        <div class="mt-4 pt-3 border-top d-flex flex-wrap align-items-center justify-content-between gap-3">
-          <div class="d-flex align-items-center gap-2 flex-grow-1" style="max-width: 400px">
-            <input
-              type="text"
-              class="form-control coupon-input rounded-pill px-3 py-2"
-              placeholder="Mã giảm giá..."
-            />
-            <button class="btn btn-outline-primary btn-coupon rounded-pill px-4 py-2 text-nowrap">
-              Áp dụng
-            </button>
+        <div class="coupon-panel mt-4 pt-3 border-top">
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div class="coupon-entry d-flex align-items-center gap-2 flex-grow-1">
+              <div class="position-relative flex-grow-1">
+                <i class="bi bi-ticket-perforated coupon-input-icon"></i>
+                <input
+                  type="text"
+                  class="form-control coupon-input rounded-pill py-2"
+                  placeholder="Nhập mã giảm giá..."
+                  autocomplete="off"
+                  maxlength="30"
+                  [ngModel]="couponCode()"
+                  (ngModelChange)="couponCode.set($event.toUpperCase()); couponError.set(''); couponMessage.set('')"
+                  (keyup.enter)="applyCoupon()"
+                  [disabled]="isApplyingCoupon() || promotionService.isValidating()" />
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-outline-primary btn-coupon rounded-pill px-4 py-2 text-nowrap"
+                (click)="applyCoupon()"
+                [disabled]="isApplyingCoupon() || promotionService.isValidating() || activeItems().length === 0">
+                <span *ngIf="!isApplyingCoupon() && !promotionService.isValidating()">Áp dụng</span>
+                <span *ngIf="isApplyingCoupon() || promotionService.isValidating()">
+                  <span class="spinner-border spinner-border-sm me-1"></span> Đang kiểm tra
+                </span>
+              </button>
+
+              <button
+                *ngIf="promotionService.appliedQuote()"
+                type="button"
+                class="btn btn-light border rounded-pill px-3 py-2 text-nowrap"
+                (click)="removeCoupon()">
+                <i class="bi bi-x-lg me-1"></i> Bỏ mã
+              </button>
+            </div>
           </div>
+
+          <div *ngIf="couponMessage()" class="coupon-feedback coupon-success mt-2">
+            <i class="bi bi-check-circle-fill me-2"></i>{{ couponMessage() }}
+          </div>
+          <div *ngIf="couponError()" class="coupon-feedback coupon-error mt-2">
+            <i class="bi bi-exclamation-circle-fill me-2"></i>{{ couponError() }}
+          </div>
+          <small class="text-muted d-block mt-2">
+            Mã chỉ áp dụng cho các sản phẩm đang được chọn và sẽ được máy chủ kiểm tra lại khi đặt hàng.
+          </small>
         </div>
       </div>
     </div>
 
     <!-- Cột phải: Tổng thanh toán -->
     <div class="col-lg-4" *ngIf="carts().length > 0 && !showEmptySuggestions()">
-      <div
-        class="card checkout-summary glass-card glow-on-hover border-0 shadow-sm rounded-4 p-4 position-sticky"
-        style="top: 2rem"
-      >
+      <div class="card checkout-summary glass-card glow-on-hover border-0 shadow-sm rounded-4 p-4 position-sticky"
+        style="top: 2rem">
         <h4 class="fw-bold mb-4 text-dark text-uppercase border-bottom pb-3 text-gradient-luxury">Tổng Thanh Toán</h4>
 
         <div class="summary-details d-flex flex-column gap-3 mb-4">
@@ -203,29 +368,41 @@
             <span class="fw-bold text-dark fs-5">{{ formatPrice(totalPrice()) }} đ</span>
           </div>
 
+          <div *ngIf="promotionService.appliedQuote() as quote"
+            class="d-flex justify-content-between align-items-center coupon-summary-row">
+            <div>
+              <span class="text-secondary fw-medium">Khuyến mãi:</span>
+              <span class="badge rounded-pill ms-2 coupon-code-badge">{{ quote.code }}</span>
+            </div>
+            <span class="fw-bold text-success">−{{ formatPrice(discountAmount()) }} đ</span>
+          </div>
+
           <div class="d-flex justify-content-between align-items-start border-bottom pb-3">
             <span class="text-secondary fw-medium">Chi phí vận chuyển:</span>
             <div class="text-end">
-              <span class="fw-bold text-dark d-block"
-                >Flat rate: {{ formatPrice(shippingCost) }} đ</span
-              >
-              <small class="text-muted d-block mt-1">Shipping to Vietnam.</small>
+              <span class="fw-bold text-dark d-block">Chọn tại bước thanh toán</span>
+              <small class="text-muted d-block mt-1">Miễn phí, đồng giá hoặc nhận tại cửa hàng.</small>
             </div>
           </div>
 
           <div class="d-flex justify-content-between align-items-center pt-2">
             <span class="text-dark fw-bold fs-5">Tổng cộng:</span>
             <span class="fw-bold text-primary fs-3">
-              {{ formatPrice(totalPrice() > 0 ? totalPrice() + shippingCost : 0) }} đ
+              {{ formatPrice(grandTotal()) }} đ
             </span>
           </div>
         </div>
 
-        <button
-          class="btn btn-primary w-100 rounded-pill py-3 fw-bold shadow-md btn-checkout"
-          [disabled]="totalPrice() === 0"
-          (click)="checkout()"
-        >
+        <!-- Cảnh báo tồn kho nếu có lỗi -->
+        <div class="alert alert-danger rounded-4 py-2 px-3 fs-8 mb-3 border-0 d-flex align-items-center gap-2" *ngIf="hasActiveStockError()">
+          <i class="bi bi-exclamation-triangle-fill text-danger fs-6"></i>
+          <div>
+            <strong>Lỗi tồn kho:</strong> Có sản phẩm vượt quá số lượng trong kho. Vui lòng giảm số lượng.
+          </div>
+        </div>
+
+        <button class="btn btn-primary w-100 rounded-pill py-3 fw-bold shadow-md btn-checkout"
+          [disabled]="totalPrice() === 0 || hasActiveStockError() || promotionService.isValidating()" (click)="checkout()">
           THANH TOÁN
         </button>
       </div>
@@ -234,12 +411,16 @@
 
   <!-- Giao diện Premium khi giỏ hàng trống -->
   <ng-template #emptyCart>
-    <div class="empty-cart-premium-box glass-card glow-on-hover p-4 p-md-5 rounded-4 border-0 shadow-lg text-center animate-fade-in mb-5">
-      
+    <div
+      class="empty-cart-premium-box glass-card glow-on-hover p-4 p-md-5 rounded-4 border-0 shadow-lg text-center animate-fade-in mb-5">
+
       <!-- Banner thông báo khi đã thêm sản phẩm từ gợi ý -->
-      <div class="alert alert-success d-flex align-items-center justify-content-between p-3 rounded-4 mb-5 border-0 shadow-sm animate-fade-in" style="background-color: #fbf8f5; border-left: 4px solid #bfa07a !important;" *ngIf="carts().length > 0">
+      <div
+        class="alert alert-success d-flex align-items-center justify-content-between p-3 rounded-4 mb-5 border-0 shadow-sm animate-fade-in"
+        style="background-color: #fbf8f5; border-left: 4px solid #bfa07a !important;" *ngIf="carts().length > 0">
         <div class="d-flex align-items-center gap-3 text-start">
-          <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #ffffff; color: #bfa07a; border: 1px solid #e4e2dd; flex-shrink: 0;">
+          <div class="rounded-circle d-flex align-items-center justify-content-center"
+            style="width: 42px; height: 42px; background-color: #ffffff; color: #bfa07a; border: 1px solid #e4e2dd; flex-shrink: 0;">
             <i class="bi bi-bag-check-fill fs-5"></i>
           </div>
           <div>
@@ -247,20 +428,23 @@
             <span class="text-secondary fs-7">Hiện đang có {{ carts().length }} sản phẩm trong giỏ của bạn.</span>
           </div>
         </div>
-        <button type="button" class="btn btn-primary rounded-pill px-4 py-2 fw-bold" style="background-color: #bfa07a; border-color: #bfa07a; color: #ffffff;" (click)="showCartList()">
+        <button type="button" class="btn btn-primary rounded-pill px-4 py-2 fw-bold"
+          style="background-color: #bfa07a; border-color: #bfa07a; color: #ffffff;" (click)="showCartList()">
           XEM GIỎ HÀNG <i class="bi bi-arrow-right ms-1"></i>
         </button>
       </div>
 
       <div class="empty-cart-glow-wrapper mb-4 position-relative d-inline-block">
         <div class="glow-effect position-absolute top-50 start-50 translate-middle rounded-circle"></div>
-        <div class="empty-cart-icon rounded-circle d-flex align-items-center justify-content-center mx-auto position-relative z-index-1">
+        <div
+          class="empty-cart-icon rounded-circle d-flex align-items-center justify-content-center mx-auto position-relative z-index-1">
           <i class="bi bi-cart-x-fill text-primary"></i>
         </div>
       </div>
       <h2 class="fw-bold text-dark mb-2">Giỏ hàng của bạn đang trống</h2>
       <p class="text-secondary max-w-500 mx-auto mb-4 fs-6">
-        Hãy lấp đầy giỏ hàng của bạn bằng những trang sách đầy ắp tri thức bổ ích và những ưu đãi hấp dẫn đang chờ bạn tại Sachweb nhé!
+        Hãy lấp đầy giỏ hàng của bạn bằng những trang sách đầy ắp tri thức bổ ích và những ưu đãi hấp dẫn đang chờ bạn
+        tại Sachweb nhé!
       </p>
       <a routerLink="/" class="btn btn-primary btn-explore-glow rounded-pill px-5 py-3 fw-bold mb-5 shadow-lg">
         <i class="bi bi-arrow-left-circle-fill me-2 fs-5"></i> KHÁM PHÁ CỬA HÀNG NGAY
@@ -273,14 +457,11 @@
         </h4>
         <div class="row g-3 g-md-4">
           <div class="col-6 col-md-3" *ngFor="let book of recommendedBooks()">
-            <div class="card recommended-book-card glass-card glow-on-hover shimmer-hover h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative">
+            <div
+              class="card recommended-book-card glass-card glow-on-hover shimmer-hover h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative">
               <!-- Nút thêm nhanh -->
-              <button 
-                type="button" 
-                class="btn btn-add-quick position-absolute rounded-circle shadow-sm" 
-                (click)="addRecommendedToCart(book)"
-                title="Thêm nhanh vào giỏ"
-              >
+              <button type="button" class="btn btn-add-quick position-absolute rounded-circle shadow-sm"
+                (click)="addRecommendedToCart(book)" title="Thêm nhanh vào giỏ">
                 <i class="bi bi-cart-plus-fill"></i>
               </button>
               <a [routerLink]="['/book', book.id]" class="text-decoration-none d-block">
@@ -288,10 +469,13 @@
                   <img [src]="book.image" [alt]="book.title" class="img-fluid w-100 h-100 object-fit-cover" />
                 </div>
                 <div class="card-body p-3 d-flex flex-column text-start">
-                  <h6 class="book-title-rec mb-1 fw-bold text-dark text-truncate" [title]="book.title">{{ book.title }}</h6>
+                  <h6 class="book-title-rec mb-1 fw-bold text-dark text-truncate" [title]="book.title">{{ book.title }}
+                  </h6>
                   <small class="text-muted text-truncate mb-2">{{ book.author }}</small>
-                  <div class="mt-auto pt-2 border-top border-light d-flex justify-content-between align-items-center flex-wrap gap-1">
-                    <span class="fw-bold text-primary fs-7">{{ formatPrice(cartService.discountPrice(book.price, book.discount)) }}đ</span>
+                  <div
+                    class="mt-auto pt-2 border-top border-light d-flex justify-content-between align-items-center flex-wrap gap-1">
+                    <span class="fw-bold text-primary fs-7">{{ formatPrice(cartService.discountPrice(book.price,
+                      book.discount)) }}đ</span>
                     <span class="text-decoration-line-through text-muted fs-8">{{ formatPrice(book.price) }}đ</span>
                   </div>
                 </div>

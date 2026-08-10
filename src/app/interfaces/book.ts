@@ -11,4 +11,6 @@ export interface Book {
   stock: number;
   publishDate: string;
   translator: string;
+  sampleText?: string;
+  tableOfContents?: string;
 }

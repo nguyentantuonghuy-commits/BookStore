@@ -1,42 +1,42 @@
 <nav class="navbar navbar-expand-lg navbar-light custom-navbar">
   <div class="container">
-    <a class="navbar-brand" routerLink="/">
+    <a class="navbar-brand" routerLink="/" (click)="clearSearch()">
       <img src="/image/logosw.png" alt="Sách Web" height="50" />
     </a>
 
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#collapsibleNavId"
-      aria-controls="collapsibleNavId"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavId"
+      aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="collapsibleNavId">
       <ul class="navbar-nav me-auto mt-2 mt-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" routerLink="/" aria-current="page">Trang chủ</a>
+          <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+            (click)="clearSearch()">Trang chủ</a>
         </li>
-        <li class="nav-item"><a class="nav-link" href="#">Giới thiệu</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Tin tức</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Liên hệ</a></li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/products" routerLinkActive="active" (click)="clearSearch()">Sản phẩm</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/promotions" routerLinkActive="active">Khuyến mãi</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/about" routerLinkActive="active">Giới thiệu</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/news" routerLinkActive="active">Tin tức</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/contact" routerLinkActive="active">Liên hệ</a>
+        </li>
       </ul>
 
       <form class="search-form me-3" (ngSubmit)="onSearch()">
         <div class="search-input-group">
           <i class="bi bi-search search-icon"></i>
-          <input
-            class="search-input"
-            type="text"
-            placeholder="Tìm nhanh sách theo tên, tác giả..."
-            [(ngModel)]="searching"
-            name="searching"
-            (input)="onSearch()"
-          />
+          <input class="search-input" type="text" placeholder="Tìm nhanh sách theo tên, tác giả..."
+            [(ngModel)]="searching" name="searching" (ngModelChange)="onSearch()" />
           <button class="btn-search" type="submit">
             <span>Tìm kiếm</span>
           </button>
@@ -56,34 +56,105 @@
 
         <!-- Khi đã đăng nhập -->
         <li class="nav-item dropdown" *ngIf="authService.currentUser()">
-          <a
-            class="nav-link dropdown-toggle fw-bold d-flex align-items-center gap-1"
-            href="#"
-            id="dropdownId"
-            data-bs-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-            style="color: var(--text-main);"
-          >
-            <i class="bi bi-person-circle fs-5 text-primary-theme"></i>
-            <span>{{ authService.currentUser().name }}</span>
+          <a class="nav-link dropdown-toggle fw-bold d-flex align-items-center gap-2" href="#" id="dropdownId"
+            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: var(--text-main);">
+            <img [src]="authService.currentUser().avatar" *ngIf="authService.currentUser().avatar" 
+                 class="rounded-circle border" style="width: 24px; height: 24px; object-fit: cover;" alt="Avatar" />
+            <i class="bi bi-person-circle fs-5 text-primary-theme" *ngIf="!authService.currentUser().avatar"></i>
+            <span class="header-user-name">{{ authService.currentUser().name }}</span>
           </a>
           <div class="dropdown-menu dropdown-menu-end shadow-sm border" aria-labelledby="dropdownId">
-            <a class="dropdown-item d-flex align-items-center gap-2" routerLink="/dashboard" *ngIf="authService.currentUser().role === 'admin'">
-              <i class="bi bi-speedometer2"></i> Dashboard Admin
+            <a class="dropdown-item d-flex align-items-center gap-2" routerLink="/dashboard"
+              *ngIf="authService.isStaff()">
+              <i class="bi bi-speedometer2"></i> Dashboard Quản Trị
             </a>
-            <hr class="dropdown-divider" *ngIf="authService.currentUser().role === 'admin'" />
-            <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="javascript:void(0)" (click)="logout()">
+            <a class="dropdown-item d-flex align-items-center gap-2" routerLink="/wishlist">
+              <i class="bi bi-heart-fill text-danger header-wishlist-icon"></i>
+              <span>Bộ sưu tập cá nhân</span>
+              <span class="badge rounded-pill bg-danger ms-auto wishlist-count-badge"
+                *ngIf="bookService.wishlist().length > 0">
+                {{ bookService.wishlist().length }}
+              </span>
+            </a>
+            <a class="dropdown-item d-flex align-items-center gap-2" routerLink="/profile">
+              <i class="bi bi-person-lines-fill text-primary"></i>
+              <span>Thông tin cá nhân</span>
+            </a>
+            <a class="dropdown-item d-flex align-items-center gap-2" routerLink="/orderuser">
+              <i class="bi bi-bag-check-fill text-success"></i>
+              <span>Đơn hàng của tôi</span>
+            </a>
+            <a class="dropdown-item d-flex align-items-center gap-2" routerLink="/change-password" *ngIf="!authService.currentUser()?.isGoogleAccount">
+              <i class="bi bi-key-fill text-warning"></i>
+              <span>Đổi mật khẩu</span>
+            </a>
+            <hr class="dropdown-divider" />
+            <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="javascript:void(0)"
+              (click)="logout()">
               <i class="bi bi-box-arrow-right"></i> Đăng xuất
             </a>
+          </div>
+        </li>
+        <li class="nav-item me-2 my-auto position-relative">
+          <button type="button"
+            class="btn btn-notification-nav d-flex align-items-center gap-1.5 px-3 py-1.5 rounded-pill fs-8 fw-bold"
+            [disabled]="!isLoggedIn()" (click)="toggleNotifications($event)">
+            <i class="bi bi-bell-fill"></i>
+            Thông báo
+            @if (orderNewCount() > 0) {
+            <span class="notification-badge">
+              {{ orderNewCount() }}
+            </span>
+            }
+          </button>
+
+          <!-- Facebook-style Notification Dropdown Popover -->
+          <div class="notification-dropdown-popover shadow-lg rounded-4" *ngIf="showNotifications() && isLoggedIn()" (click)="$event.stopPropagation()">
+            <div class="popover-header d-flex justify-content-between align-items-center p-3 border-bottom">
+              <h6 class="fw-bold mb-0 text-dark fs-8">Thông báo mới</h6>
+              <button class="btn btn-link btn-xs text-gold text-decoration-none p-0 fs-9 fw-bold" (click)="markAllAsRead()">
+                Đánh dấu đã đọc tất cả
+              </button>
+            </div>
+            
+            <div class="popover-body custom-scrollbar">
+              <div *ngIf="newOrders().length === 0" class="empty-notifications p-4 text-center text-muted">
+                <i class="bi bi-bell-slash fs-2 mb-2 d-block text-black-50"></i>
+                <span class="fs-8">Bạn không có thông báo mới nào</span>
+              </div>
+              
+              <div class="notification-list" *ngIf="newOrders().length > 0">
+                <div class="notification-item p-3 border-bottom d-flex align-items-start gap-2.5" 
+                     *ngFor="let order of newOrders()" 
+                     (click)="clickNotification(order)">
+                  <div class="notification-icon-wrapper rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; background-color: var(--gold-light);">
+                    <i class="bi bi-bag-check-fill text-gold fs-7"></i>
+                  </div>
+                  <div class="flex-grow-1 min-w-0">
+                    <p class="mb-1 text-dark fs-8-5 lh-sm text-start">
+                      Đơn hàng <strong class="font-monospace text-gold fw-bold">#{{ order.id }}</strong> của bạn đã được đặt thành công.
+                    </p>
+                    <span class="notification-time text-muted fs-9 d-flex align-items-center gap-1">
+                      <i class="bi bi-clock"></i> {{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}
+                    </span>
+                  </div>
+                  <span class="unread-dot rounded-circle flex-shrink-0" style="width: 6px; height: 6px; background-color: var(--gold-main); margin-top: 5px;"></span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="popover-footer p-2 text-center border-top bg-light">
+              <a class="text-dark fw-bold fs-8-5 text-decoration-none d-block py-1 hover-gold" (click)="viewAllOrders()" style="cursor: pointer;">
+                Xem tất cả đơn hàng
+              </a>
+            </div>
           </div>
         </li>
         <li class="nav-item">
           <a class="nav-link position-relative me-4 my-auto cart-link" routerLink="/cart">
             <i class="bi bi-cart3"></i>
             <span
-              class="position-absolute rounded-circle d-flex align-items-center justify-content-center text-danger px-1"
-            >
+              class="position-absolute rounded-circle d-flex align-items-center justify-content-center text-danger px-1">
               {{ cartService.totalItems() }}
             </span>
           </a>

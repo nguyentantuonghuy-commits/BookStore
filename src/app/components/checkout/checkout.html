@@ -1,0 +1,562 @@
+<div class="checkout-wrapper py-5">
+  <!-- Glowing Background Ornaments -->
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+  <div class="glow-orb glow-orb-3"></div>
+
+  <div class="container position-relative" style="z-index: 2;">
+
+    <!-- SUCCESS VIEW (E-Receipt) -->
+    <div *ngIf="isCheckoutSuccess()" class="checkout-success-container animate-scale-in my-4 position-relative">
+      <div class="row g-4 justify-content-center">
+
+        <!-- Left Column: Thank You Message & Stepper -->
+        <div class="col-lg-6">
+          <div
+            class="success-main-card glass-card p-4 p-md-5 d-flex flex-column justify-content-between position-relative overflow-hidden">
+            <div class="blob blob-gold"></div>
+            <div class="blob blob-navy"></div>
+
+            <div class="text-center my-auto py-3">
+              <div class="success-badge-premium mb-3">
+                <span class="gold-sparkle">✦</span> Giao dịch an toàn <span class="gold-sparkle">✦</span>
+              </div>
+
+              <!-- Success Indicator with Sparkles -->
+              <div class="checkmark-showcase mb-4 position-relative d-block mx-auto">
+                <div class="star-sparkle star-1">✦</div>
+                <div class="star-sparkle star-2">✦</div>
+                <div class="star-sparkle star-3">✦</div>
+                <div class="star-sparkle star-4">✦</div>
+
+                <div class="luxury-checkmark-container">
+                  <i class="bi bi-check-lg checkmark-icon"></i>
+                </div>
+              </div>
+
+              <h2 class="success-title mb-3">Đặt Hàng Thành Công</h2>
+              <p class="success-desc text-secondary mb-4">
+                Cảm ơn bạn đã tin tưởng lựa chọn tri thức tại <strong>Sachweb.vn</strong>. Chúng tôi đã tiếp nhận thông
+                tin đơn hàng và đang xử lý chuẩn bị gửi đến bạn.
+              </p>
+
+              <!-- Elegant Minimalist Stepper -->
+              <div class="order-stepper-premium mx-auto" style="max-width: 380px;">
+                <div class="stepper-track"></div>
+
+                <div class="step-item active">
+                  <div class="step-icon"><i class="bi bi-file-earmark-check-fill"></i></div>
+                  <div class="step-content">
+                    <div class="step-label">Đã đặt hàng</div>
+                    <div class="step-time text-muted">{{ orderDate() }}</div>
+                  </div>
+                </div>
+
+                <div class="step-item current">
+                  <div class="step-icon"><i class="bi bi-box-seam-fill"></i></div>
+                  <div class="step-content">
+                    <div class="step-label">Đang xử lý</div>
+                    <div class="step-info text-muted">Đang đóng gói và chuẩn bị giao hàng</div>
+                  </div>
+                </div>
+
+                <div class="step-item">
+                  <div class="step-icon"><i class="bi bi-truck"></i></div>
+                  <div class="step-content">
+                    <div class="step-label">Đang giao hàng</div>
+                    <div class="step-info text-muted">Dự kiến nhận hàng sau 2-3 ngày</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="action-footer text-center pt-4 border-top border-light-gold mt-4">
+              <button (click)="continueShopping()" class="btn btn-luxury-primary w-100 rounded-pill py-3 fw-bold">
+                <i class="bi bi-arrow-left-circle-fill me-2 fs-5"></i> TIẾP TỤC MUA SẮM
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: E-Receipt -->
+        <div class="col-lg-5">
+          <div class="receipt-card position-relative p-4 p-md-5 border-0 d-flex flex-column h-100">
+            <!-- Receipt Top Accent -->
+            <div class="receipt-header-pattern"></div>
+
+            <div class="receipt-logo mb-4 d-flex justify-content-between align-items-center">
+              <img src="/image/logosw.png" alt="Sách Web" height="30" class="logo-gray" />
+              <span class="receipt-type-badge">HÓA ĐƠN ĐIỆN TỬ</span>
+            </div>
+
+            <div class="receipt-meta-info mb-4 fs-7">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted">Mã giao dịch:</span>
+                <span class="font-monospace fw-bold text-dark">{{ orderNumber() }}</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted">Ngày đặt:</span>
+                <span class="text-dark">{{ orderDate() }}</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted">Hình thức:</span>
+                <span class="text-dark">{{ lastOrderPaymentMethod() === 'BANK_TRANSFER' ? 'Chuyển khoản Ngân hàng (VietQR)' : 'Thanh toán khi nhận hàng (COD)' }}</span>
+              </div>
+            </div>
+
+            <!-- Purchased Books -->
+            <div class="receipt-items-section mb-4 flex-grow-1">
+              <h6 class="fw-bold text-dark mb-3 border-bottom pb-2 fs-8 letter-spacing-1">SẢN PHẨM ĐÃ MUA</h6>
+              <div class="receipt-items-scroll-ultimate">
+                <div *ngFor="let item of purchasedItems()"
+                  class="receipt-item d-flex align-items-center gap-3 py-2 border-bottom border-light">
+                  <img [src]="item.image" alt="book cover" class="receipt-item-img-ultimate"
+                    style="width: 40px; height: 55px; object-fit: contain;" />
+                  <div class="flex-grow-1 min-w-0">
+                    <div class="receipt-item-title fs-7 mb-1 text-truncate text-dark fw-semibold" [title]="item.title">
+                      {{ item.title }}</div>
+                    <div class="text-muted fs-8">SL: {{ item.quantity }} × {{ formatPrice(item.unitPrice || item.price /
+                      item.quantity) }} đ</div>
+                  </div>
+                  <div class="text-dark fw-bold fs-7 text-nowrap clear-price">{{ formatPrice(item.price) }} đ</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Price Totals -->
+            <div class="receipt-totals-section border-top border-dashed pt-3 mt-auto">
+              <div class="d-flex justify-content-between mb-2 fs-7">
+                <span class="text-muted">Tạm tính:</span>
+                <span class="text-dark fw-bold clear-price">{{ formatPrice(lastOrderSubtotal()) }} đ</span>
+              </div>
+              <div *ngIf="lastOrderDiscount() > 0" class="d-flex justify-content-between mb-2 fs-7">
+                <span class="text-muted">
+                  Khuyến mãi <strong *ngIf="lastOrderPromotionCode()">({{ lastOrderPromotionCode() }})</strong>:
+                </span>
+                <span class="text-success fw-bold clear-price">−{{ formatPrice(lastOrderDiscount()) }} đ</span>
+              </div>
+              <div class="d-flex justify-content-between mb-3 fs-7">
+                <span class="text-muted">Phí giao hàng:</span>
+                <span class="text-dark fw-bold clear-price">
+                  {{ lastOrderShipping() === 0 ? 'Miễn phí' : formatPrice(lastOrderShipping()) + ' đ' }}
+                </span>
+              </div>
+
+              <!-- Total Badge -->
+              <div class="total-seal-box p-3 rounded-3 d-flex justify-content-between align-items-center mb-2"
+                style="background-color: #f8fafc; border: 1px solid #e2e8f0;">
+                <span class="fw-bold text-dark fs-7">TỔNG CỘNG:</span>
+                <span class="fw-bold text-primary fs-4 clear-price text-gold-accent">{{ formatPrice(lastOrderTotal()) }}
+                  đ</span>
+              </div>
+            </div>
+
+            <div class="receipt-jagged-bottom-ultimate"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ACTIVE FORM VIEW -->
+    <div *ngIf="!isCheckoutSuccess()">
+      <!-- Page Title & Navigation -->
+      <div class="checkout-header mb-5 text-center text-lg-start">
+        <nav aria-label="breadcrumb" class="d-inline-block">
+          <ol class="breadcrumb mb-2">
+            <li class="breadcrumb-item"><a routerLink="/" class="text-accent text-decoration-none">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a routerLink="/cart" class="text-accent text-decoration-none">Giỏ hàng</a></li>
+            <li class="breadcrumb-item active text-muted" aria-current="page">Thanh toán</li>
+          </ol>
+        </nav>
+        <h1 class="display-5 fw-bold header-title">Chi Tiết Thanh Toán</h1>
+        <div class="title-ornament-luxury mx-auto mx-lg-0">
+          <span class="ornament-line"></span>
+          <span class="ornament-diamond">✦</span>
+          <span class="ornament-line"></span>
+        </div>
+        <p class="text-muted-light mt-3">Vui lòng cung cấp thông tin nhận hàng chính xác để chúng tôi tiến hành chuẩn bị
+          đơn hàng.</p>
+      </div>
+
+      <form [formGroup]="formData" (ngSubmit)="handleSubmit()" class="needs-validation" novalidate>
+        <div class="row g-5">
+
+          <!-- Left Column: Shipping Form Details (Light Elegant Card Style) -->
+          <div class="col-lg-5 animate-slide-left">
+            <div class="glass-card shadow-sm p-4 p-md-5">
+              <div class="card-header-luxury mb-4">
+                <span class="step-badge">1</span>
+                <h3 class="h5 fw-bold text-dark mb-0">Thông tin giao hàng</h3>
+              </div>
+
+              <!-- Full Name -->
+              <div class="form-item-luxury mb-4">
+                <label class="form-label text-secondary mb-2">Họ và Tên <sup class="text-danger">*</sup></label>
+                <div class="input-group-luxury">
+                  <i class="bi bi-person input-icon"></i>
+                  <input type="text" class="form-control-luxury" formControlName="fullname"
+                    placeholder="Nguyễn Thành Tài" />
+                </div>
+                <div class="validation-message"
+                  *ngIf="formData.get('fullname')?.touched && formData.get('fullname')?.invalid">
+                  <i class="bi bi-exclamation-circle-fill"></i> Họ và tên không được bỏ trống.
+                </div>
+              </div>
+
+              <!-- Phone -->
+              <div class="form-item-luxury mb-4">
+                <label class="form-label text-secondary mb-2">Số điện thoại <sup class="text-danger">*</sup></label>
+                <div class="input-group-luxury">
+                  <i class="bi bi-telephone input-icon"></i>
+                  <input type="text" class="form-control-luxury" formControlName="phone" placeholder="0909000888" />
+                </div>
+                <div class="validation-message"
+                  *ngIf="formData.get('phone')?.touched && formData.get('phone')?.invalid">
+                  <i class="bi bi-exclamation-circle-fill"></i> Số điện thoại không được bỏ trống.
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="form-item-luxury mb-4">
+                <label class="form-label text-secondary mb-2">Địa chỉ Email <sup class="text-danger">*</sup></label>
+                <div class="input-group-luxury">
+                  <i class="bi bi-envelope input-icon"></i>
+                  <input type="email" class="form-control-luxury" formControlName="email"
+                    placeholder="thanhtai@gmail.com" />
+                </div>
+                <div class="validation-message"
+                  *ngIf="formData.get('email')?.touched && formData.get('email')?.errors as errors">
+                  <span *ngIf="errors['required']">
+                    <i class="bi bi-exclamation-circle-fill"></i> Email không được bỏ trống.
+                  </span>
+                  <span *ngIf="errors['email']">
+                    <i class="bi bi-exclamation-circle-fill"></i> Email không đúng định dạng.
+                  </span>
+                </div>
+              </div>
+
+              <!-- Address -->
+              <div class="form-item-luxury mb-4">
+                <label class="form-label text-secondary mb-2">Địa chỉ nhận hàng <sup class="text-danger">*</sup></label>
+                <div class="input-group-luxury align-items-start">
+                  <i class="bi bi-geo-alt input-icon mt-3"></i>
+                  <textarea class="form-control-luxury py-3" formControlName="address" rows="3"
+                    placeholder="Ví dụ: 12 ABC Q1 Tp.HCM"></textarea>
+                </div>
+                <div class="validation-message"
+                  *ngIf="formData.get('address')?.touched && formData.get('address')?.invalid">
+                  <i class="bi bi-exclamation-circle-fill"></i> Địa chỉ giao hàng không được bỏ trống.
+                </div>
+              </div>
+
+              <div class="security-badge mt-4">
+                <i class="bi bi-shield-lock-fill text-accent fs-5"></i>
+                <span class="text-muted fs-8">Hệ thống mã hóa bảo mật thông tin đơn hàng.</span>
+              </div>
+            </div>
+
+            <!-- Step 2: Payment Method Selection -->
+            <div class="glass-card shadow-sm p-4 p-md-5 mt-4">
+              <div class="card-header-luxury mb-4">
+                <span class="step-badge">2</span>
+                <h3 class="h5 fw-bold text-dark mb-0">Phương thức thanh toán</h3>
+              </div>
+
+              <!-- Segmented Control Payment Selector -->
+              <div class="payment-tabs-luxury p-1.5 rounded-pill d-flex mb-4 border" style="background-color: #f1f5f9;">
+                <button type="button" class="btn btn-payment-tab w-50 py-2.5 rounded-pill border-0 fw-bold transition-all" 
+                        [class.active]="paymentMethod() === 'COD'" (click)="selectPaymentMethod('COD')">
+                  <i class="bi bi-cash-stack me-2"></i> Thanh toán COD
+                </button>
+                <button type="button" class="btn btn-payment-tab w-50 py-2.5 rounded-pill border-0 fw-bold transition-all" 
+                        [class.active]="paymentMethod() === 'BANK_TRANSFER'" (click)="selectPaymentMethod('BANK_TRANSFER')">
+                  <i class="bi bi-bank me-2"></i> Chuyển khoản VietQR
+                </button>
+              </div>
+
+              <!-- Bank Transfer Detailed Section (Inline Notice) -->
+              <div *ngIf="paymentMethod() === 'BANK_TRANSFER'" class="bank-details-box p-3 rounded-4 mt-3 animate-scale-in border text-center shadow-2xs" style="background-color: #faf9f6; border-color: rgba(197, 168, 128, 0.3);">
+                <i class="bi bi-qr-code-scan text-gold fs-4 d-block mb-2"></i>
+                <span class="d-block fw-bold text-dark fs-8">Cổng thanh toán VietQR đã mở</span>
+                <span class="d-block text-muted mt-1" style="font-size: 0.72rem; line-height: 1.4;">Vui lòng quét mã và tải hóa đơn tại tab <strong class="text-gold">VietQR Portal</strong> ở cột bên phải.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Order Details -->
+          <div class="col-lg-7 animate-slide-right">
+            <div class="glass-card shadow-sm p-4 p-md-5 h-100 d-flex flex-column justify-content-between">
+              <div>
+                <div class="card-header-luxury mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="step-badge">3</span>
+                    <h3 class="h5 fw-bold text-dark mb-0">Xác nhận đơn hàng</h3>
+                  </div>
+                  
+                  <!-- Switcher tabs on the right of the header -->
+                  <div *ngIf="userCarts().length > 0" class="payment-tabs-luxury p-1 bg-light rounded-pill d-flex border" style="background-color: #f1f5f9 !important; min-width: 280px;">
+                    <button type="button" class="btn btn-payment-tab w-50 py-1.5 rounded-pill border-0 fw-bold transition-all fs-8" 
+                            [class.active]="activeRightTab() === 'order'" (click)="activeRightTab.set('order')">
+                      <i class="bi bi-cart3 me-1"></i> Chi tiết đơn hàng
+                    </button>
+                    <button type="button" class="btn btn-payment-tab w-50 py-1.5 rounded-pill border-0 fw-bold transition-all fs-8" 
+                            [class.active]="activeRightTab() === 'vietqr'" [disabled]="paymentMethod() !== 'BANK_TRANSFER'" (click)="activeRightTab.set('vietqr')">
+                      <i class="bi bi-qr-code-scan me-1"></i> VietQR Portal
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Empty Warning -->
+                <div *ngIf="userCarts().length === 0" class="empty-state text-center py-5">
+                  <div class="empty-icon-wrapper mb-4">
+                    <i class="bi bi-cart-x"></i>
+                  </div>
+                  <h4 class="text-dark fw-bold">Chưa chọn sản phẩm thanh toán</h4>
+                  <p class="text-secondary max-w-400 mx-auto mt-2">Vui lòng quay lại giỏ hàng và chọn sản phẩm để thanh
+                    toán.</p>
+                  <a routerLink="/cart" class="btn btn-luxury-outline mt-4">
+                    <i class="bi bi-arrow-left me-2"></i> Quay lại giỏ hàng
+                  </a>
+                </div>
+
+                <!-- TAB 1: Product Summary & Shipping Options -->
+                <div *ngIf="userCarts().length > 0 && activeRightTab() === 'order'" class="animate-fade-in">
+                  <!-- Product Summary Cards -->
+                  <div class="product-cards-list-wrapper">
+                    <div *ngFor="let item of userCarts()"
+                      class="product-summary-card d-flex align-items-center justify-content-between p-3 mb-3">
+                      <div class="d-flex align-items-center gap-3 flex-grow-1 min-w-0">
+                        <div class="product-thumbnail">
+                          <img [src]="item.image" [alt]="item.title" />
+                        </div>
+                        <div class="product-details min-w-0">
+                          <h6 class="product-title text-dark fw-bold mb-1 text-truncate" [title]="item.title">{{
+                            item.title }}</h6>
+                          <span class="badge bg-luxury-soft">Sách giấy</span>
+                        </div>
+                      </div>
+
+                      <div class="product-pricing text-end ms-3 flex-shrink-0">
+                        <div class="unit-price text-muted fs-8 mb-1">
+                          {{ formatPrice(item.unitPrice || item.price / item.quantity) }} đ <span class="mx-1">×</span>
+                          <strong class="text-accent">{{ item.quantity }}</strong>
+                        </div>
+                        <div class="subtotal-price text-dark fw-extrabold clear-price">
+                          {{ formatPrice(item.price) }} đ
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Shipping Options -->
+                  <div class="shipping-section py-3 my-3 border-top border-bottom border-light">
+                    <span class="d-block text-secondary fw-bold mb-3"><i class="bi bi-truck me-2 text-accent"></i>
+                      Phương thức vận chuyển:</span>
+
+                    <!-- Option 1 -->
+                    <div class="custom-radio-option mb-2" [class.selected]="shippingCost() === 0"
+                      (click)="setShippingCost(0)">
+                      <div class="radio-indicator"></div>
+                      <div class="radio-label-wrapper">
+                        <span class="option-title text-dark fw-bold">Giao hàng miễn phí (Free Shipping)</span>
+                        <span class="option-price text-success font-monospace">Miễn phí</span>
+                      </div>
+                    </div>
+
+                    <!-- Option 2 -->
+                    <div class="custom-radio-option mb-2" [class.selected]="shippingCost() === 15000"
+                      (click)="setShippingCost(15000)">
+                      <div class="radio-indicator"></div>
+                      <div class="radio-label-wrapper">
+                        <span class="option-title text-dark fw-bold">Giao hàng đồng giá (Flat Rate)</span>
+                        <span class="option-price text-accent font-monospace">+15.000 đ</span>
+                      </div>
+                    </div>
+
+                    <!-- Option 3 -->
+                    <div class="custom-radio-option" [class.selected]="shippingCost() === 8000"
+                      (click)="setShippingCost(8000)">
+                      <div class="radio-indicator"></div>
+                      <div class="radio-label-wrapper">
+                        <span class="option-title text-dark fw-bold">Nhận tại cửa hàng (Local Pickup)</span>
+                        <span class="option-price text-accent font-monospace">+8.000 đ</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- TAB 2: VietQR Gateway Portal Card -->
+                <div *ngIf="userCarts().length > 0 && activeRightTab() === 'vietqr'" class="animate-fade-in">
+                  <div class="vietqr-portal-card rounded-4 p-4 mt-1 position-relative overflow-hidden border border-2 shadow-sm mb-3" style="background: linear-gradient(135deg, #ffffff 0%, #fdfbf7 100%); border-color: rgba(197, 168, 128, 0.25);">
+                    <!-- Laser Scanner Top Accent -->
+                    <div class="portal-scanner-accent"></div>
+                    
+                    <!-- Portal Header -->
+                    <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom" style="border-color: rgba(197, 168, 128, 0.15);">
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-gold-soft text-gold px-2.5 py-1.5 fw-bold fs-9 text-uppercase">VietQR Gateway</span>
+                        <span class="live-pulse-container d-flex align-items-center gap-1.5">
+                          <span class="pulse-dot"></span>
+                          <span class="pulse-text text-success fw-bold" style="font-size: 0.72rem;">Chờ thanh toán...</span>
+                        </span>
+                      </div>
+                      <span class="text-muted font-monospace" style="font-size: 0.75rem;">Mã: {{ orderCode() }}</span>
+                    </div>
+
+                    <div class="d-flex flex-column gap-4 align-items-stretch">
+                      <!-- QR Code Showcase with Scanning Line (Centered) -->
+                      <div class="text-center">
+                        <div class="qr-container-luxury position-relative p-3 bg-white rounded-4 shadow-sm border border-light-gold d-inline-block">
+                          <img [src]="getQrCodeUrl()" alt="VietQR Techcombank" class="img-fluid rounded-3" style="max-height: 200px; object-fit: contain;" />
+                          <!-- Laser scan line animation -->
+                          <div class="qr-scan-line"></div>
+                        </div>
+                        <div class="text-muted mt-2 px-3 fs-9" style="line-height: 1.4;">
+                          <i class="bi bi-qr-code-scan me-1 text-gold"></i>
+                          Dùng Camera hoặc App ngân hàng quét mã để thanh toán tự động.
+                        </div>
+                      </div>
+
+                      <!-- Transfer Details & Upload Box -->
+                      <div>
+                        <div class="transfer-info-rows bg-white p-3 rounded-4 border mb-3 shadow-2xs">
+                          <div class="info-row d-flex justify-content-between align-items-center py-2 border-bottom border-light">
+                            <span class="text-muted fs-8">Ngân hàng</span>
+                            <span class="text-dark fw-bold font-sans fs-8">Techcombank</span>
+                          </div>
+                          <div class="info-row d-flex justify-content-between align-items-center py-2 border-bottom border-light">
+                            <span class="text-muted fs-8">Số tài khoản</span>
+                            <div class="d-flex align-items-center gap-2">
+                              <span class="text-dark fw-bold font-monospace fs-8">5978 6666 6666 66</span>
+                              <button type="button" class="btn btn-copy-icon p-0 border-0 bg-transparent text-gold" (click)="copyToClipboard('59786666666666', 'Số tài khoản')">
+                                <i class="bi bi-files"></i>
+                              </button>
+                            </div>
+                          </div>
+                          <div class="info-row d-flex justify-content-between align-items-center py-2 border-bottom border-light">
+                            <span class="text-muted fs-8">Chủ tài khoản</span>
+                            <span class="text-dark fw-bold fs-8">NGUYEN TAN TUONG HUY</span>
+                          </div>
+                          <div class="info-row d-flex justify-content-between align-items-center py-2 border-bottom border-light">
+                            <span class="text-muted fs-8">Số tiền</span>
+                            <div class="d-flex align-items-center gap-2">
+                              <span class="text-primary fw-extrabold fs-8">{{ formatPrice(total()) }} đ</span>
+                              <button type="button" class="btn btn-copy-icon p-0 border-0 bg-transparent text-gold" (click)="copyToClipboard(total().toString(), 'Số tiền')">
+                                <i class="bi bi-files"></i>
+                              </button>
+                            </div>
+                          </div>
+                          <div class="info-row d-flex justify-content-between align-items-center py-2">
+                            <span class="text-muted fs-8">Nội dung</span>
+                            <div class="d-flex align-items-center gap-2">
+                              <span class="text-warning fw-bold font-monospace fs-8">{{ orderCode() }}</span>
+                              <button type="button" class="btn btn-copy-icon p-0 border-0 bg-transparent text-gold" (click)="copyToClipboard(orderCode(), 'Nội dung')">
+                                <i class="bi bi-files"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Modern Interactive File Upload Zone -->
+                        <div class="upload-dropzone position-relative border border-2 border-dashed rounded-4 p-3 text-center bg-white transition-all" 
+                             [class.has-file]="paymentReceipt()">
+                          <input type="file" id="receipt-file-direct" (change)="onFileSelected($event)" accept="image/*" class="position-absolute top-0 start-0 w-100 h-100 opacity-0" style="cursor: pointer; z-index: 10;" />
+                          
+                          <!-- Default State -->
+                          <div *ngIf="!paymentReceipt()" class="upload-state-default">
+                            <i class="bi bi-cloud-arrow-up text-gold fs-3 d-block mb-1.5 animate-bounce"></i>
+                            <span class="fw-bold d-block text-dark fs-8">Tải lên ảnh hóa đơn xác nhận</span>
+                            <span class="text-muted d-block mt-1" style="font-size: 0.65rem;">Nhấp vào đây hoặc kéo thả ảnh biên lai vào đây *</span>
+                          </div>
+
+                          <!-- Has File State -->
+                          <div *ngIf="paymentReceipt()" class="upload-state-uploaded p-3 d-flex flex-column gap-3 align-items-center text-center" style="position: relative; z-index: 20; width: 100%;">
+                            <div class="position-relative preview-img-container shadow-sm rounded-3 border bg-white p-1" style="max-width: 100%; width: 100%; transition: transform 0.2s ease;">
+                              <img [src]="paymentReceipt()" alt="Biên lai Preview" class="rounded img-fluid" style="max-height: 480px; width: 100%; object-fit: contain; cursor: pointer;" (click)="showReceiptLightbox.set(true)" title="Xem ảnh lớn" />
+                              <div class="preview-lens-indicator position-absolute top-50 start-50 translate-middle bg-dark bg-opacity-50 text-white rounded-circle p-2 opacity-0 transition-all pointer-events-none d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <i class="bi bi-zoom-in fs-5"></i>
+                              </div>
+                            </div>
+                            <div class="w-100 d-flex justify-content-between align-items-center bg-light p-2.5 rounded-3 border border-light-subtle" style="max-width: 100%;">
+                              <div class="min-w-0 text-start">
+                                <span class="text-success fw-bold fs-8 d-block"><i class="bi bi-check-circle-fill me-1"></i> Đã đính kèm ảnh</span>
+                                <span class="text-muted text-truncate d-block" style="max-width: 250px; font-size: 0.68rem;">{{ uploadedFileName() }}</span>
+                              </div>
+                              <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-outline-secondary btn-sm rounded-circle p-1.5 border d-inline-flex align-items-center justify-content-center" (click)="showReceiptLightbox.set(true)" style="width: 28px; height: 28px;" title="Xem ảnh lớn">
+                                  <i class="bi bi-zoom-in fs-9"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm rounded-circle p-1.5 border-0 d-inline-flex align-items-center justify-content-center" (click)="removeReceiptFile($event)" style="width: 28px; height: 28px;" title="Xóa hình ảnh">
+                                  <i class="bi bi-trash-fill fs-9"></i>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Shared Summary Calculation Box -->
+                <div *ngIf="userCarts().length > 0" class="calculation-box mt-4 p-4 rounded-4" style="background-color: #faf9f6; border: 1px solid rgba(197, 168, 128, 0.15);">
+                  <div class="d-flex justify-content-between mb-2 fs-8 border-bottom pb-2">
+                    <span class="text-secondary">Tạm tính:</span>
+                    <span class="text-dark fw-bold">{{ formatPrice(subtotal()) }} đ</span>
+                  </div>
+                  <div *ngIf="appliedPromotion() as quote" class="d-flex justify-content-between mb-2 fs-8 border-bottom pb-2">
+                    <span class="text-secondary">Khuyến mãi <strong>({{ quote.code }})</strong>:</span>
+                    <span class="text-success fw-bold">−{{ formatPrice(discountAmount()) }} đ</span>
+                  </div>
+                  <div class="d-flex justify-content-between mb-2 fs-8 border-bottom pb-2">
+                    <span class="text-secondary">Phí vận chuyển:</span>
+                    <span class="text-dark fw-bold">{{ shippingCost() === 0 ? 'Miễn phí' : formatPrice(shippingCost()) + ' đ' }}</span>
+                  </div>
+                  <div *ngIf="promotionNotice()" class="small text-muted mb-2">
+                    <i class="bi bi-ticket-perforated me-1 text-gold"></i>{{ promotionNotice() }}
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-dark fw-bold text-uppercase letter-spacing-1 fs-8">TỔNG THANH TOÁN:</span>
+                    <span class="total-price clear-price text-dark-luxury fs-4 fw-extrabold text-primary">{{ formatPrice(total()) }} đ</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div *ngIf="userCarts().length > 0" class="submit-section mt-4">
+                <button type="submit"
+                  class="btn btn-checkout-luxury w-100 py-3 text-uppercase fw-bold"
+                  [disabled]="isSubmitting() || isPromotionValidating()">
+                  <span *ngIf="!isSubmitting()">XÁC NHẬN THANH TOÁN</span>
+                  <span *ngIf="isSubmitting()">
+                    <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+                    ĐANG LƯU ĐƠN HÀNG...
+                  </span>
+                </button>
+                <div class="text-center mt-3">
+                  <a routerLink="/cart" class="text-accent text-decoration-none hover-underline fs-7">
+                    <i class="bi bi-arrow-left me-1"></i> Quay lại giỏ hàng
+                  </a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+  </div>
+  
+  <!-- Lightbox Modal for Receipt Preview -->
+  <div *ngIf="showReceiptLightbox()" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-75 animate-fade-in" style="z-index: 9999;" (click)="showReceiptLightbox.set(false)">
+    <div class="position-relative p-2 bg-white rounded-4 max-w-90 max-h-90 overflow-hidden shadow-lg animate-scale-in" (click)="$event.stopPropagation()">
+      <img [src]="paymentReceipt()" alt="Full Receipt" class="img-fluid rounded-3" style="max-height: 80vh; max-width: 90vw; object-fit: contain;" />
+      <button type="button" class="btn btn-dark btn-sm position-absolute top-3 end-3 rounded-circle p-1.5 d-flex align-items-center justify-content-center" (click)="showReceiptLightbox.set(false)" style="width: 32px; height: 32px; background: rgba(0,0,0,0.6); border: none;">
+        <i class="bi bi-x-lg text-white"></i>
+      </button>
+    </div>
+  </div>
+</div>

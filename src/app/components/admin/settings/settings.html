@@ -1,0 +1,315 @@
+<div class="settings-container animate-fade-in">
+  <!-- Toast Notification System -->
+  <div class="toast-custom-container" *ngIf="notification().type">
+    <div class="toast-custom border-start border-4 shadow" 
+         [class.border-success]="notification().type === 'success'"
+         [class.border-danger]="notification().type === 'danger'"
+         [class.border-info]="notification().type === 'info'">
+      <div class="d-flex align-items-center gap-3">
+        <div class="toast-icon-wrapper rounded-circle"
+             [class.bg-success-light]="notification().type === 'success'"
+             [class.bg-danger-light]="notification().type === 'danger'"
+             [class.bg-blue-light]="notification().type === 'info'">
+          <i class="bi" 
+             [class.bi-check-circle-fill]="notification().type === 'success'"
+             [class.bi-exclamation-triangle-fill]="notification().type === 'danger'"
+             [class.bi-info-circle-fill]="notification().type === 'info'"></i>
+        </div>
+        <div class="toast-body-text">
+          <h6 class="mb-0 fw-bold text-dark">Thông báo hệ thống</h6>
+          <small class="text-muted fs-7">{{ notification().message }}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header Section -->
+  <header class="settings-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <span class="badge bg-gold-light text-gold-main px-3 py-1.5 rounded-pill fs-8 fw-semibold text-uppercase tracking-wider">Cấu Hình</span>
+      <h1 class="h2 fw-bold text-dark mt-2 mb-1">Cài Đặt Hệ Thống</h1>
+      <p class="text-muted mb-0 fs-7">Cấu hình các thông số vận hành, biểu phí vận chuyển, thanh toán và bảo mật toàn diện.</p>
+    </div>
+    <div>
+      <button class="btn btn-save-luxury d-flex align-items-center gap-2" (click)="saveSettings()" [disabled]="isSaving()">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="isSaving()"></span>
+        <i class="bi bi-cloud-check-fill" *ngIf="!isSaving()"></i>
+        <span>{{ isSaving() ? 'Đang lưu...' : 'Lưu Cấu Hình' }}</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Split Layout Area -->
+  <div class="row g-4">
+    <!-- Left Navigation Menu -->
+    <div class="col-lg-3">
+      <div class="card tabs-card border-0 rounded-4 shadow-sm p-3">
+        <ul class="nav flex-column gap-2">
+          <li>
+            <a href="javascript:void(0)" class="tab-link rounded-3" [class.active]="activeSubTab() === 'general'" (click)="changeTab('general')">
+              <i class="bi bi-shop"></i>
+              <span>Thông tin cửa hàng</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="tab-link rounded-3" [class.active]="activeSubTab() === 'shipping'" (click)="changeTab('shipping')">
+              <i class="bi bi-truck"></i>
+              <span>Vận chuyển & Thuế</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="tab-link rounded-3" [class.active]="activeSubTab() === 'payment'" (click)="changeTab('payment')">
+              <i class="bi bi-wallet2"></i>
+              <span>Phương thức thanh toán</span>
+            </a>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="tab-link rounded-3" [class.active]="activeSubTab() === 'security'" (click)="changeTab('security')">
+              <i class="bi bi-shield-lock"></i>
+              <span>Hệ thống & Bảo mật</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Right Settings Forms -->
+    <div class="col-lg-9">
+      <div class="card form-card border-0 rounded-4 shadow-sm p-4 overflow-hidden position-relative">
+        
+        <!-- General Settings Form -->
+        <div *ngIf="activeSubTab() === 'general'" class="settings-pane animate-slide-right">
+          <h4 class="fw-bold text-dark border-bottom pb-3 mb-4">
+            <i class="bi bi-shop text-primary me-2"></i> Thông Tin Cửa Hàng
+          </h4>
+          <div class="row g-4">
+            <div class="col-md-12">
+              <label class="form-label-custom">Tên Thương Hiệu Cửa Hàng</label>
+              <div class="input-icon-group">
+                <i class="bi bi-bookmark-star input-icon"></i>
+                <input type="text" class="form-control-custom" [(ngModel)]="general().storeName" placeholder="Nhập tên thương hiệu" />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Số Điện Thoại Liên Hệ</label>
+              <div class="input-icon-group">
+                <i class="bi bi-telephone input-icon"></i>
+                <input type="text" class="form-control-custom" [(ngModel)]="general().storePhone" placeholder="Nhập số điện thoại" />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Địa Chỉ Email Trực Tuyến</label>
+              <div class="input-icon-group">
+                <i class="bi bi-envelope input-icon"></i>
+                <input type="email" class="form-control-custom" [(ngModel)]="general().storeEmail" placeholder="Nhập email" />
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label-custom">Địa Chỉ Trụ Sở Chính</label>
+              <div class="input-icon-group">
+                <i class="bi bi-geo-alt input-icon"></i>
+                <input type="text" class="form-control-custom" [(ngModel)]="general().storeAddress" placeholder="Nhập địa chỉ" />
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label-custom">Thời Gian Mở Cửa Hoạt Động</label>
+              <div class="input-icon-group">
+                <i class="bi bi-clock input-icon"></i>
+                <input type="text" class="form-control-custom" [(ngModel)]="general().openingHours" placeholder="Nhập thời gian hoạt động" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shipping & Taxes Form -->
+        <div *ngIf="activeSubTab() === 'shipping'" class="settings-pane animate-slide-right">
+          <h4 class="fw-bold text-dark border-bottom pb-3 mb-4">
+            <i class="bi bi-truck text-primary me-2"></i> Cấu Hình Thuế & Vận Chuyển
+          </h4>
+          <div class="row g-4">
+            <div class="col-md-6">
+              <label class="form-label-custom">Thuế Suất VAT Mặc Định (%)</label>
+              <div class="input-icon-group">
+                <i class="bi bi-percent input-icon"></i>
+                <input type="number" class="form-control-custom" [(ngModel)]="shipping().vatPercent" min="0" max="100" />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Hạn Mức Miễn Phí Vận Chuyển (đ)</label>
+              <div class="input-icon-group">
+                <i class="bi bi-gift input-icon"></i>
+                <input type="number" class="form-control-custom" [(ngModel)]="shipping().freeShipThreshold" step="1000" />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Phí Vận Chuyển Nội Thành (đ)</label>
+              <div class="input-icon-group">
+                <i class="bi bi-geo-fill input-icon"></i>
+                <input type="number" class="form-control-custom" [(ngModel)]="shipping().shipInnerCity" step="1000" />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Phí Vận Chuyển Ngoại Thành (đ)</label>
+              <div class="input-icon-group">
+                <i class="bi bi-globe input-icon"></i>
+                <input type="number" class="form-control-custom" [(ngModel)]="shipping().shipOuterCity" step="1000" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Settings Form -->
+        <div *ngIf="activeSubTab() === 'payment'" class="settings-pane animate-slide-right">
+          <h4 class="fw-bold text-dark border-bottom pb-3 mb-4">
+            <i class="bi bi-wallet2 text-primary me-2"></i> Cấu Hình Phương Thức Thanh Toán
+          </h4>
+          
+          <!-- Bank Account Info -->
+          <h5 class="fw-bold text-muted fs-7 text-uppercase tracking-wider mb-3">Tài khoản ngân hàng nhận tiền</h5>
+          <div class="row g-4 mb-5">
+            <div class="col-md-6">
+              <label class="form-label-custom">Tên Ngân Hàng</label>
+              <div class="input-icon-group">
+                <i class="bi bi-bank input-icon"></i>
+                <input type="text" class="form-control-custom" [(ngModel)]="payment().bankName" placeholder="Tên ngân hàng" />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Số Tài Khoản (STK)</label>
+              <div class="input-icon-group">
+                <i class="bi bi-card-list input-icon"></i>
+                <input type="text" class="form-control-custom" [(ngModel)]="payment().accountNumber" placeholder="Số tài khoản" />
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label-custom">Tên Chủ Tài Khoản (Viết hoa không dấu)</label>
+              <div class="input-icon-group">
+                <i class="bi bi-person-fill input-icon"></i>
+                <input type="text" class="form-control-custom" [(ngModel)]="payment().accountName" placeholder="TÊN CHU TAI KHOAN" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Gateways toggle options -->
+          <h5 class="fw-bold text-muted fs-7 text-uppercase tracking-wider mb-3">Kênh thanh toán khả dụng</h5>
+          <div class="d-flex flex-column gap-3">
+            <div class="payment-gateway-card d-flex align-items-center justify-content-between p-3 rounded-4 border border-light">
+              <div class="d-flex align-items-center gap-3">
+                <div class="gateway-logo bg-light rounded d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                  <i class="bi bi-cash-stack text-success fs-4"></i>
+                </div>
+                <div>
+                  <h6 class="mb-0 fw-bold text-dark">Thanh toán khi nhận hàng (COD)</h6>
+                  <small class="text-muted fs-7">Cho phép khách hàng đặt hàng và thanh toán bằng tiền mặt trực tiếp.</small>
+                </div>
+              </div>
+              <div class="form-check form-switch custom-switch">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="payment().codEnabled">
+              </div>
+            </div>
+
+            <div class="payment-gateway-card d-flex align-items-center justify-content-between p-3 rounded-4 border border-light">
+              <div class="d-flex align-items-center gap-3">
+                <div class="gateway-logo bg-light rounded d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                  <i class="bi bi-qr-code text-danger fs-4"></i>
+                </div>
+                <div>
+                  <h6 class="mb-0 fw-bold text-dark">Thanh toán Ví điện tử MoMo</h6>
+                  <small class="text-muted fs-7">Tích hợp cổng quét mã QR MoMo tự động xác thực giao dịch.</small>
+                </div>
+              </div>
+              <div class="form-check form-switch custom-switch">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="payment().momoEnabled">
+              </div>
+            </div>
+
+            <div class="payment-gateway-card d-flex align-items-center justify-content-between p-3 rounded-4 border border-light">
+              <div class="d-flex align-items-center gap-3">
+                <div class="gateway-logo bg-light rounded d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                  <i class="bi bi-credit-card-2-back text-primary fs-4"></i>
+                </div>
+                <div>
+                  <h6 class="mb-0 fw-bold text-dark">Thanh toán Cổng VNPAY (ATM/Thẻ nội địa)</h6>
+                  <small class="text-muted fs-7">Khách hàng thanh toán qua App ngân hàng điện tử hoặc thẻ Visa/Master.</small>
+                </div>
+              </div>
+              <div class="form-check form-switch custom-switch">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="payment().vnPayEnabled">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security & Database Backup Form -->
+        <div *ngIf="activeSubTab() === 'security'" class="settings-pane animate-slide-right">
+          <h4 class="fw-bold text-dark border-bottom pb-3 mb-4">
+            <i class="bi bi-shield-lock text-primary me-2"></i> Hệ Thống &amp; Bảo Mật
+          </h4>
+          <div class="row g-4 mb-5">
+            <div class="col-md-6">
+              <label class="form-label-custom">Thời hạn hiệu lực của mật khẩu (Ngày)</label>
+              <div class="input-icon-group">
+                <i class="bi bi-calendar-event input-icon"></i>
+                <input type="number" class="form-control-custom" [(ngModel)]="security().passwordExpiryDays" />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Thời gian tự động đăng xuất (Phút)</label>
+              <div class="input-icon-group">
+                <i class="bi bi-hourglass-split input-icon"></i>
+                <input type="number" class="form-control-custom" [(ngModel)]="security().sessionTimeoutMinutes" />
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="maintenance-mode-card d-flex align-items-center justify-content-between p-3.5 rounded-4 bg-danger bg-opacity-5 border border-danger border-opacity-10">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="maintenance-icon bg-danger bg-opacity-10 text-danger rounded d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                    <i class="bi bi-hammer fs-4"></i>
+                  </div>
+                  <div>
+                    <h6 class="mb-0 fw-bold text-danger">Chế độ bảo trì hệ thống (Maintenance Mode)</h6>
+                    <small class="text-danger opacity-75 fs-7">Khi bật, khách hàng ngoài cửa hàng sẽ không truy cập được Storefront.</small>
+                  </div>
+                </div>
+                <div class="form-check form-switch custom-switch-danger">
+                  <input class="form-check-input" type="checkbox" [(ngModel)]="security().maintenanceMode">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Database Administration Section -->
+          <h5 class="fw-bold text-muted fs-7 text-uppercase tracking-wider mb-3">Sao lưu &amp; Phục hồi dữ liệu</h5>
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <div class="admin-utility-card p-4 rounded-4 border border-light text-center">
+                <i class="bi bi-database-down text-primary display-6 mb-3 d-block"></i>
+                <h6 class="fw-bold text-dark">Sao Lưu Cơ Sở Dữ Liệu</h6>
+                <p class="text-muted fs-8">Xuất toàn bộ cơ sở dữ liệu sách, tài khoản nhân viên, đơn hàng ra file SQL dự phòng.</p>
+                <button class="btn btn-outline-primary btn-sm w-100 rounded-pill py-2 d-flex align-items-center justify-content-center gap-2" (click)="triggerBackup()" [disabled]="isBackingUp()">
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="isBackingUp()"></span>
+                  <i class="bi bi-download" *ngIf="!isBackingUp()"></i>
+                  <span>{{ isBackingUp() ? 'Đang xuất SQL...' : 'Tải Xuống File Backup' }}</span>
+                </button>
+              </div>
+            </div>
+            
+            <div class="col-sm-6">
+              <div class="admin-utility-card p-4 rounded-4 border border-light text-center">
+                <i class="bi bi-database-up text-warning display-6 mb-3 d-block"></i>
+                <h6 class="fw-bold text-dark">Khôi Phục Dữ Liệu</h6>
+                <p class="text-muted fs-8">Tải lên file cơ sở dữ liệu SQL đã sao lưu trước đó để phục hồi cấu trúc & dữ liệu.</p>
+                <button class="btn btn-outline-warning btn-sm w-100 rounded-pill py-2 d-flex align-items-center justify-content-center gap-2" (click)="triggerRestore()" [disabled]="isRestoring()">
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="isRestoring()"></span>
+                  <i class="bi bi-upload" *ngIf="!isRestoring()"></i>
+                  <span>{{ isRestoring() ? 'Đang nạp dữ liệu...' : 'Nạp File Sao Lưu SQL' }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

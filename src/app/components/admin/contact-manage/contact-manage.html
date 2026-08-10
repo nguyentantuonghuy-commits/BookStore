@@ -1,0 +1,515 @@
+<div class="contact-manage-container animate-fade-in">
+  <!-- Metric Cards -->
+  <section class="row g-4 mb-4">
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="card metric-card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden cursor-pointer"
+        [class.active-gold-card]="selectedStatus() === 'All'" [class.bg-primary-gold]="selectedStatus() === 'All'"
+        [class.text-white]="selectedStatus() === 'All'" [class.bg-cream-card]="selectedStatus() !== 'All'"
+        (click)="selectedStatus.set('All'); currentPage.set(1)">
+        <div class="card-body p-4 position-relative z-index-1">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="fs-7 fw-bold text-uppercase tracking-wider" [class.text-white-50]="selectedStatus() === 'All'"
+              [class.text-muted]="selectedStatus() !== 'All'">Tổng liên hệ</span>
+            <div class="metric-icon-box rounded-3"><i class="bi bi-envelope-fill fs-4"></i></div>
+          </div>
+          <h3 class="display-6 fw-bold mb-0" [class.text-white]="selectedStatus() === 'All'"
+            [class.text-dark]="selectedStatus() !== 'All'">{{ totalMessages() }}</h3>
+        </div>
+        <div class="metric-shape position-absolute" *ngIf="selectedStatus() === 'All'"></div>
+        <div class="filter-indicator" *ngIf="selectedStatus() === 'All'">Đang Lọc</div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="card metric-card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden cursor-pointer"
+        [class.active-gold-card]="selectedStatus() === 'new'" [class.bg-primary-gold]="selectedStatus() === 'new'"
+        [class.text-white]="selectedStatus() === 'new'" [class.bg-cream-card]="selectedStatus() !== 'new'"
+        (click)="filterByStatus('new')">
+        <div class="card-body p-4 position-relative z-index-1">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="fs-7 fw-bold text-uppercase tracking-wider" [class.text-white-50]="selectedStatus() === 'new'"
+              [class.text-muted]="selectedStatus() !== 'new'">Chưa đọc</span>
+            <div class="metric-icon-box rounded-3"><i class="bi bi-bell-fill fs-4"></i></div>
+          </div>
+          <h3 class="display-6 fw-bold mb-0" [class.text-white]="selectedStatus() === 'new'"
+            [class.text-dark]="selectedStatus() !== 'new'">{{ newCount() }}</h3>
+        </div>
+        <div class="metric-shape position-absolute" *ngIf="selectedStatus() === 'new'"></div>
+        <div class="filter-indicator" *ngIf="selectedStatus() === 'new'">Đang Lọc</div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="card metric-card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden cursor-pointer"
+        [class.active-gold-card]="selectedStatus() === 'replied'"
+        [class.bg-primary-gold]="selectedStatus() === 'replied'" [class.text-white]="selectedStatus() === 'replied'"
+        [class.bg-cream-card]="selectedStatus() !== 'replied'" (click)="filterByStatus('replied')">
+        <div class="card-body p-4 position-relative z-index-1">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="fs-7 fw-bold text-uppercase tracking-wider"
+              [class.text-white-50]="selectedStatus() === 'replied'"
+              [class.text-muted]="selectedStatus() !== 'replied'">Đã phản hồi</span>
+            <div class="metric-icon-box rounded-3"><i class="bi bi-reply-fill fs-4"></i></div>
+          </div>
+          <h3 class="display-6 fw-bold mb-0" [class.text-white]="selectedStatus() === 'replied'"
+            [class.text-dark]="selectedStatus() !== 'replied'">{{ repliedCount() }}</h3>
+        </div>
+        <div class="metric-shape position-absolute" *ngIf="selectedStatus() === 'replied'"></div>
+        <div class="filter-indicator" *ngIf="selectedStatus() === 'replied'">Đang Lọc</div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="card metric-card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden cursor-pointer"
+        [class.active-gold-card]="selectedStatus() === 'archived'"
+        [class.bg-primary-gold]="selectedStatus() === 'archived'" [class.text-white]="selectedStatus() === 'archived'"
+        [class.bg-cream-card]="selectedStatus() !== 'archived'" (click)="filterByStatus('archived')">
+        <div class="card-body p-4 position-relative z-index-1">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="fs-7 fw-bold text-uppercase tracking-wider"
+              [class.text-white-50]="selectedStatus() === 'archived'"
+              [class.text-muted]="selectedStatus() !== 'archived'">Lưu trữ</span>
+            <div class="metric-icon-box rounded-3"><i class="bi bi-archive-fill fs-4"></i></div>
+          </div>
+          <h3 class="display-6 fw-bold mb-0" [class.text-white]="selectedStatus() === 'archived'"
+            [class.text-dark]="selectedStatus() !== 'archived'">{{ archivedCount() }}</h3>
+        </div>
+        <div class="metric-shape position-absolute" *ngIf="selectedStatus() === 'archived'"></div>
+        <div class="filter-indicator" *ngIf="selectedStatus() === 'archived'">Đang Lọc</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toolbar -->
+  <section
+    class="toolbar-section bg-white p-3 rounded-4 shadow-sm mb-4 border border-light d-flex flex-wrap gap-3 align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-2 flex-grow-1" style="max-width: 420px;">
+      <div class="input-group search-input-group rounded-pill overflow-hidden border w-100">
+        <span class="input-group-text bg-white border-0 ps-3"><i class="bi bi-search text-muted"></i></span>
+        <input type="text" class="form-control border-0 py-2 fs-7 ps-2 focus-none"
+          placeholder="Tìm kiếm theo tên, email, chủ đề..." [ngModel]="searchTerm()"
+          (ngModelChange)="searchTerm.set($event); currentPage.set(1)" />
+        <span class="input-group-text bg-white border-0 pe-3 cursor-pointer" *ngIf="searchTerm()"
+          (click)="searchTerm.set(''); currentPage.set(1)">
+          <i class="bi bi-x-circle-fill text-muted"></i>
+        </span>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-1.5 flex-wrap filter-pills-container">
+      <button class="btn btn-sm btn-filter-pill rounded-pill px-3 py-1.5 fs-7"
+        [class.active]="selectedStatus() === 'All'" (click)="selectedStatus.set('All'); currentPage.set(1)">Tất
+        cả</button>
+      <button class="btn btn-sm btn-filter-pill rounded-pill px-3 py-1.5 fs-7"
+        [class.active]="selectedStatus() === 'new'" (click)="filterByStatus('new')">Mới</button>
+      <button class="btn btn-sm btn-filter-pill rounded-pill px-3 py-1.5 fs-7"
+        [class.active]="selectedStatus() === 'read'" (click)="filterByStatus('read')">Đã đọc</button>
+      <button class="btn btn-sm btn-filter-pill rounded-pill px-3 py-1.5 fs-7"
+        [class.active]="selectedStatus() === 'replied'" (click)="filterByStatus('replied')">Đã phản hồi</button>
+      <button class="btn btn-sm btn-filter-pill rounded-pill px-3 py-1.5 fs-7"
+        [class.active]="selectedStatus() === 'archived'" (click)="filterByStatus('archived')">Lưu trữ</button>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <button class="btn btn-outline-gold rounded-pill px-3 py-2 fs-7 d-flex align-items-center gap-2"
+        (click)="resetDatabase()" *ngIf="authService.getCurrentUser()?.role === 'admin'">
+        <i class="bi bi-arrow-counterclockwise"></i><span>Khôi Phục Mẫu</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Messages Table -->
+  <section class="card border-0 rounded-4 shadow-sm overflow-hidden mb-4 border border-light bg-white">
+    <div class="table-responsive">
+      <table class="table align-middle table-hover custom-contact-table mb-0">
+        <thead>
+          <tr>
+            <th class="ps-4 py-3 text-uppercase fs-8 text-muted tracking-wider" style="width: 25%;">Người gửi</th>
+            <th class="py-3 text-uppercase fs-8 text-muted tracking-wider" style="width: 20%;">Chủ đề</th>
+            <th class="py-3 text-uppercase fs-8 text-muted tracking-wider" style="width: 20%;">Nội dung</th>
+            <th class="py-3 text-uppercase fs-8 text-muted tracking-wider text-center" style="width: 10%;">Ưu tiên</th>
+            <th class="py-3 text-uppercase fs-8 text-muted tracking-wider text-center" style="width: 10%;">Trạng thái
+            </th>
+            <th class="pe-4 py-3 text-end text-uppercase fs-8 text-muted tracking-wider" style="width: 15%;">Thao tác
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let msg of pagedMessages()" [class.row-new]="msg.status === 'new'">
+            <td class="ps-4 py-3">
+              <div class="d-flex align-items-center gap-3">
+                <div
+                  class="avatar-sm rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+                  [class.bg-avatar-new]="msg.status === 'new'" [class.bg-avatar-read]="msg.status === 'read'"
+                  [class.bg-avatar-replied]="msg.status === 'replied'"
+                  [class.bg-avatar-archived]="msg.status === 'archived'"
+                  style="width: 38px; height: 38px; font-size: 0.75rem; flex-shrink: 0;">
+                  {{ getInitials(msg.fullName) }}
+                </div>
+                <div class="min-w-0">
+                  <h6 class="mb-0 fw-bold text-dark text-truncate fs-7" [class.fw-bolder]="msg.status === 'new'">{{
+                    msg.fullName }}</h6>
+                  <small class="text-muted fs-8 text-truncate d-block" style="max-width: 180px;">{{ msg.email }}</small>
+                </div>
+              </div>
+            </td>
+            <td class="py-3"><span class="fs-7 text-dark fw-medium">{{ msg.subject }}</span></td>
+            <td class="py-3">
+              <p class="mb-0 text-muted fs-8 text-truncate" style="max-width: 200px;">{{ msg.message }}</p>
+            </td>
+            <td class="py-3 text-center">
+              <span class="badge rounded-pill px-2 py-1 fs-8" [class.bg-priority-low]="msg.priority === 'low'"
+                [class.bg-priority-normal]="msg.priority === 'normal'"
+                [class.bg-priority-high]="msg.priority === 'high'"
+                [class.bg-priority-urgent]="msg.priority === 'urgent'">
+                {{ getPriorityLabel(msg.priority) }}
+              </span>
+            </td>
+            <td class="py-3 text-center">
+              <span class="badge rounded-pill px-2 py-1 fs-8" [class.bg-status-new]="msg.status === 'new'"
+                [class.bg-status-read]="msg.status === 'read'" [class.bg-status-replied]="msg.status === 'replied'"
+                [class.bg-status-archived]="msg.status === 'archived'">
+                <i class="bi me-1" [class.bi-circle-fill]="msg.status === 'new'"
+                  [class.bi-eye-fill]="msg.status === 'read'" [class.bi-check-circle-fill]="msg.status === 'replied'"
+                  [class.bi-archive-fill]="msg.status === 'archived'"
+                  style="font-size: 0.5rem; vertical-align: middle;"></i>
+                {{ getStatusLabel(msg.status) }}
+              </span>
+            </td>
+            <td class="pe-4 py-3 text-end">
+              <div class="d-flex justify-content-end gap-2">
+                <button
+                  class="btn btn-action btn-outline-info-custom rounded-circle p-2 d-inline-flex align-items-center justify-content-center"
+                  title="Xem chi tiết" (click)="viewDetail(msg)">
+                  <i class="bi bi-eye-fill fs-7"></i>
+                </button>
+                <button
+                  class="btn btn-action btn-outline-primary-custom rounded-circle p-2 d-inline-flex align-items-center justify-content-center"
+                  title="Phản hồi" (click)="openReplyModal(msg)" *ngIf="canReplyContact() && msg.status !== 'archived'">
+                  <i class="bi bi-reply-fill fs-7"></i>
+                </button>
+                <button
+                  class="btn btn-action btn-outline-danger-custom rounded-circle p-2 d-inline-flex align-items-center justify-content-center"
+                  title="Xóa" (click)="deleteMsg(msg.id)" *ngIf="canDeleteContact()">
+                  <i class="bi bi-trash-fill fs-7"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="pagedMessages().length === 0">
+            <td colspan="6" class="text-center py-5 text-muted">
+              <i class="bi bi-envelope-x fs-1 d-block mb-3 text-gold"></i>
+              Không tìm thấy tin nhắn liên hệ nào phù hợp.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- Pagination -->
+    <div class="card-footer bg-transparent border-0 px-4 py-3 d-flex justify-content-between align-items-center"
+      *ngIf="totalPages() > 1">
+      <small class="text-muted">Trang <strong>{{ currentPage() }}</strong> trên {{ totalPages() }}</small>
+      <nav>
+        <ul class="pagination pagination-sm mb-0 gap-1">
+          <li class="page-item" [class.disabled]="currentPage() === 1">
+            <button class="page-link rounded-circle border-0 d-inline-flex align-items-center justify-content-center"
+              style="width: 32px; height: 32px;" (click)="setPage(currentPage() - 1)"><i
+                class="bi bi-chevron-left"></i></button>
+          </li>
+          <li class="page-item" *ngFor="let page of [].constructor(totalPages()); let i = index"
+            [class.active]="currentPage() === i + 1">
+            <button class="page-link rounded-circle border-0 d-inline-flex align-items-center justify-content-center"
+              style="width: 32px; height: 32px;" (click)="setPage(i + 1)">{{ i + 1 }}</button>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage() === totalPages()">
+            <button class="page-link rounded-circle border-0 d-inline-flex align-items-center justify-content-center"
+              style="width: 32px; height: 32px;" (click)="setPage(currentPage() + 1)"><i
+                class="bi bi-chevron-right"></i></button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+</div>
+
+<!-- Detail Modal -->
+<div class="news-modal-overlay" *ngIf="isDetailModalOpen() && selectedMessage()" (click)="closeDetailModal()">
+  <div class="news-modal-container bg-white rounded-4 shadow-lg border-0 overflow-hidden animate-slide-up"
+    (click)="$event.stopPropagation()" style="max-width: 750px;">
+    <div
+      class="modal-news-header p-4 border-bottom d-flex justify-content-between align-items-center bg-cream-gradient">
+      <h5 class="mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+        <i class="bi bi-envelope-open-fill text-gold"></i>
+        <span>Chi Tiết Liên Hệ</span>
+      </h5>
+      <button class="btn-close focus-none" (click)="closeDetailModal()"></button>
+    </div>
+    <div class="modal-news-body p-4 d-flex flex-column gap-3 overflow-y-auto" style="max-height: calc(85vh - 150px);">
+      <!-- Sender Info -->
+      <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-light border">
+        <div
+          class="avatar-sm rounded-circle d-flex align-items-center justify-content-center text-white bg-gold fw-bold"
+          style="width: 48px; height: 48px; font-size: 0.9rem;">
+          {{ getInitials(selectedMessage()!.fullName) }}
+        </div>
+        <div class="flex-grow-1">
+          <h6 class="mb-0 fw-bold text-dark">{{ selectedMessage()!.fullName }}</h6>
+          <small class="text-muted d-block"><i class="bi bi-envelope me-1"></i>{{ selectedMessage()!.email }}</small>
+          <small class="text-muted d-block" *ngIf="selectedMessage()!.phone"><i class="bi bi-phone me-1"></i>{{
+            selectedMessage()!.phone }}</small>
+        </div>
+        <div class="text-end">
+          <span class="badge rounded-pill px-2 py-1 fs-8 mb-1 d-block"
+            [class.bg-status-new]="selectedMessage()!.status === 'new'"
+            [class.bg-status-read]="selectedMessage()!.status === 'read'"
+            [class.bg-status-replied]="selectedMessage()!.status === 'replied'"
+            [class.bg-status-archived]="selectedMessage()!.status === 'archived'">
+            {{ getStatusLabel(selectedMessage()!.status) }}
+          </span>
+          <span class="badge rounded-pill px-2 py-1 fs-8"
+            [class.bg-priority-low]="selectedMessage()!.priority === 'low'"
+            [class.bg-priority-normal]="selectedMessage()!.priority === 'normal'"
+            [class.bg-priority-high]="selectedMessage()!.priority === 'high'"
+            [class.bg-priority-urgent]="selectedMessage()!.priority === 'urgent'">
+            {{ getPriorityLabel(selectedMessage()!.priority) }}
+          </span>
+        </div>
+      </div>
+      <!-- Subject & Time -->
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label fw-bold text-dark fs-7"><i class="bi bi-tag-fill text-gold me-1"></i>Chủ đề</label>
+          <p class="mb-0 fs-7 text-secondary">{{ selectedMessage()!.subject }}</p>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-bold text-dark fs-7"><i class="bi bi-clock-fill text-gold me-1"></i>Thời gian
+            gửi</label>
+          <p class="mb-0 fs-7 text-secondary">{{ selectedMessage()!.createdAt }}</p>
+        </div>
+      </div>
+      <!-- Message Content -->
+      <div>
+        <label class="form-label fw-bold text-dark fs-7"><i class="bi bi-chat-left-text-fill text-gold me-1"></i>Nội
+          dung tin nhắn</label>
+        <div class="summary-box p-3 rounded-3 bg-light border-start border-4 border-gold">
+          <p class="mb-0 text-dark fs-7" style="white-space: pre-wrap; line-height: 1.6;">{{ selectedMessage()!.message
+            }}</p>
+        </div>
+      </div>
+      <!-- Priority Control -->
+      <div>
+        <label class="form-label fw-bold text-dark fs-7"><i class="bi bi-flag-fill text-gold me-1"></i>Mức độ ưu
+          tiên</label>
+        <div class="d-flex gap-2">
+          <button class="btn btn-sm rounded-pill px-3"
+            [class.btn-outline-secondary]="selectedMessage()!.priority !== 'low'"
+            [class.btn-success]="selectedMessage()!.priority === 'low'"
+            (click)="changePriority(selectedMessage()!.id, 'low')">Thấp</button>
+          <button class="btn btn-sm rounded-pill px-3"
+            [class.btn-outline-secondary]="selectedMessage()!.priority !== 'normal'"
+            [class.btn-primary]="selectedMessage()!.priority === 'normal'"
+            (click)="changePriority(selectedMessage()!.id, 'normal')">Bình thường</button>
+          <button class="btn btn-sm rounded-pill px-3"
+            [class.btn-outline-secondary]="selectedMessage()!.priority !== 'high'"
+            [class.btn-warning]="selectedMessage()!.priority === 'high'"
+            (click)="changePriority(selectedMessage()!.id, 'high')">Cao</button>
+          <button class="btn btn-sm rounded-pill px-3"
+            [class.btn-outline-secondary]="selectedMessage()!.priority !== 'urgent'"
+            [class.btn-danger]="selectedMessage()!.priority === 'urgent'"
+            (click)="changePriority(selectedMessage()!.id, 'urgent')">Khẩn cấp</button>
+        </div>
+      </div>
+      <!-- Admin Note -->
+      <div>
+        <label class="form-label fw-bold text-dark fs-7"><i class="bi bi-journal-text text-gold me-1"></i>Ghi chú nội bộ
+          (Admin)</label>
+        <textarea #adminNoteArea class="form-control rounded-3 py-2 fs-7 focus-gold" rows="2"
+          placeholder="Ghi chú nội bộ cho nhân viên xử lý..." [value]="selectedMessage()!.adminNote || ''"
+          (blur)="saveAdminNote(selectedMessage()!.id, adminNoteArea.value)"></textarea>
+      </div>
+      <!-- Reply Content (if replied) -->
+      <div *ngIf="selectedMessage()!.status === 'replied'"
+        class="p-3 rounded-3 border border-success bg-success bg-opacity-5">
+        <label class="form-label fw-bold text-success fs-7"><i class="bi bi-check-circle-fill me-1"></i>Nội dung phản
+          hồi</label>
+        <p class="mb-1 text-dark fs-7" style="white-space: pre-wrap;">{{ selectedMessage()!.repliedContent }}</p>
+        <small class="text-muted"><i class="bi bi-person me-1"></i>{{ selectedMessage()!.repliedBy }} · <i
+            class="bi bi-clock me-1"></i>{{ selectedMessage()!.repliedAt }}</small>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="d-flex justify-content-between align-items-center p-3 border-top bg-light">
+      <span class="fs-8 text-muted ms-2">Mã: <strong>{{ selectedMessage()!.id }}</strong></span>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-warning rounded-pill px-3 fs-7 py-2" (click)="archiveMsg(selectedMessage()!.id)"
+          *ngIf="canArchiveContact() && selectedMessage()!.status !== 'archived'">
+          <i class="bi bi-archive me-1"></i>Lưu trữ
+        </button>
+        <button class="btn btn-outline-secondary rounded-pill px-3 fs-7 py-2" (click)="closeDetailModal()">Đóng</button>
+        <button class="btn btn-gold rounded-pill px-4 fs-7 py-2 shadow-sm d-flex align-items-center gap-2"
+          (click)="replyFromDetail(selectedMessage()!)"
+          *ngIf="canReplyContact() && selectedMessage()!.status !== 'archived'">
+          <i class="bi bi-reply-fill"></i><span>Phản hồi</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reply Modal -->
+<div class="news-modal-overlay" *ngIf="isReplyModalOpen() && replyingMessage()" (click)="closeReplyModal()">
+  <div class="news-modal-container bg-white rounded-4 shadow-lg border-0 overflow-hidden animate-slide-up"
+    (click)="$event.stopPropagation()" style="max-width: 650px;">
+    <div
+      class="modal-news-header p-4 border-bottom d-flex justify-content-between align-items-center bg-cream-gradient">
+      <h5 class="mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+        <i class="bi bi-reply-fill text-gold"></i>
+        <span>Phản Hồi Liên Hệ</span>
+      </h5>
+      <button class="btn-close focus-none" (click)="closeReplyModal()"></button>
+    </div>
+    <div class="modal-news-body p-4 d-flex flex-column gap-3 overflow-y-auto" style="max-height: calc(85vh - 150px);">
+      <div class="p-3 rounded-3 bg-light border">
+        <small class="text-muted d-block mb-1"><strong>Gửi đến:</strong> {{ replyingMessage()!.fullName }} ({{
+          replyingMessage()!.email }})</small>
+        <small class="text-muted d-block"><strong>Chủ đề:</strong> {{ replyingMessage()!.subject }}</small>
+      </div>
+      <div class="summary-box p-3 rounded-3 bg-light border-start border-4 border-gold">
+        <small class="text-muted fw-bold d-block mb-1">Nội dung gốc:</small>
+        <p class="mb-0 text-secondary fs-7" style="white-space: pre-wrap;">{{ replyingMessage()!.message }}</p>
+      </div>
+      <div>
+        <label class="form-label fw-bold text-dark fs-7">Nội dung phản hồi <span class="text-danger">*</span></label>
+        <textarea class="form-control rounded-3 py-2 fs-7 focus-gold" rows="6"
+          placeholder="Nhập nội dung phản hồi cho khách hàng..." [ngModel]="replyContent()"
+          (ngModelChange)="replyContent.set($event)"></textarea>
+      </div>
+      <div class="d-flex justify-content-end gap-2 border-top pt-3 mt-2">
+        <button class="btn btn-outline-secondary rounded-pill px-4 fs-7 py-2" (click)="closeReplyModal()">Hủy
+          bỏ</button>
+        <button class="btn btn-gold rounded-pill px-4 fs-7 py-2 shadow-sm" (click)="submitReply()"><i
+            class="bi bi-send-fill me-1"></i>Gửi Phản Hồi</button>
+      </div>
+</div>
+
+<!-- Email Sending Progress Overlay -->
+<div class="news-modal-overlay" *ngIf="isSendingEmail()">
+  <div class="bg-white rounded-4 p-5 shadow-lg border-0 text-center animate-slide-up" style="max-width: 480px; width: 90%;">
+    <div class="mb-4 position-relative d-inline-block">
+      <div class="spinner-border text-gold" style="width: 4.5rem; height: 4.5rem; border-width: 5px;" role="status"></div>
+      <div class="position-absolute top-50 start-50 translate-middle">
+        <i class="bi bi-send-fill text-gold fs-3 animate-airplane"></i>
+      </div>
+    </div>
+    <h5 class="fw-bold text-dark mb-2">Đang gửi Email phản hồi...</h5>
+    <p class="text-muted fs-7 mb-4 px-3">{{ emailSendingStatusText() }}</p>
+    
+    <div class="progress rounded-pill mb-2" style="height: 10px; background-color: #f1f5f9;">
+      <div class="progress-bar bg-gold progress-bar-striped progress-bar-animated rounded-pill" 
+           role="progressbar" 
+           [style.width.%]="emailSendingProgress()"
+           [attr.aria-valuenow]="emailSendingProgress()" 
+           aria-valuemin="0" 
+           aria-valuemax="100">
+      </div>
+    </div>
+    <div class="text-end text-muted fs-8 fw-bold">{{ emailSendingProgress() }}%</div>
+  </div>
+</div>
+
+<!-- Email Delivery Success Report Modal -->
+<div class="news-modal-overlay shadow-lg" *ngIf="showEmailSuccessReport() && emailReportData()" (click)="showEmailSuccessReport.set(false)">
+  <div class="news-modal-container bg-white rounded-4 shadow-2xl border-0 overflow-hidden animate-slide-up"
+    (click)="$event.stopPropagation()" style="max-width: 720px; width: 95%;">
+    <!-- Header -->
+    <div class="modal-news-header p-4 border-bottom d-flex justify-content-between align-items-center bg-cream-gradient">
+      <h5 class="mb-0 fw-bold text-success d-flex align-items-center gap-2">
+        <i class="bi bi-patch-check-fill text-success fs-4"></i>
+        <span>Báo Cáo Gửi Email Thành Công</span>
+      </h5>
+      <button class="btn-close focus-none" (click)="showEmailSuccessReport.set(false)"></button>
+    </div>
+    
+    <!-- Body -->
+    <div class="modal-news-body p-4 d-flex flex-column gap-3 overflow-y-auto" style="max-height: calc(85vh - 120px);">
+      <!-- Success Info Summary -->
+      <div class="alert alert-success d-flex align-items-start gap-3 rounded-3 border-0 bg-success bg-opacity-10 text-success p-3 mb-0">
+        <i class="bi bi-info-circle-fill fs-5 mt-0.5"></i>
+        <div>
+          <h6 class="alert-heading fw-bold mb-1 fs-7">Hệ thống đã chuyển phát email thành công!</h6>
+          <p class="mb-0 fs-8 opacity-90">
+            Nội dung phản hồi đã được đóng gói dưới định dạng HTML tiêu chuẩn và gửi qua máy chủ SMTP an toàn của Sachweb.vn đến khách hàng.
+          </p>
+        </div>
+      </div>
+
+      <!-- Tech Specs / Metadata -->
+      <div class="card border border-light-subtle rounded-3 overflow-hidden shadow-sm">
+        <div class="card-header bg-light py-2 px-3 fs-8 fw-bold text-secondary d-flex justify-content-between">
+          <span>THÔNG TIN KỸ THUẬT SMTP (DELIVERY LOG)</span>
+          <span class="text-success"><i class="bi bi-shield-fill-check me-1"></i>SSL Secured</span>
+        </div>
+        <div class="card-body p-3 bg-light bg-opacity-50 font-monospace fs-8 text-secondary">
+          <div class="row g-2">
+            <div class="col-sm-6"><strong>Mã giao dịch:</strong> {{ emailReportData()!.id }}</div>
+            <div class="col-sm-6"><strong>SMTP Server:</strong> smtp.sachweb.vn:465</div>
+            <div class="col-sm-6"><strong>Trạng thái:</strong> <span class="text-success fw-bold">250 OK (Accepted)</span></div>
+            <div class="col-sm-6"><strong>Thời gian thực tế:</strong> {{ emailReportData()!.sentAt }}</div>
+            <div class="col-sm-12"><strong>Message-ID:</strong> &lt;{{ emailReportData()!.id }}@smtp.sachweb.vn&gt;</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mock Email Inbox View -->
+      <div>
+        <label class="form-label fw-bold text-dark fs-7"><i class="bi bi-mailbox2 text-gold me-1"></i>Xem trước Email gửi đến khách hàng</label>
+        <div class="border rounded-3 overflow-hidden shadow-sm">
+          <!-- Mock Client Header -->
+          <div class="bg-light p-3 border-bottom fs-8 text-secondary">
+            <div class="mb-1"><strong>Từ:</strong> Sachweb Support &lt;support@sachweb.vn&gt;</div>
+            <div class="mb-1"><strong>Đến:</strong> {{ emailReportData()!.recipient }} &lt;{{ emailReportData()!.email }}&gt;</div>
+            <div class="mb-1"><strong>Tiêu đề:</strong> {{ emailReportData()!.subject }}</div>
+            <div><strong>Ngày:</strong> {{ emailReportData()!.sentAt }} (Múi giờ local VN)</div>
+          </div>
+          <!-- Mock Client Body -->
+          <div class="p-4 bg-white" style="font-family: system-ui, sans-serif; line-height: 1.5; color: #334155;">
+            <!-- Brand Banner -->
+            <div class="text-center pb-4 border-bottom mb-4">
+              <span class="fs-4 fw-bold" style="color: #c5a880; letter-spacing: 2px;">SACHWEB</span>
+              <div class="fs-8 text-muted mt-1">Hệ thống phân phối Ebook hàng đầu Việt Nam</div>
+            </div>
+            
+            <p style="font-size: 14px; margin-bottom: 16px;">Kính chào <strong>{{ emailReportData()!.recipient }}</strong>,</p>
+            <p style="font-size: 14px; margin-bottom: 20px;">
+              Cảm ơn quý khách đã gửi ý kiến đóng góp thông qua hòm thư hỗ trợ của Sachweb. Chúng tôi xin phản hồi về yêu cầu liên hệ của quý khách như sau:
+            </p>
+            
+            <!-- Reply Content Box -->
+            <div style="background-color: #fcfbf9; border-left: 4px solid #c5a880; padding: 16px; border-radius: 4px; margin-bottom: 24px;">
+              <p style="font-size: 14px; margin: 0; white-space: pre-wrap; font-style: italic; color: #1e293b;">
+                "{{ emailReportData()!.content }}"
+              </p>
+            </div>
+            
+            <!-- Original message quote -->
+            <div style="font-size: 12px; color: #64748b; border-top: 1px dashed #e2e8f0; padding-top: 16px; margin-bottom: 24px;">
+              <strong style="display: block; margin-bottom: 4px;">Nội dung góp ý của bạn:</strong>
+              <blockquote style="margin: 0; padding-left: 12px; border-left: 2px solid #cbd5e1; font-style: italic;">
+                "{{ emailReportData()!.originalMessage }}"
+              </blockquote>
+            </div>
+
+            <!-- Footer signature -->
+            <div style="font-size: 13px; border-top: 1px solid #f1f5f9; padding-top: 16px;">
+              <p style="margin: 0 0 4px 0;">Trân trọng,</p>
+              <strong style="color: #121212;">Đội ngũ hỗ trợ khách hàng Sachweb</strong><br>
+              <span style="font-size: 11px; color: #94a3b8;">Email: support@sachweb.vn | Hotline: 1900-8888</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="d-flex justify-content-end p-3 border-top bg-light">
+      <button class="btn btn-gold rounded-pill px-4 fs-7 py-2" (click)="showEmailSuccessReport.set(false)">
+        Hoàn tất
+      </button>
+    </div>
+  </div>
+</div>

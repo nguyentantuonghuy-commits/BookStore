@@ -1,0 +1,285 @@
+:host {
+  display: block;
+  font-family: var(--font-sans);
+  background-color: transparent;
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-slide-right {
+  animation: slideRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideRight {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Header & Save Button */
+.settings-header h1 {
+  font-family: var(--font-serif);
+  color: var(--primary-theme) !important;
+}
+
+.btn-save-luxury {
+  background: linear-gradient(135deg, var(--primary-theme) 0%, #1e1e1e 100%);
+  color: #ffffff !important;
+  border: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 11px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(18, 18, 18, 0.15);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-save-luxury:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--gold-main) 0%, var(--gold-hover) 100%);
+  box-shadow: 0 6px 20px rgba(197, 168, 128, 0.25);
+  transform: translateY(-2px);
+}
+
+.btn-save-luxury:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Left Navigation Tab Card */
+.tabs-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color) !important;
+}
+
+.tab-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: var(--text-muted) !important;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.tab-link i {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+
+.tab-link:hover:not(.active) {
+  background-color: var(--dark-light);
+  color: var(--primary-theme) !important;
+}
+
+.tab-link.active {
+  background-color: var(--gold-light) !important;
+  color: var(--gold-hover) !important;
+  border-left-color: var(--gold-main) !important;
+}
+
+.tab-link.active i {
+  color: var(--gold-hover) !important;
+}
+
+/* Forms Card */
+.form-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color) !important;
+  min-height: 480px;
+}
+
+.settings-pane h4 {
+  font-family: var(--font-serif);
+  font-weight: 800;
+}
+
+/* Inputs & Labels */
+.form-label-custom {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+  display: block;
+}
+
+.input-icon-group {
+  position: relative;
+  width: 100%;
+}
+
+.input-icon-group .input-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.form-control-custom {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 11px 15px 11px 42px;
+  font-size: 0.88rem;
+  color: var(--primary-theme);
+  background-color: #ffffff;
+  transition: all 0.25s ease;
+}
+
+.form-control-custom:focus {
+  border-color: var(--gold-main);
+  box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.12);
+  outline: none;
+  background-color: #ffffff;
+}
+
+/* Payment gateway and Maintenance Card */
+.payment-gateway-card,
+.maintenance-mode-card {
+  transition: all 0.25s ease;
+  background: #ffffff;
+}
+
+.payment-gateway-card:hover {
+  border-color: var(--gold-main) !important;
+  background-color: #fafbfc;
+}
+
+.gateway-logo {
+  border: 1px solid #e2e8f0;
+}
+
+/* Custom switch designs */
+.custom-switch .form-check-input:checked {
+  background-color: var(--gold-main) !important;
+  border-color: var(--gold-main) !important;
+}
+
+.custom-switch .form-check-input:focus {
+  box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.15) !important;
+}
+
+.custom-switch-danger .form-check-input:checked {
+  background-color: var(--danger-color) !important;
+  border-color: var(--danger-color) !important;
+}
+
+.custom-switch-danger .form-check-input:focus {
+  box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15) !important;
+}
+
+.form-check-input {
+  cursor: pointer;
+}
+
+/* Utility Cards for backup/restore */
+.admin-utility-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  transition: all 0.25s ease;
+}
+
+.admin-utility-card:hover {
+  border-color: var(--gold-main);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-utility-card h6 {
+  font-family: var(--font-serif);
+}
+
+.btn-outline-primary {
+  border-color: var(--primary-theme);
+  color: var(--primary-theme);
+}
+
+.btn-outline-primary:hover:not(:disabled) {
+  background-color: var(--primary-theme);
+  border-color: var(--primary-theme);
+  color: #ffffff;
+}
+
+.btn-outline-warning {
+  border-color: var(--gold-main);
+  color: var(--gold-hover);
+}
+
+.btn-outline-warning:hover:not(:disabled) {
+  background-color: var(--gold-main);
+  border-color: var(--gold-main);
+  color: #ffffff;
+}
+
+/* Toast Notification Styles */
+.toast-custom-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 11000;
+  pointer-events: none;
+  animation: slideInLeft 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.toast-custom {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 16px 20px;
+  min-width: 320px;
+  pointer-events: auto;
+}
+
+.toast-icon-wrapper {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.bg-success-light {
+  background-color: var(--success-light);
+  color: var(--success-color);
+}
+
+.bg-danger-light {
+  background-color: var(--danger-light);
+  color: var(--danger-color);
+}
+
+.bg-blue-light {
+  background-color: var(--teal-light);
+  color: var(--teal-color);
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}

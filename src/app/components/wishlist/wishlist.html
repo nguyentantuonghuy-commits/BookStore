@@ -1,0 +1,228 @@
+<div class="wishlist-page">
+  <!-- Decorative Background Blobs -->
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+
+  <div class="wishlist-container">
+    <!-- Premium Header Section -->
+    <header class="wishlist-header-card">
+      <div class="header-overlay"></div>
+      <div class="header-main-content">
+        <span class="sub-title"><i class="bi bi-stars"></i> KHÔNG GIAN CÁ NHÂN</span>
+        <h1 class="main-title">Bộ Sưu Tập <span class="accent">Yêu Thích</span></h1>
+        <p class="description">
+          Lưu giữ các tác phẩm tri thức quý giá bạn yêu thích trong không gian đọc cá nhân.
+        </p>
+      </div>
+      <div class="header-actions" *ngIf="wishlistBooks().length > 0">
+        <button class="btn-add-all" (click)="addAllToCart($event)">
+          <i class="bi bi-cart-plus-fill"></i> Thêm tất cả vào giỏ
+        </button>
+        <button class="btn-clear-wishlist" (click)="clearAll($event)">
+          <i class="bi bi-trash3"></i> Xóa tất cả
+        </button>
+      </div>
+    </header>
+
+    <!-- Empty State -->
+    <div class="wishlist-empty-state" *ngIf="wishlistBooks().length === 0">
+      <div class="empty-visual">
+        <div class="pulse-ring"></div>
+        <div class="pulse-ring ring-2"></div>
+        <i class="bi bi-heartbreak empty-icon"></i>
+      </div>
+      <h2>Bộ sưu tập của bạn đang trống</h2>
+      <p>Hãy duyệt quanh cửa hàng sách của chúng tôi và click biểu tượng trái tim để lưu giữ những tác phẩm yêu thích tại đây nhé!</p>
+      <a routerLink="/products" class="btn-explore">
+        <i class="bi bi-compass-fill"></i> Khám phá cửa hàng ngay
+      </a>
+    </div>
+
+    <!-- Wishlist Grid -->
+    <div class="wishlist-grid" *ngIf="wishlistBooks().length > 0">
+      <div class="wishlist-card-wrapper" *ngFor="let book of wishlistBooks(); let i = index" [style.--i]="i">
+        <article class="wishlist-card">
+          <!-- Card Image Section -->
+          <div class="card-image-section">
+            <!-- Badges -->
+            <span class="discount-badge" *ngIf="book.discount && book.discount !== '0%'">
+              <i class="bi bi-lightning-fill"></i> Giảm {{ book.discount }}
+            </span>
+            <span class="stock-badge out-stock" *ngIf="book.stock <= 0">Hết hàng</span>
+
+            <!-- Remove Button (Top-Right Heart) -->
+            <button class="btn-remove-favorite" (click)="removeFromWishlist(book.id, $event)" title="Xóa khỏi yêu thích">
+              <i class="bi bi-heart-fill heart-active"></i>
+              <i class="bi bi-heartbreak heart-broken"></i>
+            </button>
+
+            <!-- 3D Book Platform Shadow -->
+            <div class="book-shadow-platform"></div>
+
+            <a [routerLink]="['/book', book.id]" class="image-link">
+              <img [src]="book.image" [alt]="book.title" loading="lazy" class="book-cover-img" />
+            </a>
+
+            <!-- Premium Hover Overlay with Quick View Action -->
+            <div class="card-hover-overlay" [routerLink]="['/book', book.id]" style="cursor: pointer;">
+              <button class="btn-quick-view" (click)="openQuickView(book, $event)">
+                <i class="bi bi-eye-fill"></i> Xem nhanh
+              </button>
+            </div>
+          </div>
+
+          <!-- Card Content Section -->
+          <div class="card-info-section">
+            <div class="card-meta-row">
+              <span class="book-category">
+                <i class="bi bi-journal-bookmark-fill"></i> {{ bookService.getCategoryName(book.category) }}
+              </span>
+              <!-- Rating Stars -->
+              <div class="book-rating">
+                <i class="bi bi-star-fill rating-star"></i>
+                <i class="bi bi-star-fill rating-star"></i>
+                <i class="bi bi-star-fill rating-star"></i>
+                <i class="bi bi-star-fill rating-star"></i>
+                <i class="bi bi-star-fill rating-star"></i>
+              </div>
+            </div>
+
+            <h3 class="book-title" [routerLink]="['/book', book.id]" [title]="book.title">{{ book.title }}</h3>
+            <p class="book-author">Tác giả: <span class="author-name">{{ book.author }}</span></p>
+            
+            <div class="price-container">
+              <span class="price-current">{{ formatPrice(discountPrice(book.price, book.discount)) }}đ</span>
+              <span class="price-original" *ngIf="book.discount && book.discount !== '0%'">{{ formatPrice(book.price) }}đ</span>
+            </div>
+
+            <div class="card-actions">
+              <button class="btn-cart-icon" (click)="addToCart(book, $event)" title="Thêm giỏ hàng">
+                <i class="bi bi-bag-plus"></i>
+              </button>
+              <button class="btn-buy" (click)="buyNow(book, $event)">
+                <i class="bi bi-credit-card"></i> Mua ngay
+              </button>
+            </div>
+
+
+
+
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== QUICK VIEW MODAL COMPATIBLE WITH PRODUCTS PAGE ===== -->
+<div class="qv-backdrop" *ngIf="quickViewBook()" (click)="closeQuickView()">
+  <div class="qv-dialog" (click)="$event.stopPropagation()" *ngIf="quickViewBook() as book">
+    <button class="qv-close" (click)="closeQuickView()"><i class="bi bi-x-lg"></i></button>
+    <div class="qv-grid">
+      <div class="qv-left">
+        <span class="badge-discount" *ngIf="book.discount && book.discount !== '0%'">-{{ book.discount }}</span>
+        
+        <!-- Dynamic Book View Area (Cover/Read/Index) -->
+        <div class="qv-viewer-wrap">
+          <!-- 1. Cover Zoom View -->
+          <div class="qv-img-container" 
+               *ngIf="activePreview() === 'front'"
+               (mousemove)="onZoom($event)" 
+               (mouseleave)="onZoomReset()">
+            <img [src]="book.image" [alt]="book.title" class="qv-img" />
+            <div class="qv-zoom-lens" 
+                 [class.active]="isZoomed()" 
+                 [style.left.px]="lensX()" 
+                 [style.top.px]="lensY()"
+                 [style.background-image]="'url(' + book.image + ')'"
+                 [style.background-position]="lensBgPos()">
+            </div>
+            <div class="zoom-hint" [class.hidden]="isZoomed()">
+              <i class="bi bi-search"></i> Rê chuột soi kính lúp
+            </div>
+          </div>
+
+          <!-- 2. Dynamic Read Sample View -->
+          <div class="qv-read-preview" *ngIf="activePreview() === 'read'">
+            <div class="read-page">
+              <h5>ĐỌC THỬ TRÍCH ĐOẠN</h5>
+              <p class="read-text" *ngFor="let para of getSampleParagraphs(book.sampleText)">"{{ para }}"</p>
+              <div class="page-num">- Trích trang đầu -</div>
+            </div>
+          </div>
+
+          <!-- 3. Dynamic Index View -->
+          <div class="qv-index-preview" *ngIf="activePreview() === 'index'">
+            <div class="index-page">
+              <h5>MỤC LỤC SÁCH</h5>
+              <ul class="index-list">
+                <li *ngFor="let item of parseTOC(book.tableOfContents)">
+                  <span class="idx-ch" *ngIf="item.ch">{{ item.ch }}</span>
+                  <span class="idx-title">{{ item.title }}</span>
+                  <span class="idx-dots"></span>
+                  <span class="idx-p" *ngIf="item.page">{{ item.page }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive thumbnails -->
+        <div class="qv-previews">
+          <button class="preview-thumb" 
+                  [class.active]="activePreview() === 'front'"
+                  (click)="activePreview.set('front')">
+            <img [src]="book.image" alt="Thumbnail" />
+            <span>Bìa trước</span>
+          </button>
+          <button class="preview-thumb" 
+                  [class.active]="activePreview() === 'read'"
+                  (click)="activePreview.set('read')">
+            <i class="bi bi-file-earmark-pdf text-danger"></i>
+            <span>Đọc thử</span>
+          </button>
+          <button class="preview-thumb" 
+                  [class.active]="activePreview() === 'index'"
+                  (click)="activePreview.set('index')">
+            <i class="bi bi-list-check text-primary"></i>
+            <span>Mục lục</span>
+          </button>
+        </div>
+
+        <div class="qv-meta">
+          <span *ngIf="book.pages"><i class="bi bi-file-earmark-text"></i> {{ book.pages }} trang</span>
+          <span *ngIf="book.publishDate"><i class="bi bi-calendar3"></i> Năm {{ book.publishDate }}</span>
+          <span *ngIf="book.translator"><i class="bi bi-translate"></i> {{ book.translator }}</span>
+        </div>
+      </div>
+      
+      <div class="qv-right">
+        <span class="card-category">{{ bookService.getCategoryName(book.category) }}</span>
+        <h2 class="qv-title">{{ book.title }}</h2>
+        <p class="qv-author">Tác giả: <strong>{{ book.author }}</strong></p>
+        <div class="qv-price-box">
+          <span class="qv-price">{{ formatPrice(discountPrice(book.price, book.discount)) }}đ</span>
+          <span class="qv-old" *ngIf="book.discount && book.discount !== '0%'">{{ formatPrice(book.price) }}đ</span>
+          <span class="qv-save" *ngIf="book.discount && book.discount !== '0%'">Tiết kiệm {{ formatPrice(book.price - discountPrice(book.price, book.discount)) }}đ</span>
+        </div>
+        <div class="qv-stock mb-3 fs-8 fw-semibold" [ngClass]="book.stock <= 0 ? 'text-danger' : (book.stock <= 5 ? 'text-warning' : 'text-success')">
+          <i class="bi bi-box-seam me-1"></i>
+          {{ book.stock <= 0 ? 'Hết hàng' : 'Còn lại: ' + book.stock + ' cuốn trong kho' }}
+        </div>
+        <div class="qv-desc">
+          <h4>Mô tả</h4>
+          <p>{{ book.description || 'Chưa có mô tả chi tiết.' }}</p>
+        </div>
+        <div class="qv-footer">
+          <div class="qv-qty">
+            <button (click)="decreaseModalQty()" [disabled]="quickViewQuantity() <= (book.stock > 0 ? 1 : 0)"><i class="bi bi-dash"></i></button>
+            <span>{{ quickViewQuantity() }}</span>
+            <button (click)="increaseModalQty()" [disabled]="quickViewQuantity() >= book.stock"><i class="bi bi-plus"></i></button>
+          </div>
+          <button class="btn-cart-text" (click)="addModalToCart()" [disabled]="book.stock <= 0"><i class="bi bi-bag-plus"></i> Thêm giỏ hàng</button>
+          <button class="btn-buy" (click)="buyModalNow()" [disabled]="book.stock <= 0"><i class="bi bi-credit-card"></i> Mua ngay</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

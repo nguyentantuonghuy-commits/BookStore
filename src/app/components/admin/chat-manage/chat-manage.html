@@ -1,0 +1,278 @@
+<div class="chat-manage-container">
+  <!-- Top Stats Header -->
+  <div class="stats-row">
+    <div class="stat-card stat-total" [class.active]="activeFilter() === 'all'" (click)="activeFilter.set('all')">
+      <div class="stat-icon"><i class="bi bi-chat-left-text-fill"></i></div>
+      <div class="stat-info">
+        <span class="stat-value">{{ stats().total }}</span>
+        <span class="stat-label">Tổng cuộc hội thoại</span>
+      </div>
+    </div>
+    
+    <div class="stat-card stat-unread" [class.active]="activeFilter() === 'unread'" (click)="activeFilter.set('unread')">
+      <div class="stat-icon"><i class="bi bi-bell-fill"></i></div>
+      <div class="stat-info">
+        <span class="stat-value">{{ stats().unread }}</span>
+        <span class="stat-label">Cần phản hồi (Chưa đọc)</span>
+      </div>
+    </div>
+
+    <div class="stat-card stat-active" [class.active]="activeFilter() === 'active'" (click)="activeFilter.set('active')">
+      <div class="stat-icon"><i class="bi bi-chat-dots-fill"></i></div>
+      <div class="stat-info">
+        <span class="stat-value">{{ stats().active }}</span>
+        <span class="stat-label">Đang xử lý</span>
+      </div>
+    </div>
+
+    <div class="stat-card stat-closed" [class.active]="activeFilter() === 'closed'" (click)="activeFilter.set('closed')">
+      <div class="stat-icon"><i class="bi bi-check-circle-fill"></i></div>
+      <div class="stat-info">
+        <span class="stat-value">{{ stats().closed }}</span>
+        <span class="stat-label">Đã hoàn tất</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Chat Workbench -->
+  <div class="chat-workbench">
+    <!-- Left Sidebar: Session List -->
+    <div class="sessions-sidebar">
+      <div class="sidebar-header">
+        <div class="search-box">
+          <i class="bi bi-search search-icon"></i>
+          <input 
+            type="text" 
+            class="search-input" 
+            [ngModel]="searchQuery()" 
+            (ngModelChange)="searchQuery.set($event)"
+            placeholder="Tìm theo tên, email, tin nhắn..." 
+          />
+          @if (searchQuery()) {
+            <button class="btn-clear-search" (click)="searchQuery.set('')">
+              <i class="bi bi-x"></i>
+            </button>
+          }
+        </div>
+
+        <div class="filter-tabs">
+          <button class="filter-btn" [class.active]="activeFilter() === 'all'" (click)="activeFilter.set('all')">Tất cả</button>
+          <button class="filter-btn live-filter-btn" [class.active]="activeFilter() === 'live'" (click)="activeFilter.set('live')">🔴 Live CSKH</button>
+          <button class="filter-btn" [class.active]="activeFilter() === 'ai'" (click)="activeFilter.set('ai')">🤖 Bot AI</button>
+          <button class="filter-btn" [class.active]="activeFilter() === 'unread'" (click)="activeFilter.set('unread')">
+            Chưa đọc
+            @if (stats().unread > 0) {
+              <span class="badge-count">{{ stats().unread }}</span>
+            }
+          </button>
+        </div>
+      </div>
+
+      <div class="sessions-list">
+        @if (filteredSessions().length === 0) {
+          <div class="empty-sessions">
+            <i class="bi bi-inbox empty-icon"></i>
+            <p>Không có cuộc hội thoại nào phù hợp</p>
+          </div>
+        } @else {
+          @for (s of filteredSessions(); track s.id) {
+            <div 
+              class="session-item" 
+              [class.selected]="s.id === selectedSessionId()"
+              [class.has-unread]="(s.unreadCountAdmin || 0) > 0"
+              [class.is-live-mode]="s.chatMode === 'live'"
+              (click)="selectSession(s.id)">
+              
+              <div class="session-avatar-wrap">
+                <img 
+                  [src]="getAvatarUrl(s.userAvatar, s.userName)" 
+                  (error)="onAvatarError($event, s.userName)"
+                  alt="Avatar" 
+                  class="session-avatar" 
+                />
+                @if (s.status === 'active') {
+                  <span class="status-dot active"></span>
+                }
+              </div>
+
+              <div class="session-meta">
+                <div class="meta-top">
+                  <span class="user-name">{{ (s.userName && s.userName !== 'undefined') ? s.userName : (s.userEmail || 'Khách hàng') }}</span>
+                  <span class="time-ago">{{ formatTime(s.lastMessageTime) }}</span>
+                </div>
+
+                <div class="meta-bottom">
+                  <span class="last-msg-preview">{{ s.lastMessage }}</span>
+                  
+                  @if ((s.unreadCountAdmin || 0) > 0) {
+                    <span class="unread-badge">{{ s.unreadCountAdmin }}</span>
+                  }
+                </div>
+
+                <div class="tags-row">
+                  @if (s.chatMode === 'live') {
+                    <span class="tag tag-live-mode"><i class="bi bi-headset me-1"></i> Live CSKH</span>
+                  } @else {
+                    <span class="tag tag-ai-mode"><i class="bi bi-robot me-1"></i> Bot AI</span>
+                  }
+
+                  @if (s.isGuest) {
+                    <span class="tag tag-guest">Guest</span>
+                  } @else {
+                    <span class="tag tag-user">Thành viên</span>
+                  }
+
+                  @if (s.status === 'closed') {
+                    <span class="tag tag-closed">Đã đóng</span>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+
+    <!-- Right Panel: Conversation View -->
+    <div class="conversation-panel">
+      @if (selectedSession(); as session) {
+        <!-- Panel Header -->
+        <div class="panel-header">
+          <div class="user-profile">
+            <button class="btn btn-outline-dark btn-sm d-md-none me-2 btn-back-list" (click)="selectedSessionId.set(null)" title="Quay lại danh sách">
+              <i class="bi bi-chevron-left me-1"></i> Danh sách
+            </button>
+            <img 
+              [src]="getAvatarUrl(session.userAvatar, session.userName)" 
+              (error)="onAvatarError($event, session.userName)"
+              alt="Avatar" 
+              class="header-user-avatar" 
+            />
+            <div class="header-user-info">
+              <h5 class="user-fullname">
+                {{ (session.userName && session.userName !== 'undefined') ? session.userName : (session.userEmail || 'Khách hàng') }}
+                @if (session.isGuest) {
+                  <span class="badge bg-secondary ms-1">Guest</span>
+                } @else {
+                  <span class="badge bg-primary ms-1">Khách hàng</span>
+                }
+              </h5>
+              <p class="user-subtext">
+                <i class="bi bi-envelope me-1"></i> {{ session.userEmail || 'Khách vãng lai' }} | 
+                ID: {{ session.userId || session.id }}
+              </p>
+            </div>
+          </div>
+
+          <div class="header-actions">
+            @if (canManage()) {
+              @if (session.status === 'active') {
+                <button class="btn btn-outline-secondary btn-sm" (click)="toggleSessionStatus()">
+                  <i class="bi bi-check2-circle me-1"></i> Đóng phiên
+                </button>
+              } @else {
+                <button class="btn btn-outline-success btn-sm" (click)="toggleSessionStatus()">
+                  <i class="bi bi-arrow-counterclockwise me-1"></i> Mở lại
+                </button>
+              }
+
+              <button class="btn btn-outline-danger btn-sm" (click)="deleteCurrentSession()" title="Xóa cuộc trò chuyện">
+                <i class="bi bi-trash"></i>
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Chat Timeline Body -->
+        <div #chatMessagesBody class="messages-body">
+          @for (msg of sessionMessages(); track msg.id) {
+            @if (msg.sender === 'system') {
+              <div class="timeline-system-msg">
+                <span class="badge rounded-pill bg-light text-dark border">
+                  <i class="bi bi-gear-fill me-1 text-primary"></i> {{ msg.text }}
+                </span>
+              </div>
+            } @else if (msg.sender === 'user') {
+              <div class="timeline-msg-row user-msg">
+                <div class="msg-content">
+                  <div class="msg-header">
+                    <span class="sender-name">{{ msg.senderName }}</span>
+                    <span class="msg-time">{{ formatTime(msg.timestamp) }}</span>
+                  </div>
+                  <div class="msg-text">{{ msg.text }}</div>
+                </div>
+              </div>
+            } @else {
+              <div class="timeline-msg-row admin-msg">
+                <img 
+                  [src]="getAvatarUrl(msg.senderAvatar, msg.senderName)" 
+                  (error)="onAvatarError($event, msg.senderName)"
+                  alt="Admin" 
+                  class="admin-avatar" 
+                />
+                <div class="msg-content">
+                  <div class="msg-header">
+                    <span class="sender-name">{{ msg.senderName }} <span class="badge bg-warning text-dark">CSKH</span></span>
+                    <span class="msg-time">{{ formatTime(msg.timestamp) }}</span>
+                  </div>
+                  <div class="msg-text">{{ msg.text }}</div>
+                </div>
+              </div>
+            }
+          }
+        </div>
+
+        <!-- Quick Template Responses -->
+        @if (canReply() && session.status === 'active') {
+          <div class="quick-reply-bar">
+            <span class="quick-title"><i class="bi bi-lightning-charge-fill text-warning"></i> Trả lời nhanh:</span>
+            <div class="template-chips">
+              @for (tmpl of quickTemplates; track tmpl) {
+                <button class="btn-tmpl-chip" (click)="insertTemplate(tmpl)">
+                  {{ tmpl }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Panel Footer / Input Area -->
+        <div class="panel-footer">
+          @if (!canReply()) {
+            <div class="alert alert-warning m-0 p-2 text-center" style="font-size: 13px;">
+              <i class="bi bi-shield-lock-fill me-1"></i> Bạn không có quyền <strong>CHAT_REPLY</strong> để gửi tin nhắn phản hồi.
+            </div>
+          } @else if (session.status === 'closed') {
+            <div class="alert alert-secondary m-0 p-2 text-center" style="font-size: 13px;">
+              <i class="bi bi-lock-fill me-1"></i> Phiên hội thoại này đã bị đóng. 
+              <button class="btn btn-link btn-sm p-0 ms-1" (click)="toggleSessionStatus()">Mở lại phiên chat</button>
+            </div>
+          } @else {
+            <div class="reply-input-wrap">
+              <textarea 
+                class="form-control reply-textarea" 
+                [(ngModel)]="replyText" 
+                (keydown)="handleKeyDown($event)"
+                placeholder="Nhập nội dung phản hồi cho khách hàng (Gõ Enter để gửi, Shift+Enter xuống dòng)..." 
+                rows="2"></textarea>
+              
+              <button 
+                class="btn btn-primary btn-send-reply" 
+                [disabled]="!replyText || !replyText.trim()" 
+                (click)="sendReply()">
+                <i class="bi bi-send-fill me-1"></i> Gửi phản hồi
+              </button>
+            </div>
+          }
+        </div>
+      } @else {
+        <!-- No Session Selected View -->
+        <div class="no-session-selected">
+          <i class="bi bi-chat-square-heart display-1 text-muted"></i>
+          <h4>Hộp Thư Phản Hồi Live Chat</h4>
+          <p class="text-muted">Chọn một cuộc hội thoại từ danh sách bên trái để bắt đầu tư vấn khách hàng.</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>

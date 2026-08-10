@@ -1,0 +1,541 @@
+<div class="customer-container animate-fade-in" *ngIf="authService.hasPermission('CUSTOMERS_VIEW'); else noPermission">
+
+  <!-- Header Section with stats and Add New action -->
+  <div class="header-section mb-5">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <span
+          class="badge bg-gold-subtle text-gold text-uppercase tracking-wider mb-2 px-3 py-2 rounded-pill fs-9 fw-bold">Hệ
+          thống Admin</span>
+        <h1 class="display-6 fw-bold text-gradient-luxury font-serif mb-2">Quản Lý Khách Hàng</h1>
+        <p class="text-muted fs-6 mb-0">Quản trị viên có thể theo dõi thống kê, quản lý trạng thái tài khoản và cập nhật
+          hồ sơ khách hàng của hệ thống.</p>
+      </div>
+      <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <button *ngIf="authService.hasPermission('CUSTOMERS_EDIT') || authService.hasPermission('create')" (click)="handleAdd()"
+          class="btn btn-primary-theme shimmer-hover glow-on-hover px-4 py-2.5 rounded-pill shadow-sm transition-all fw-semibold d-inline-flex align-items-center gap-2">
+          <i class="bi bi-person-plus-fill fs-5"></i> Thêm Khách Hàng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Dashboard Row -->
+  <div class="row g-4 mb-5">
+    <div class="col-12 col-md-4">
+      <div class="card glass-card border-0 rounded-4 p-4 h-100 transition-all glow-on-hover">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="stat-icon-wrapper rounded-circle d-flex align-items-center justify-content-center bg-gold-light">
+            <i class="bi bi-people-fill text-gold fs-4"></i>
+          </div>
+          <span class="text-muted fs-8 fw-semibold">Tổng số</span>
+        </div>
+        <h3 class="display-6 fw-bold mb-1">{{ getTotalCustomers() }}</h3>
+        <p class="text-muted fs-8 mb-0">Khách hàng đăng ký</p>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-4">
+      <div class="card glass-card border-0 rounded-4 p-4 h-100 transition-all glow-on-hover">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="stat-icon-wrapper rounded-circle d-flex align-items-center justify-content-center bg-teal-light">
+            <i class="bi bi-person-check-fill text-teal fs-4"></i>
+          </div>
+          <span class="text-muted fs-8 fw-semibold">Hoạt động</span>
+        </div>
+        <h3 class="display-6 fw-bold mb-1 text-success">{{ getActiveCustomers() }}</h3>
+        <p class="text-muted fs-8 mb-0">Tài khoản bình thường</p>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-4">
+      <div class="card glass-card border-0 rounded-4 p-4 h-100 transition-all glow-on-hover">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div
+            class="stat-icon-wrapper rounded-circle d-flex align-items-center justify-content-center bg-danger-light">
+            <i class="bi bi-person-x-fill text-danger fs-4"></i>
+          </div>
+          <span class="text-muted fs-8 fw-semibold">Bị khóa</span>
+        </div>
+        <h3 class="display-6 fw-bold mb-1 text-danger">{{ getLockedCustomers() }}</h3>
+        <p class="text-muted fs-8 mb-0">Tài khoản tạm ngưng</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Table Card -->
+  <div class="card glass-card border-0 rounded-4 shadow-sm overflow-hidden mb-5">
+    <div class="card-header bg-transparent border-0 px-4 pt-4 pb-0 d-flex justify-content-between align-items-center">
+      <h5 class="fw-bold font-serif mb-0 text-dark">Danh sách tài khoản khách hàng</h5>
+      <button (click)="customerService.refreshFromServer()"
+        class="btn btn-sm btn-light border px-3 py-2 rounded-pill fs-8 d-flex align-items-center gap-1 transition-all hover-scale-sm">
+        <i class="bi bi-arrow-clockwise"></i> Làm mới dữ liệu
+      </button>
+    </div>
+
+    <!-- Search & Filter Toolbar -->
+    <div
+      class="px-4 py-3 bg-transparent border-bottom d-flex flex-wrap align-items-center justify-content-between gap-3">
+      <!-- Search Input -->
+      <div class="search-box-luxury">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)"
+          class="form-control-search-luxury" placeholder="Tìm tên, email, SĐT, tài khoản..." />
+      </div>
+
+      <!-- Filters -->
+      <div class="d-flex flex-wrap align-items-center gap-2">
+        <!-- Account Type Filter -->
+        <div class="filter-dropdown-luxury me-2">
+          <i class="bi bi-person-badge filter-icon"></i>
+          <select [ngModel]="selectedAccountTypeFilter()" (ngModelChange)="selectedAccountTypeFilter.set($event)"
+            class="select-filter-luxury">
+            <option value="all">Tất cả loại TK</option>
+            <option value="google">Tài khoản Google</option>
+            <option value="regular">Tài khoản thường</option>
+          </select>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="filter-dropdown-luxury">
+          <i class="bi bi-funnel filter-icon"></i>
+          <select [ngModel]="selectedStatusFilter()" (ngModelChange)="selectedStatusFilter.set($event)"
+            class="select-filter-luxury">
+            <option value="all">Tất cả trạng thái</option>
+            <option value="active">Hoạt động</option>
+            <option value="locked">Bị khóa</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customers Grid Table -->
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table align-middle custom-luxury-table mb-0">
+          <thead>
+            <tr class="text-uppercase tracking-wider fs-8 text-secondary border-bottom">
+              <th class="ps-4" style="width: 80px">ID</th>
+              <th style="width: 250px">Khách hàng</th>
+              <th style="width: 150px">Mật khẩu</th>
+              <th style="width: 320px">Liên hệ</th>
+              <th>Địa chỉ</th>
+              <th style="width: 140px">Trạng thái</th>
+              <th class="pe-4 text-end" style="width: 150px">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (customer of filteredCustomers(); track customer.id) {
+            <tr class="customer-row-luxury">
+              <td class="ps-4">
+                <span class="cus-id-badge">{{ customer.id }}</span>
+              </td>
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  <!-- Image or Text Avatar -->
+                  <div
+                    class="avatar-frame-luxury rounded-circle overflow-hidden d-flex align-items-center justify-content-center bg-gold-light text-gold fw-bold shadow-sm border border-white"
+                    style="width: 38px; height: 38px;">
+                    <img [src]="customer.avatar" *ngIf="customer.avatar" class="w-100 h-100 object-fit-cover" alt="" />
+                    <span *ngIf="!customer.avatar">{{ getCustomerInitials(customer.fullname) }}</span>
+                  </div>
+                  <div>
+                    <h6 class="mb-0 fw-bold text-dark">{{ customer.fullname || 'Chưa cập nhật' }}</h6>
+                    <span class="text-muted fs-8">@{{ customer.username }}</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div *ngIf="customer.isGoogleAccount" class="d-inline-flex">
+                  <span class="badge bg-danger-subtle text-danger rounded-pill px-2.5 py-1.5 fs-85 d-inline-flex align-items-center gap-1 border border-danger-subtle">
+                    <i class="bi bi-google text-danger"></i> Google Account
+                  </span>
+                </div>
+                <div *ngIf="!customer.isGoogleAccount" class="d-flex align-items-center gap-2 position-relative pe-4">
+                  <span class="font-monospace text-dark fs-8">
+                    {{ showPasswords()[customer.id!] ? customer.password : '••••••••' }}
+                  </span>
+                  <button type="button" (click)="togglePasswordVisibility(customer.id!)"
+                    class="btn btn-link p-0 text-muted show-password-btn" title="Hiện mật khẩu">
+                    <i [class]="showPasswords()[customer.id!] ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'"></i>
+                  </button>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex flex-column gap-1">
+                  <span class="fs-8 text-dark d-flex align-items-center gap-1.5 email-text-cell">
+                    <i class="bi bi-envelope text-muted"></i>
+                    {{ customer.email || 'N/A' }}
+                  </span>
+                  <span class="fs-8 text-muted d-flex align-items-center gap-1.5">
+                    <i class="bi bi-telephone text-muted"></i>
+                    {{ customer.phone || 'N/A' }}
+                  </span>
+                </div>
+              </td>
+              <td>
+                <span class="text-dark fs-8 text-truncate d-inline-block" style="max-width: 250px;"
+                  [title]="customer.address || ''">
+                  {{ customer.address || 'Chưa cập nhật' }}
+                </span>
+              </td>
+              <td>
+                <button (click)="toggleLock(customer)" [disabled]="!authService.hasPermission('CUSTOMERS_LOCK') && !authService.hasPermission('update')" class="btn-status-toggle border-0 bg-transparent p-0"
+                  title="Nhấp để chuyển trạng thái">
+                  <span
+                    class="badge rounded-pill px-3 py-1.5 fs-85 font-sans d-inline-flex align-items-center gap-1 transition-all"
+                    [ngClass]="customer.islocked ? 'bg-danger-subtle text-danger' : 'bg-success-subtle text-success'">
+                    <span class="status-dot" [ngClass]="customer.islocked ? 'bg-danger' : 'bg-success'"></span>
+                    {{ customer.islocked ? 'Bị khóa' : 'Hoạt động' }}
+                  </span>
+                </button>
+              </td>
+              <td class="pe-4 text-end">
+                <div class="d-flex justify-content-end gap-2">
+                  <button (click)="handleView(customer)" class="btn-action-luxury view" title="Xem chi tiết">
+                    <i class="bi bi-eye-fill"></i>
+                  </button>
+                  <button *ngIf="authService.hasPermission('CUSTOMERS_EDIT') || authService.hasPermission('update')" (click)="handleEdit(customer)" class="btn-action-luxury edit" title="Sửa thông tin">
+                    <i class="bi bi-pencil-fill"></i>
+                  </button>
+                  <button *ngIf="authService.hasPermission('CUSTOMERS_EDIT') || authService.hasPermission('delete')" (click)="handleDelete(customer.id!)" class="btn-action-luxury delete" title="Xóa khách hàng">
+                    <i class="bi bi-trash3-fill"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="7" class="text-center py-5">
+                <div class="d-flex flex-column align-items-center gap-3">
+                  <i class="bi bi-people text-muted fs-1"></i>
+                  <p class="text-muted mb-0">Không tìm thấy khách hàng nào khớp với bộ lọc.</p>
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Premium Centered Modal Dialog -->
+  <div class="modal-backdrop-luxury" [class.open]="isFormOpen()" (click)="handleCancel()"></div>
+  <div class="modal-container-luxury" [class.open]="isFormOpen()">
+    <div class="modal-header-luxury">
+      <div>
+        <h4 class="fw-bold font-serif mb-1 text-gradient-luxury">
+          {{ formType() === 'add' ? 'Thêm Khách Hàng Mới' : 'Cập Nhật Khách Hàng' }}
+        </h4>
+        <p class="text-muted fs-8 mb-0">Điền đầy đủ thông tin tài khoản và cá nhân của khách hàng bên dưới</p>
+      </div>
+      <button (click)="handleCancel()"
+        class="btn-close-drawer rounded-circle border-0 d-flex align-items-center justify-content-center">
+        <i class="bi bi-x-lg fs-6"></i>
+      </button>
+    </div>
+
+    <div class="modal-body-luxury" *ngIf="isFormOpen()">
+      <form (submit)="$event.preventDefault(); handleSave()">
+        <div class="row g-4">
+
+          <!-- Left Column: Initials View & Account Status -->
+          <div class="col-md-4 text-center border-end-md">
+            <div class="avatar-upload-container d-inline-block mb-3">
+              <div
+                class="avatar-preview-luxury rounded-circle overflow-hidden d-flex align-items-center justify-content-center bg-gold-light text-gold fw-bold display-5 shadow mx-auto"
+                style="width: 100px; height: 100px;">
+                <img [src]="customerFormModel().avatar" *ngIf="customerFormModel().avatar" class="w-100 h-100 object-fit-cover" alt="" />
+                <span *ngIf="!customerFormModel().avatar">{{ getCustomerInitials(customerFormModel().fullname) }}</span>
+              </div>
+            </div>
+
+            <div class="mt-4 px-2 text-start">
+              <label class="form-label-luxury">Trạng thái tài khoản</label>
+              <div class="input-luxury-wrap mb-3">
+                <i class="bi bi-shield-check input-luxury-icon"></i>
+                <select name="islocked" [(ngModel)]="customerFormModel().islocked" class="form-control-luxury select">
+                  <option [ngValue]="false">🟢 Hoạt động (Active)</option>
+                  <option [ngValue]="true">🔴 Bị khóa (Locked)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Account and Personal Data -->
+          <div class="col-md-8">
+
+            <!-- Credentials Section -->
+            <div class="form-section-title mb-3">
+              <i class="bi bi-shield-lock text-gold me-2"></i>
+              <span>Thông tin tài khoản</span>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label-luxury">Tên đăng nhập <span class="text-danger">*</span></label>
+                <div class="input-luxury-wrap">
+                  <i class="bi bi-person input-luxury-icon"></i>
+                  <input type="text" name="username" [(ngModel)]="customerFormModel().username"
+                    class="form-control-luxury" placeholder="Ví dụ: nguyenvana" required
+                    [disabled]="formType() === 'edit'" />
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label-luxury">Mật khẩu <span class="text-danger" *ngIf="!customerFormModel().isGoogleAccount">*</span></label>
+                <div class="input-luxury-wrap" [class.bg-light-disabled]="customerFormModel().isGoogleAccount">
+                  <i class="bi bi-key input-luxury-icon" [class.text-muted]="customerFormModel().isGoogleAccount"></i>
+                  <input [type]="showFormPassword() ? 'text' : 'password'" name="password"
+                    [(ngModel)]="customerFormModel().password" class="form-control-luxury pe-5"
+                    [placeholder]="customerFormModel().isGoogleAccount ? 'Đăng nhập bằng tài khoản Google' : 'Nhập mật khẩu...'"
+                    [required]="!customerFormModel().isGoogleAccount"
+                    [disabled]="customerFormModel().isGoogleAccount === true" />
+                  <span (click)="toggleFormPasswordVisibility()" class="password-toggle-icon" *ngIf="!customerFormModel().isGoogleAccount">
+                    <i [class]="showFormPassword() ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile Info Section -->
+            <div class="form-section-title mb-3">
+              <i class="bi bi-person-lines-fill text-gold me-2"></i>
+              <span>Thông tin cá nhân</span>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label-luxury">Họ và Tên <span class="text-danger">*</span></label>
+                <div class="input-luxury-wrap">
+                  <i class="bi bi-card-text input-luxury-icon"></i>
+                  <input type="text" name="fullname" [(ngModel)]="customerFormModel().fullname"
+                    class="form-control-luxury" placeholder="Ví dụ: Nguyễn Văn A" required />
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label-luxury">Địa chỉ Email <span class="text-danger">*</span></label>
+                <div class="input-luxury-wrap">
+                  <i class="bi bi-envelope input-luxury-icon"></i>
+                  <input type="email" name="email" [(ngModel)]="customerFormModel().email" class="form-control-luxury"
+                    placeholder="nguyenvana@gmail.com" required />
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label-luxury">Số điện thoại</label>
+                <div class="input-luxury-wrap">
+                  <i class="bi bi-telephone input-luxury-icon"></i>
+                  <input type="text" name="phone" [(ngModel)]="customerFormModel().phone" class="form-control-luxury"
+                    placeholder="09xxxxxxxx" />
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label-luxury">Địa chỉ giao hàng</label>
+                <div class="input-luxury-wrap">
+                  <i class="bi bi-geo-alt input-luxury-icon"></i>
+                  <textarea name="address" [(ngModel)]="customerFormModel().address"
+                    class="form-control-luxury textarea" rows="2"
+                    placeholder="Số nhà, tên đường, khu phố, phường/xã..."></textarea>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer-luxury">
+      <button type="button" (click)="handleCancel()"
+        class="btn btn-cancel-luxury rounded-pill px-4 py-2 fw-semibold font-sans">
+        Hủy bỏ
+      </button>
+      <button type="button" (click)="handleSave()"
+        class="btn btn-save-luxury shimmer-hover rounded-pill px-4 py-2 fw-semibold font-sans">
+        Lưu thông tin
+      </button>
+    </div>
+  </div>
+
+  <!-- Premium Centered Modal Dialog for Viewing Customer Details -->
+  <div class="modal-backdrop-luxury" [class.open]="isViewOpen()" (click)="closeView()"></div>
+  <div class="modal-container-luxury" [class.open]="isViewOpen()">
+    <div class="modal-header-luxury">
+      <div>
+        <h4 class="fw-bold font-serif mb-1 text-gradient-luxury">Chi Tiết Hồ Sơ Khách Hàng</h4>
+        <p class="text-muted fs-8 mb-0">Xem toàn bộ thông tin tài khoản và cá nhân lưu trữ trên hệ thống</p>
+      </div>
+      <button (click)="closeView()"
+        class="btn-close-drawer rounded-circle border-0 d-flex align-items-center justify-content-center">
+        <i class="bi bi-x-lg fs-6"></i>
+      </button>
+    </div>
+
+    <div class="modal-body-luxury" *ngIf="isViewOpen() && viewingCustomer()">
+      <div class="row g-4">
+        <!-- Left Side: Avatar and Quick Stats -->
+        <div class="col-md-4 text-center border-end-md">
+          <div class="avatar-upload-container d-inline-block mb-3">
+            <div
+              class="avatar-preview-luxury rounded-circle overflow-hidden d-flex align-items-center justify-content-center bg-gold-light text-gold fw-bold display-5 shadow mx-auto"
+              style="width: 100px; height: 100px;">
+              <img [src]="viewingCustomer()!.avatar" *ngIf="viewingCustomer()!.avatar" class="w-100 h-100 object-fit-cover" alt="" />
+              <span *ngIf="!viewingCustomer()!.avatar">{{ getCustomerInitials(viewingCustomer()!.fullname) }}</span>
+            </div>
+          </div>
+          <h5 class="fw-bold mb-1 text-dark">{{ viewingCustomer()!.fullname }}</h5>
+          <p class="text-muted fs-8 mb-3">@{{ viewingCustomer()!.username }}</p>
+
+          <div class="px-2 text-start">
+            <div class="detail-item-luxury mb-3">
+              <div class="detail-label-luxury">Trạng thái tài khoản</div>
+              <div class="detail-value-luxury">
+                <span class="badge rounded-pill px-2.5 py-1.5 fs-85"
+                  [ngClass]="viewingCustomer()!.islocked ? 'bg-danger-subtle text-danger' : 'bg-success-subtle text-success'">
+                  {{ viewingCustomer()!.islocked ? '🔴 Đã khóa' : '🟢 Đang hoạt động' }}
+                </span>
+              </div>
+            </div>
+
+            <div class="detail-item-luxury">
+              <div class="detail-label-luxury">Nhóm quyền</div>
+              <div class="detail-value-luxury font-sans">
+                <span class="badge bg-gold-subtle text-gold rounded-pill px-2.5 py-1.5 fs-85 text-uppercase">
+                  {{ viewingCustomer()!.role || 'Khách hàng' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Details Form View -->
+        <div class="col-md-8">
+          <div class="form-section-title mb-3">
+            <i class="bi bi-shield-lock text-gold me-2"></i>
+            <span>Thông tin tài khoản</span>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-sm-6">
+              <div class="detail-item-luxury">
+                <div class="detail-label-luxury">Mã định danh (ID)</div>
+                <div class="detail-value-luxury font-monospace">{{ viewingCustomer()!.id }}</div>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="detail-item-luxury">
+                <div class="detail-label-luxury">Tên đăng nhập</div>
+                <div class="detail-value-luxury">@{{ viewingCustomer()!.username }}</div>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="detail-item-luxury">
+                <div class="detail-label-luxury">Mật khẩu</div>
+                <div class="detail-value-luxury font-monospace">
+                  <span *ngIf="viewingCustomer()!.isGoogleAccount" class="text-danger fs-85">
+                    <i class="bi bi-google"></i> Google Account
+                  </span>
+                  <span *ngIf="!viewingCustomer()!.isGoogleAccount" class="fs-85">
+                    {{ viewingCustomer()!.password }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="detail-item-luxury">
+                <div class="detail-label-luxury">Hình thức đăng nhập</div>
+                <div class="detail-value-luxury">
+                  <span *ngIf="viewingCustomer()!.isGoogleAccount" class="badge bg-danger-subtle text-danger rounded-pill px-2 py-1 fs-9">
+                    Google OAuth 2.0
+                  </span>
+                  <span *ngIf="!viewingCustomer()!.isGoogleAccount" class="badge bg-dark-subtle text-dark rounded-pill px-2 py-1 fs-9">
+                    Mật khẩu thường
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section-title mb-3">
+            <i class="bi bi-person-lines-fill text-gold me-2"></i>
+            <span>Thông tin liên hệ & hồ sơ</span>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <div class="detail-item-luxury">
+                <div class="detail-label-luxury">Địa chỉ Email</div>
+                <div class="detail-value-luxury text-truncate" [title]="viewingCustomer()!.email">
+                  {{ viewingCustomer()!.email || 'Chưa cập nhật' }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="detail-item-luxury">
+                <div class="detail-label-luxury">Số điện thoại</div>
+                <div class="detail-value-luxury">
+                  {{ viewingCustomer()!.phone || 'Chưa cập nhật' }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="detail-item-luxury">
+                <div class="detail-label-luxury">Giới tính</div>
+                <div class="detail-value-luxury text-capitalize">
+                  {{ viewingCustomer()!.gender || 'Chưa cập nhật' }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="detail-item-luxury">
+                <div class="detail-label-luxury">Ngày sinh</div>
+                <div class="detail-value-luxury">
+                  {{ viewingCustomer()!.dob || 'Chưa cập nhật' }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="detail-item-luxury">
+                <div class="detail-label-luxury">Địa chỉ giao hàng mặc định</div>
+                <div class="detail-value-luxury" style="white-space: pre-wrap;">
+                  {{ viewingCustomer()!.address || 'Chưa cập nhật địa chỉ giao hàng' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer-luxury">
+      <button type="button" (click)="closeView()"
+        class="btn btn-cancel-luxury rounded-pill px-4 py-2 fw-semibold font-sans">
+        Đóng cửa sổ
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<ng-template #noPermission>
+  <div class="container py-5 text-center mt-5">
+    <div class="card glass-card border-0 rounded-4 p-5 shadow-sm d-inline-block" style="max-width: 550px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
+      <div class="text-danger mb-4">
+        <i class="bi bi-shield-slash-fill fs-1 text-accent" style="color: var(--accent-color) !important;"></i>
+      </div>
+      <h3 class="fw-bold text-dark mb-3 font-serif">Truy Cập Bị Từ Chối</h3>
+      <p class="text-muted mb-4 fs-7">Bạn không có quyền truy cập vào danh mục Quản lý Khách hàng. Vui lòng liên hệ Quản trị viên hệ thống để kiểm tra phân quyền cho vai trò của bạn.</p>
+    </div>
+  </div>
+</ng-template>

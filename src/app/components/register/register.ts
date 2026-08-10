@@ -29,7 +29,13 @@ export class RegisterComponent {
     this.showPassword.update(val => !val);
   }
 
-  onSubmit() {
+  onPhoneInput(event: any) {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.replace(/[^0-9]/g, '');
+    this.phone = input.value;
+  }
+
+  async onSubmit() {
     this.errorMessage.set('');
     if (!this.name.trim() || !this.email.trim() || !this.phone.trim() || !this.password.trim() || !this.confirmPassword.trim()) {
       this.errorMessage.set('Vui lòng điền đầy đủ tất cả các trường.');
@@ -39,6 +45,12 @@ export class RegisterComponent {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this.email)) {
       this.errorMessage.set('Định dạng Email không hợp lệ.');
+      return;
+    }
+
+    const phoneRegex = /^0[0-9]{9}$/;
+    if (!phoneRegex.test(this.phone)) {
+      this.errorMessage.set('Số điện thoại phải bắt đầu bằng số 0 và có đúng 10 chữ số.');
       return;
     }
 
@@ -52,7 +64,7 @@ export class RegisterComponent {
       return;
     }
 
-    const res = this.authService.register({
+    const res = await this.authService.register({
       name: this.name,
       email: this.email,
       phone: this.phone,

@@ -1,0 +1,347 @@
+<div class="contact-page-wrapper animate-fade-in">
+
+  <!-- Toast Notification System -->
+  <div class="toast-custom-container" *ngIf="notification().type">
+    <div class="toast-custom border-start border-4 shadow" [class.border-success]="notification().type === 'success'"
+      [class.border-danger]="notification().type === 'danger'">
+      <div class="d-flex align-items-center gap-3">
+        <div class="toast-icon-wrapper rounded-circle" [class.bg-success-light]="notification().type === 'success'"
+          [class.bg-danger-light]="notification().type === 'danger'">
+          <i class="bi" [class.bi-check-circle-fill]="notification().type === 'success'"
+            [class.bi-exclamation-triangle-fill]="notification().type === 'danger'"></i>
+        </div>
+        <div class="toast-body-text">
+          <h6 class="mb-0 fw-bold text-dark">Liên hệ Bookstore</h6>
+          <small class="text-muted" style="font-size: 0.82rem;">{{ notification().message }}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LIGHT HERO SECTION ===== -->
+  <section class="contact-hero-light">
+    <div class="hero-glow-orb hero-glow-1"></div>
+    <div class="hero-glow-orb hero-glow-2"></div>
+    <div class="container position-relative" style="z-index: 2;">
+      <div class="row align-items-center min-vh-hero">
+        <!-- Left: Text -->
+        <div class="col-lg-6 hero-text-col">
+          <span class="section-label">
+            <i class="bi bi-chat-heart-fill"></i> Liên Hệ Với Chúng Tôi
+          </span>
+          <h1 class="hero-light-title">Chúng Tôi Luôn <br><span class="hero-accent-text">Sẵn Sàng Hỗ Trợ</span> Bạn</h1>
+          <p class="hero-light-desc">Sachweb luôn lắng nghe mọi ý kiến đóng góp, phản hồi hoặc hỗ trợ thắc mắc mua hàng.
+            Liên hệ ngay để nhận được sự hỗ trợ tốt nhất.</p>
+          <div class="hero-mini-stats">
+            <div class="mini-stat">
+              <div class="mini-stat-icon"><i class="bi bi-headset"></i></div>
+              <div><strong>Hỗ trợ 24/7</strong><span>Kể cả ngày lễ</span></div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-stat-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+              <div><strong>Phản hồi nhanh</strong><span>Trong vòng 2 giờ</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- Right: Visual Card -->
+        <div class="col-lg-6 d-none d-lg-block">
+          <div class="hero-visual-card">
+            <div class="visual-card-inner">
+              <div class="visual-card-icon"><i class="bi bi-envelope-paper-heart-fill"></i></div>
+              <h4 class="visual-card-title">Gửi tin nhắn cho chúng tôi</h4>
+              <p class="visual-card-text">Điền form bên dưới hoặc liên hệ trực tiếp qua các kênh thông tin.</p>
+              <div class="visual-card-dots">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+            <div class="visual-float-badge badge-1">
+              <i class="bi bi-star-fill"></i> 98% hài lòng
+            </div>
+            <div class="visual-float-badge badge-2">
+              <i class="bi bi-shield-check"></i> Bảo mật tuyệt đối
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <div class="container contact-main-content">
+    <div class="row g-4 g-lg-5">
+
+      <!-- Left Column: Info Cards -->
+      <div class="col-lg-5">
+        <div class="section-header mb-4">
+          <span class="section-label">
+            <i class="bi bi-info-circle-fill"></i> Thông Tin
+          </span>
+          <h2 class="section-title">Thông Tin Liên Hệ</h2>
+          <p class="section-desc">Độc giả có thể liên hệ trực tiếp qua số hotline hoặc ghé thăm cửa hàng của chúng tôi
+            theo địa chỉ bên dưới.</p>
+        </div>
+
+        <div class="info-cards-stack">
+          <!-- Card 1: Address -->
+          <div class="info-card-premium address-card-featured">
+            <div class="card-accent-line"></div>
+
+            <div class="address-visual-box">
+              <div class="address-map-grid"></div>
+              <div class="address-pin-wrap">
+                <div class="address-pin-pulse"></div>
+                <div class="address-pin-icon">
+                  <i class="bi bi-geo-alt-fill"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="info-content address-content">
+              <div class="address-topline">
+                <span class="address-status-dot"></span>
+                Cửa hàng chính
+              </div>
+              <h6 class="info-title address-title">Địa chỉ trụ sở chính</h6>
+              <p class="address-main">273 An Dương Vương</p>
+              <p class="address-sub">Phường 3, Quận 5, TP. Hồ Chí Minh</p>
+              <div class="address-meta-row">
+                <span><i class="bi bi-compass-fill"></i> Dễ tìm đường</span>
+                <span><i class="bi bi-shop"></i> Ghé trực tiếp</span>
+              </div>
+            </div>
+
+            <div class="address-direction-chip">
+              <i class="bi bi-map-fill"></i>
+              <span>Xem bản đồ</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Hotline -->
+          <div class="info-card-premium">
+            <div class="card-accent-line"></div>
+            <div class="info-icon-box icon-phone">
+              <i class="bi bi-telephone-fill"></i>
+            </div>
+            <div class="info-content">
+              <h6 class="info-title">Hotline tư vấn đặt hàng</h6>
+              <p class="info-text info-highlight">090 123 4567</p>
+              <span class="info-sub">(Hỗ trợ 24/7 kể cả ngày lễ)</span>
+            </div>
+            <div class="card-arrow"><i class="bi bi-arrow-right"></i></div>
+          </div>
+
+          <!-- Card 3: Email -->
+          <div class="info-card-premium">
+            <div class="card-accent-line"></div>
+            <div class="info-icon-box icon-email">
+              <i class="bi bi-envelope-fill"></i>
+            </div>
+            <div class="info-content">
+              <h6 class="info-title">Hộp thư hỗ trợ trực tuyến</h6>
+              <p class="info-text" style="font-family: monospace; font-size: 0.82rem;">support&#64;sachweb.vn</p>
+              <p class="info-text mb-0" style="font-family: monospace; font-size: 0.82rem;">contact&#64;sachweb.vn</p>
+            </div>
+            <div class="card-arrow"><i class="bi bi-arrow-right"></i></div>
+          </div>
+
+          <!-- Card 4: Hours -->
+          <div class="info-card-premium">
+            <div class="card-accent-line"></div>
+            <div class="info-icon-box icon-clock">
+              <i class="bi bi-clock-fill"></i>
+            </div>
+            <div class="info-content">
+              <h6 class="info-title">Giờ mở cửa hoạt động</h6>
+              <p class="info-text">Thứ Hai - Chủ Nhật: <strong class="info-highlight">08:00 - 22:00</strong></p>
+            </div>
+            <div class="card-arrow"><i class="bi bi-arrow-right"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Contact Form -->
+      <div class="col-lg-7">
+        <div class="form-card-premium">
+          <div class="form-card-header">
+            <div class="form-icon-badge">
+              <i class="bi bi-pencil-square"></i>
+            </div>
+            <div>
+              <h3 class="form-title">Gửi Lời Nhắn Cho Chúng Tôi</h3>
+              <p class="form-desc">Mọi thắc mắc của quý khách sẽ được ban thư ký chuyển đến phòng ban liên quan giải
+                quyết sớm nhất.</p>
+            </div>
+          </div>
+
+          <form (ngSubmit)="submitForm()">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label-custom">Họ và tên độc giả <span class="required-star">*</span></label>
+                <div class="input-wrapper">
+                  <i class="bi bi-person input-ico"></i>
+                  <input type="text" class="form-input" [(ngModel)]="form().fullName" name="fullName"
+                    placeholder="Nhập họ tên" required />
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label-custom">Địa chỉ Email <span class="required-star">*</span></label>
+                <div class="input-wrapper">
+                  <i class="bi bi-envelope input-ico"></i>
+                  <input type="email" class="form-input" [(ngModel)]="form().email" name="email"
+                    placeholder="email@gmail.com" required />
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label-custom">Số điện thoại liên lạc</label>
+                <div class="input-wrapper">
+                  <i class="bi bi-phone input-ico"></i>
+                  <input type="text" class="form-input" [(ngModel)]="form().phone" name="phone"
+                    placeholder="Số điện thoại" />
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label-custom">Chủ đề cần liên hệ <span class="required-star">*</span></label>
+                <div class="input-wrapper">
+                  <i class="bi bi-tag input-ico"></i>
+                  <select class="form-input form-select-styled" [(ngModel)]="form().subject" name="subject">
+                    <option *ngFor="let sub of subjects" [value]="sub">{{ sub }}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label-custom">Nội dung chi tiết lời nhắn <span class="required-star">*</span></label>
+                <textarea class="form-input textarea-field" [(ngModel)]="form().message" name="message" rows="5"
+                  placeholder="Nhập nội dung thắc mắc hoặc phản hồi của bạn..." required></textarea>
+              </div>
+
+              <div class="col-12 d-flex justify-content-end">
+                <button type="submit" class="btn-submit-premium" [disabled]="isSubmitting()">
+                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"
+                    *ngIf="isSubmitting()"></span>
+                  <i class="bi bi-send-fill me-2" *ngIf="!isSubmitting()"></i>
+                  <span>{{ isSubmitting() ? 'Đang gửi...' : 'Gửi Lời Nhắn' }}</span>
+                  <i class="bi bi-arrow-right ms-2 btn-arrow" *ngIf="!isSubmitting()"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== MAP SECTION - MODERN VISIT STORE ===== -->
+  <section class="map-showcase map-showcase-modern">
+    <div class="map-bg-shape map-bg-shape-1"></div>
+    <div class="map-bg-shape map-bg-shape-2"></div>
+
+    <div class="container position-relative" style="z-index: 2;">
+      <div class="map-header-modern text-center">
+        <span class="section-label map-label-modern">
+          <i class="bi bi-pin-map-fill"></i> Vị Trí Cửa Hàng
+        </span>
+        <h2 class="section-title map-title-modern mx-auto">Ghé Thăm Cửa Hàng Của Chúng Tôi</h2>
+        <p class="section-desc map-desc-modern mx-auto">
+          Không gian đọc sách yên tĩnh, dễ tìm đường và luôn có đội ngũ tư vấn sẵn sàng hỗ trợ bạn chọn những cuốn sách
+          phù hợp.
+        </p>
+      </div>
+
+      <div class="store-visit-card">
+        <div class="store-info-panel">
+          <div class="store-panel-top">
+            <div class="store-pin-large">
+              <i class="bi bi-geo-alt-fill"></i>
+            </div>
+            <div>
+              <span class="store-open-badge">
+                <span class="store-open-dot"></span>
+                Đang mở cửa
+              </span>
+              <h3 class="store-name">Sachweb Bookstore</h3>
+            </div>
+          </div>
+
+          <div class="store-address-box">
+            <span class="store-box-label">Địa chỉ cửa hàng</span>
+            <p>273 An Dương Vương</p>
+            <small>Phường 3, Quận 5, TP. Hồ Chí Minh</small>
+          </div>
+
+          <div class="store-feature-grid">
+            <div class="store-feature-item">
+              <i class="bi bi-clock-history"></i>
+              <div>
+                <strong>08:00 - 22:00</strong>
+                <span>Mở cửa mỗi ngày</span>
+              </div>
+            </div>
+
+            <div class="store-feature-item">
+              <i class="bi bi-telephone-fill"></i>
+              <div>
+                <strong>090 123 4567</strong>
+                <span>Hotline hỗ trợ</span>
+              </div>
+            </div>
+
+            <div class="store-feature-item">
+              <i class="bi bi-compass-fill"></i>
+              <div>
+                <strong>Dễ tìm đường</strong>
+                <span>Ngay trung tâm Quận 5</span>
+              </div>
+            </div>
+
+            <div class="store-feature-item">
+              <i class="bi bi-shop"></i>
+              <div>
+                <strong>Ghé trực tiếp</strong>
+                <span>Tư vấn tại cửa hàng</span>
+              </div>
+            </div>
+          </div>
+
+          <a class="store-direction-btn"
+            href="https://www.google.com/maps/search/?api=1&query=273+An+Dương+Vương,+Phường+3,+Quận+5,+TP.+Hồ+Chí+Minh"
+            target="_blank" rel="noopener noreferrer">
+            <i class="bi bi-send-fill"></i>
+            Chỉ đường trên Google Maps
+            <i class="bi bi-arrow-up-right btn-arrow-map"></i>
+          </a>
+        </div>
+
+        <div class="store-map-panel">
+          <div class="map-floating-toolbar">
+            <span><i class="bi bi-geo-fill"></i> Quận 5, TP.HCM</span>
+            <span><i class="bi bi-calendar-check"></i> Mở mỗi ngày</span>
+          </div>
+
+          <div class="map-frame map-frame-modern">
+            <iframe
+              src="https://maps.google.com/maps?q=273+An+Dương+Vương,+Phường+3,+Quận+5,+Hồ+Chí+Minh&t=&z=16&ie=UTF8&iwloc=&output=embed"
+              width="100%" height="100%" style="border: 0;" allowfullscreen="" loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+
+          <div class="map-bottom-note">
+            <div class="map-note-icon">
+              <i class="bi bi-info-circle-fill"></i>
+            </div>
+            <div>
+              <strong>Gợi ý khi đến cửa hàng</strong>
+              <span>Bạn có thể ghé trong khung giờ 08:00 - 22:00 để được hỗ trợ nhanh nhất.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

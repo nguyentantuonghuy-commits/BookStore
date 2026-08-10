@@ -1,0 +1,115 @@
+<main class="about-container container py-4">
+  <!-- Breadcrumb -->
+  <nav class="about-breadcrumb" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink="/">Trang chủ</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Giới thiệu</li>
+    </ol>
+  </nav>
+
+  <!-- Hero Header Section -->
+  <section class="about-hero glass-card text-center mb-5">
+    <div class="hero-glow"></div>
+    <span class="badge-tag"><i class="bi bi-stars"></i> VỀ SACHWEB</span>
+    <h1 class="hero-title text-gradient-luxury">Khởi nguồn của Tri thức & Đam mê</h1>
+    <p class="hero-subtitle">
+      SachWeb được thành lập với sứ mệnh kết nối độc giả với thế giới tri thức vô tận qua những trang sách chất lượng nhất.
+    </p>
+  </section>
+
+  <!-- Content Grid: Story & Vision -->
+  <section class="row align-items-center g-5 mb-5">
+    <div class="col-lg-6">
+      <div class="story-content">
+        <h2 class="section-title">Câu chuyện của chúng tôi</h2>
+        <p class="text-secondary lead-text">
+          Khởi đầu từ một cửa hàng sách trực tuyến nhỏ vào năm 2026, SachWeb ra đời từ chính niềm đam mê mãnh liệt đối với những trang giấy thơm mùi mực in và khát vọng xây dựng một không gian đọc văn minh, tiện lợi.
+        </p>
+        <p class="text-secondary">
+          Tại SachWeb, chúng tôi tin rằng mỗi cuốn sách là một thế giới mở ra vô vàn góc nhìn mới, nuôi dưỡng tâm hồn và định hình tương lai. Bằng việc không ngừng cải tiến dịch vụ và tuyển chọn những đầu sách giá trị, chúng tôi tự hào được đồng hành cùng hàng vạn độc giả trên con đường chinh phục kho tàng tri thức.
+        </p>
+        <div class="story-quote">
+          <i class="bi bi-quote"></i>
+          <span>"Một cuốn sách hay có thể thay đổi số phận của một con người. Chúng tôi ở đây để giúp bạn tìm thấy cuốn sách đó."</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="story-visual-card glass-card">
+        <div class="visual-badge">Kể từ năm 2026</div>
+        <div class="visual-cover-decor">
+          <i class="bi bi-book-half"></i>
+        </div>
+        <div class="visual-content">
+          <h3>Hành trình vạn dặm bắt đầu từ những trang giấy đầu tiên.</h3>
+          <p>Hàng ngàn độc giả thông thái đã lựa chọn SachWeb làm người bạn đồng hành tinh thần mỗi ngày.</p>
+          <a routerLink="/products" class="btn-explore glow-on-hover">
+            Khám phá Cửa hàng <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Values Section -->
+  <section class="values-section mb-5 text-center">
+    <h2 class="section-title mb-4">Giá trị cốt lõi</h2>
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-4" *ngFor="let item of values">
+        <div class="value-card glass-card h-100">
+          <div class="value-icon-box">
+            <i class="bi" [ngClass]="item.icon"></i>
+          </div>
+          <h3 class="value-title">{{ item.title }}</h3>
+          <p class="value-desc text-secondary">{{ item.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Grid -->
+  <section class="stats-section glass-card mb-5">
+    <div class="row g-4">
+      <div class="col-6 col-md-3 text-center border-end-md" *ngFor="let stat of stats">
+        <div class="stat-box">
+          <div class="stat-icon-wrapper">
+            <i class="bi" [ngClass]="stat.icon"></i>
+          </div>
+          <h3 class="stat-number text-gradient-luxury">{{ stat.number }}</h3>
+          <p class="stat-label">{{ stat.label }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner Section -->
+  <section class="about-cta mb-4">
+    <div class="cta-glow"></div>
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7 text-start ps-lg-5">
+        <div class="cta-subtitle-tag"><i class="bi bi-compass"></i> BẮT ĐẦU HÀNH TRÌNH CỦA BẠN</div>
+        <h2 class="cta-title">Sẵn sàng bước vào <br><span class="highlight-text">Thế giới Tri thức?</span></h2>
+        <div class="cta-divider"></div>
+        <p class="cta-desc">
+          Tìm kiếm cuốn sách tiếp theo cho tủ sách cá nhân của bạn và nhận những ưu đãi hấp dẫn nhất hôm nay.
+        </p>
+        <div class="cta-buttons justify-content-start">
+          <a routerLink="/products" class="btn-cta-primary glow-on-hover">
+            <span class="btn-text">MUA SẮM NGAY</span>
+            <i class="bi bi-arrow-right-short"></i>
+          </a>
+          <a routerLink="/" class="btn-cta-secondary">
+            <i class="bi bi-house-door"></i>
+            <span class="btn-text">VỀ TRANG CHỦ</span>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-5 text-center">
+        <div class="cta-image-wrapper">
+          <img src="/image/about_cta_bookshelf.png" alt="Khởi nguồn đam mê" class="cta-img img-fluid" />
+          <div class="cta-image-glow"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

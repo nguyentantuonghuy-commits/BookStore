@@ -1,0 +1,249 @@
+<div class="permission-container animate-fade-in"
+  *ngIf="authService.hasPermission('PERMISSIONS_MANAGE'); else noPermission">
+
+  <!-- Header Section with stats and Add New action -->
+  <div class="header-section mb-5">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <span
+          class="badge bg-gold-subtle text-gold text-uppercase tracking-wider mb-2 px-3 py-2 rounded-pill fs-9 fw-bold">Bảo
+          mật hệ thống</span>
+        <h1 class="display-6 fw-bold text-gradient-luxury font-serif mb-2">Danh Mục Quyền Hạn</h1>
+        <p class="text-muted fs-6 mb-0">Quản lý mã quyền hạn hệ thống. Các quyền này sẽ được map với các chức năng và
+          vai trò của nhân sự.</p>
+      </div>
+      <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <button (click)="handleAdd()"
+          class="btn btn-primary-theme shimmer-hover glow-on-hover px-4 py-2.5 rounded-pill shadow-sm transition-all fw-semibold d-inline-flex align-items-center gap-2">
+          <i class="bi bi-shield-plus fs-5"></i> Thêm Quyền Hạn
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Thống kê quyền hạn -->
+  <div class="row g-4 mb-5">
+    <div class="col-6 col-md-4">
+      <div class="card glass-card border-0 rounded-4 p-4 h-100 transition-all glow-on-hover">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="stat-icon-wrapper rounded-circle d-flex align-items-center justify-content-center bg-gold-light">
+            <i class="bi bi-key-fill text-gold fs-4"></i>
+          </div>
+          <span class="text-muted fs-8 fw-semibold">Tổng số quyền</span>
+        </div>
+        <h3 class="display-6 fw-bold mb-1">{{ permissionService.permissions().length }}</h3>
+        <p class="text-muted fs-8 mb-0">Quyền hạn trong hệ thống</p>
+      </div>
+    </div>
+
+    <div class="col-6 col-md-4">
+      <div class="card glass-card border-0 rounded-4 p-4 h-100 transition-all glow-on-hover">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="stat-icon-wrapper rounded-circle d-flex align-items-center justify-content-center bg-dark-light">
+            <i class="bi bi-shield-lock-fill text-dark fs-4"></i>
+          </div>
+          <span class="text-muted fs-8 fw-semibold">Quyền hệ thống</span>
+        </div>
+        <h3 class="display-6 fw-bold mb-1">12</h3>
+        <p class="text-muted fs-8 mb-0">Quyền mặc định không thể xóa</p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <div class="card glass-card border-0 rounded-4 p-4 h-100 transition-all glow-on-hover">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="stat-icon-wrapper rounded-circle d-flex align-items-center justify-content-center bg-teal-light">
+            <i class="bi bi-patch-plus-fill text-teal fs-4"></i>
+          </div>
+          <span class="text-muted fs-8 fw-semibold">Quyền mở rộng</span>
+        </div>
+        <h3 class="display-6 fw-bold mb-1">{{ permissionService.permissions().length - 12 }}</h3>
+        <p class="text-muted fs-8 mb-0">Quyền tùy biến thêm mới</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Table Card -->
+  <div class="card glass-card border-0 rounded-4 shadow-sm overflow-hidden mb-5">
+    <div class="card-header bg-transparent border-0 px-4 pt-4 pb-0 d-flex justify-content-between align-items-center">
+      <h5 class="fw-bold font-serif mb-0 text-dark">Danh sách mã quyền hạn</h5>
+      <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fs-8">Bộ mã chuẩn RBAC</span>
+    </div>
+
+    <!-- Search & Filter Toolbar -->
+    <div
+      class="px-4 py-3 bg-transparent border-bottom d-flex flex-wrap align-items-center justify-content-between gap-3">
+      <!-- Search Input -->
+      <div class="search-box-luxury">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)"
+          class="form-control-search-luxury" placeholder="Tìm tên quyền, mã quyền, mô tả..." />
+      </div>
+
+      <!-- Filters -->
+      <div class="d-flex align-items-center gap-2">
+        <!-- Module Filter -->
+        <div class="filter-dropdown-luxury">
+          <i class="bi bi-funnel filter-icon"></i>
+          <select [ngModel]="selectedModuleFilter()" (ngModelChange)="selectedModuleFilter.set($event)"
+            class="select-filter-luxury">
+            <option value="all">Tất cả phân mục</option>
+            <option *ngFor="let mod of modulesList()" [value]="mod">{{ mod }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table align-middle custom-luxury-table mb-0">
+          <thead>
+            <tr class="text-uppercase tracking-wider fs-8 text-secondary border-bottom">
+              <th class="ps-4" style="width: 100px">ID</th>
+              <th style="width: 200px">Phân mục (Module)</th>
+              <th style="width: 250px">Mã quyền hạn</th>
+              <th>Tên quyền hạn</th>
+              <th>Mô tả chức năng</th>
+              <th class="pe-4 text-end" style="width: 140px">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (perm of filteredPermissions(); track perm.id) {
+            <tr class="employee-row-luxury">
+              <td class="ps-4">
+                <span class="emp-id-badge">{{ perm.id }}</span>
+              </td>
+              <td>
+                <span class="badge rounded-pill bg-light text-dark border px-3 py-1.5 fs-8 fw-semibold">
+                  {{ perm.module }}
+                </span>
+              </td>
+              <td>
+                <code class="text-primary fw-bold fs-75 bg-primary bg-opacity-5 px-2 py-1 rounded">
+                  {{ perm.code }}
+                </code>
+              </td>
+              <td>
+                <span class="fw-bold text-dark fs-8">{{ perm.name }}</span>
+              </td>
+              <td>
+                <small class="text-muted line-clamp-2" [title]="perm.description">
+                  {{ perm.description || 'Chưa có mô tả chi tiết.' }}
+                </small>
+              </td>
+              <td class="pe-4 text-end">
+                <div class="d-flex justify-content-end gap-2">
+                  <button (click)="handleEdit(perm)" class="btn-action-luxury edit" title="Chỉnh sửa">
+                    <i class="bi bi-pencil-fill"></i>
+                  </button>
+                  <button [disabled]="isSystemPermission(perm.code)" (click)="handleDelete(perm)"
+                    class="btn-action-luxury delete" [class.opacity-25]="isSystemPermission(perm.code)"
+                    title="Xóa quyền hạn">
+                    <i class="bi bi-trash3-fill"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Premium Centered Modal Dialog -->
+  <div class="modal-backdrop-luxury" [class.open]="isFormOpen()" (click)="handleCancel()"></div>
+  <div class="modal-container-luxury" [class.open]="isFormOpen()">
+    <div class="modal-header-luxury">
+      <div>
+        <h4 class="fw-bold font-serif mb-1 text-gradient-luxury">
+          {{ formType() === 'add' ? 'Thêm Quyền Hạn Mới' : 'Cập Nhật Quyền Hạn' }}
+        </h4>
+        <p class="text-muted fs-8 mb-0">Định nghĩa mã quyền bảo mật cho toàn hệ thống</p>
+      </div>
+      <button (click)="handleCancel()"
+        class="btn-close-drawer rounded-circle border-0 d-flex align-items-center justify-content-center">
+        <i class="bi bi-x-lg fs-6"></i>
+      </button>
+    </div>
+
+    <div class="modal-body-luxury" *ngIf="isFormOpen()">
+      <form (submit)="$event.preventDefault(); handleSave()">
+        <div class="row g-3">
+
+          <div class="col-12">
+            <label class="form-label-luxury">Phân mục (Module) <span class="text-danger">*</span></label>
+            <div class="input-luxury-wrap">
+              <i class="bi bi-grid input-luxury-icon"></i>
+              <select name="module" [(ngModel)]="formModel().module" class="form-control-luxury select">
+                <option value="Sản phẩm">Sản phẩm</option>
+                <option value="Đơn hàng">Đơn hàng</option>
+                <option value="Nhân viên">Nhân viên</option>
+                <option value="Khách hàng">Khách hàng</option>
+                <option value="Quyền">Quyền</option>
+                <option value="Hệ thống">Hệ thống</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label-luxury">Mã quyền hạn (Permission Code) <span class="text-danger">*</span></label>
+            <div class="input-luxury-wrap">
+              <i class="bi bi-code-slash input-luxury-icon"></i>
+              <input type="text" name="code" [(ngModel)]="formModel().code" class="form-control-luxury"
+                placeholder="Ví dụ: BOOKS_EXPORT (chỉ dùng chữ in hoa và gạch dưới)"
+                [disabled]="formType() === 'edit' && isSystemPermission(formModel().code)" required />
+            </div>
+            <small class="text-muted fs-9 d-block mt-1">Nên đặt dạng: MODULE_ACTION (Ví dụ: PRODUCTS_EXPORT,
+              BANNER_MANAGE)</small>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label-luxury">Tên quyền hạn <span class="text-danger">*</span></label>
+            <div class="input-luxury-wrap">
+              <i class="bi bi-tag input-luxury-icon"></i>
+              <input type="text" name="name" [(ngModel)]="formModel().name" class="form-control-luxury"
+                placeholder="Ví dụ: Xuất Excel kho sách" required />
+            </div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label-luxury">Mô tả chức năng</label>
+            <div class="input-luxury-wrap">
+              <i class="bi bi-info-circle input-luxury-icon"></i>
+              <textarea name="description" [(ngModel)]="formModel().description" class="form-control-luxury textarea"
+                rows="3" placeholder="Mô tả chức năng này cho phép làm gì trong hệ thống..."></textarea>
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer-luxury">
+      <button type="button" (click)="handleCancel()"
+        class="btn btn-cancel-luxury rounded-pill px-4 py-2 fw-semibold font-sans">
+        Hủy bỏ
+      </button>
+      <button type="button" (click)="handleSave()"
+        class="btn btn-save-luxury shimmer-hover rounded-pill px-4 py-2 fw-semibold font-sans">
+        Lưu quyền hạn
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<ng-template #noPermission>
+  <div class="container py-5 text-center mt-5">
+    <div class="card glass-card border-0 rounded-4 p-5 shadow-sm d-inline-block"
+      style="max-width: 550px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
+      <div class="text-danger mb-4">
+        <i class="bi bi-shield-slash-fill fs-1 text-accent" style="color: var(--accent-color) !important;"></i>
+      </div>
+      <h3 class="fw-bold text-dark mb-3 font-serif">Truy Cập Bị Từ Chối</h3>
+      <p class="text-muted mb-4 fs-7">Bạn không có quyền quản lý mã quyền hạn hệ thống. Vui lòng liên hệ Quản trị viên
+        hệ thống để kiểm tra phân quyền cho vai trò của bạn.</p>
+    </div>
+  </div>
+</ng-template>

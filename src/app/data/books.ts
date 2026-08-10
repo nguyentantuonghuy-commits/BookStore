@@ -1,9 +1,9 @@
-﻿export const books = [
+export const books = [
   {
     "id": "67d0",
     "title": "Vua chúa Việt và những điều chưa biết",
     "image": "/image/ebooknew1.jpg",
-    "category": "new",
+    "category": "lich-su-chinh-tri",
     "author": "Lê Tiên Long",
     "description": "Cuốn sách là tập hợp những câu chuyện như vậy để hầu chuyện bạn đọc, từ những câu chuyện quốc gia đại sự như Thời xưa nước ta gọi vua là gì, Quy định trang phục, lễ nhạc khi vua thiết triều ra sao, đến những câu chuyện độc đáo khi vua chúa xử lý công việc triều chính, các trường hợp nhà vua bổ nhiệm thần tốc bề tôi vì nhận thấy tài năng vượt trội, quan điểm của các vị vua về phong thủy, hay vua chúa nước ta xây hành cung thế nào, còn có cả việc bảo vệ an toàn của vua…\n\nBên cạnh đó là những khía cạnh về đời sống riêng tư của các vị vua, mô tả dung mạo của các vị vua chúa Việt, vua nào được sử sách mô tả là mặt rồng, dáng rồng, vua nào được sứ thần nước ngoài khen là đẹp trai. Cùng độc giả giải đáp những thắc mắc như khi đi đánh trận, vua ăn gì, vua uống rượu ra sao, những vua nào mê rượu, khi du hành vua đi bằng phương tiện gì, lúc còn trẻ vua phải học hành thế nào, những vị vua Việt nào mắc bệnh lạ, đó là loại bệnh gì…\n\nLọc từ sử sách, cũng không hiếm những câu chuyện đọc lại vẫn thấy mang tính thời sự như các vị vua nước ta chống tham nhũng thế nào, các vị vua dùng cách nào để ngăn nhân dân đánh bạc, khi có dịch bệnh lan truyền vua chỉ đạo xử lý thế nào, hay chuyện các vị vua Việt rèn luyện thân thể bằng cách nào cũng ít người biết đến.",
     "pages": 236,
@@ -11,13 +11,15 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2023",
-    "translator": "Chưa xác định"
+    "translator": "Chưa xác định",
+    "sampleText": "Thời xưa vua chúa nước ta chống tham nhũng thế nào là một trong những đề tài luôn mang tính thời sự cao. Những quy định nghiêm ngặt từ triều đình nhà Lê đến triều Nguyễn đã hạn chế tối đa tệ nạn này...\nMỗi triều đại lại có một cách chế tài riêng biệt, nhưng tựu chung đều hướng đến sự công minh và liêm chính trong bộ máy chính quyền.",
+    "tableOfContents": "Chương 1: Cách vua gọi tên nước | 12\nChương 2: Chống tham nhũng thời xưa | 45\nChương 3: Sinh hoạt chốn hoàng cung | 80\nChương 4: Ghi chép về trang phục triều nghi | 150"
   },
   {
     "id": "67d1",
     "title": "Phan Yên thành binh biến ký - Toàn cảnh cuộc nổi dậy của Lê Văn Khôi",
     "image": "/image/ebooknew2.jpg",
-    "category": "new",
+    "category": "lich-su-chinh-tri",
     "author": "Trần Hoàng Vũ",
     "description": "Cuộc binh biến thành Phiên An (1833 - 1835) là biến động chính trị to lớn ở Nam Kỳ kể từ sau khi cuộc tiến công cuối cùng của Tây Sơn bị Nguyễn vương Ánh đẩy lui. Nó phá vỡ nền hòa bình kéo dài hơn 30 năm trên vùng đất này, đồng thời cũng chính thức kết thúc giai đoạn đu đưa bên miệng hố chiến tranh giữa Xiêm La và Việt Nam, mở ra giai đoạn chiến tranh trực diện giữa hai nước.\n\nCuốn sách này mong muốn đem đến cho độc giả bức tranh chi tiết về cuộc binh biến. Ngày giờ và thứ tự các sự kiện được tổng hợp dựa trên những báo cáo trong Khâm định Tiễu bình lưỡng kỳ nghịch phỉ phương lược chính biên cũng như ghi chép của các nhân vật có tham gia sự kiện. Cuộc nổi dậy thành Phan Yên là sự kiện lịch sử diễn ra trên một địa bàn rộng lớn, có diễn biến phức tạp, với rất nhiều nhân vật tham gia vào sự kiện.",
     "pages": 417,
@@ -25,13 +27,15 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2023",
-    "translator": "Chưa xác định"
+    "translator": "Chưa xác định",
+    "sampleText": "Cuộc nổi dậy tại thành Phiên An vào những năm Minh Mạng thứ 14 là sự kiện chấn động Nam Kỳ lục tỉnh. Đây là mốc lịch sử quan trọng làm thay đổi cục diện bang giao...\nGia quyến Lê Văn Khôi cùng những tướng sĩ đã dựng cờ khởi nghĩa chống lại triều đình trung ương vì những oan khiên tích tụ...",
+    "tableOfContents": "Chương 1: Sự khởi nguồn của binh biến | 9\nChương 2: Thành Phiên An thất thủ | 50\nChương 3: Cuộc chiến trực diện Xiêm - Việt | 110\nChương 4: Kết cục bi tráng của nghĩa quân | 210"
   },
   {
     "id": "67d2",
     "title": "Quá trình phi thực dân hóa và con đường đi lên xã hội hiện đại",
     "image": "/image/ebooknew3.jpg",
-    "category": "new",
+    "category": "kgvh",
     "author": "GS. TS. NGND. Đỗ Thanh Bình",
     "description": "Quá trình phi thực dân hóa ở các nước Á, Phi và Mỹ Latinh chính là quá trình phong trào giải phóng dân tộc bùng nổ và giành thắng lợi ở các khu vực này. Đó là quá trình mà các dân tộc thuộc địa thông qua cuộc đấu tranh kiên cường của mình qua nhiều thế kỉ, cuối cùng giành được nền độc lập, tự do.\n\nCuộc đấu tranh của các dân tộc thuộc địa đi tới phi thực dân hóa là một nội dung lớn trong lịch sử tiến hóa của nhân loại. Vào những năm đầu thế kỉ XXI, nhìn lại lịch sử cuộc đấu tranh giải phóng dân tộc trong những thế kỉ trước, đặc biệt là trong thế kỉ XX, các tác giả mong muốn có cái nhìn tổng hợp, khách quan, đánh giá thỏa đáng về những vấn đề lí luận và thực tiễn cuộc đấu tranh này.\n\nTác phẩm chuyên khảo này hy vọng sẽ phục vụ tích cực cho quá trình đào tạo nghiên cứu sinh, học viên cao học, sinh viên ngành lịch sử, ngành lịch sử quan hệ quốc tế, ngành chính trị học trong các trường đại học, trường Đảng, trường chính trị, cũng như phổ biến và mở rộng tri thức cho những người quan tâm.",
     "pages": 583,
@@ -39,13 +43,15 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2023",
-    "translator": "Chưa xác định"
+    "translator": "Chưa xác định",
+    "sampleText": "Phong trào giải phóng dân tộc ở các nước Á, Phi và Mỹ Latinh là một trong những trang sử hào hùng nhất của thế kỷ XX. Các quốc gia thuộc địa đã đấu tranh giành độc lập từ tay thực dân...\nNền độc lập tự do ấy không hề dễ dàng mà phải đổi bằng máu và nước mắt của bao thế hệ đi trước.",
+    "tableOfContents": "Chương 1: Khái luận về hệ thống thuộc địa | 15\nChương 2: Phong trào giải phóng dân tộc châu Á | 75\nChương 3: Châu Phi thức tỉnh | 160\nChương 4: Con đường đi lên hiện đại | 280"
   },
   {
     "id": "67d3",
-    "title": " English Grammar in Use for ESL Writing - Ngữ pháp tiếng Anh ứng dụng trong kỹ năng viết\nEnglish Grammar in Use for ESL Writing - Ngữ pháp tiếng Anh...",
+    "title": "English Grammar in Use for ESL Writing - Ngữ pháp tiếng Anh ứng dụng trong kỹ năng viết",
     "image": "/image/ebooknew4.jpg",
-    "category": "new",
+    "category": "giao-trinh",
     "author": "Phan Thế Hưng, Ph.D",
     "description": "Cuốn sách English Grammar in Use for ESL Writing - Ngữ pháp tiếng Anh ứng dụng trong kỹ năng viết nhằm hỗ trợ người học cải thiện khả năng chiến lược ngôn ngữ qua các tài liệu trình bày, giúp cho người học điều chỉnh lỗi sai và phát triển kỹ năng viết tiếng Anh, nhất là người học tiếng Anh cho kỳ thi cuối cấp THPT và năm đầu tiên của bậc đại học. Cuốn sách này cung ứng tư liệu và các vấn đề để giúp người học tra cứu nhanh, đúng trọng điểm, và dễ tìm thông tin qua các đề mục trong quá trình viết tiếng Anh; do vậy cuốn sách dành cho những người đã học căn bản ngữ pháp tiếng Anh, không phải dành cho người mới học tiếng Anh.\n\nCuốn sách này cũng là một tài liệu tham khảo dành cho giáo viên để hướng dẫn cho người học tập trung vào những vấn đề ngữ pháp dễ lẫn lộn và khó giải thích.",
     "pages": 334,
@@ -53,13 +59,15 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2024",
-    "translator": "Chưa xác định"
+    "translator": "Chưa xác định",
+    "sampleText": "Writing is one of the most critical skills for ESL learners. Improving grammar structures helps you write academic essays with higher confidence and precision...\nThis book is designed to provide reference materials and key usage patterns for high school and first-year university students.",
+    "tableOfContents": "Unit 1: Tenses in Academic Essays | 10\nUnit 2: Passive Voice and Formal Writing | 45\nUnit 3: Complex Sentence Structures | 90\nUnit 4: Common Writing Errors & Fixes | 135"
   },
   {
     "id": "67d4",
     "title": "Con em chúng ta học gì trong nhà trường?",
     "image": "/image/ebooknew5.jpg",
-    "category": "new",
+    "category": "giao-trinh",
     "author": "Nguyễn Minh Hải",
     "description": "Là một phụ huynh, một người quan tâm đến lĩnh vực giáo dục, một người có những trải nghiệm nhất định trong công tác giảng dạy, bản thân tác giả cũng có sự quan tâm như nhiều người khác. Từ sự quan sát, lắng nghe, tìm hiểu, chiêm nghiệm, tác giả không cố gắng đi tìm cho được các câu trả lời. Trái lại, tác giả nhìn thấy, nêu lên một số câu chuyện, một số tình huống, một số vấn đề trong việc dạy, việc học nói riêng và trong hoạt động giáo dục nói chung, với những góp ý, đề xuất cụ thể.\n\nTrong nhiều năm qua, tác giả đã thể hiện những điều đó dưới dạng các bài viết ở nhiều tờ báo, tạp chí. Nay tác giả tập hợp các bài viết đó thành một tập sách mỏng lấy tên là Con em chúng ta học gì trong nhà trường?. Sách có 40 bài viết, được chia làm 3 phần:\n\nPhần một: Con em chúng ta học như thế nào trong nhà trường? Phần này phản ánh, giới thiệu, gợi mở, đề xuất một số nội dung, phương pháp, cách thức mà con em chúng ta đang học, nên học, cần học trong nhà trường, để có thể bảo đảm yêu cầu về học văn.\n\nPhần hai: Có thể học được gì từ người thầy? Phần này gợi ý về hình ảnh một người thầy nên có trong trường, trong lớp để có thể làm tốt chức trách của mình, đồng thời thuyết phục được cả người học lẫn phụ huynh, nhằm hướng tới mục tiêu học lễ của học sinh.\n\nPhần ba: Một số vấn đề của giáo dục. Phần này phản ánh một số câu chuyện, tình huống, vấn đề của giáo dục nước ta hiện nay; trong điều kiện hội nhập và chuyển đổi số ngày càng sâu rộng, bên cạnh những nội dung cần không ngừng đổi mới thì có những vấn đề dù rất cũ nhưng vẫn cần duy trì và thực hiện tốt.",
     "pages": 204,
@@ -67,13 +75,15 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2024",
-    "translator": "Chưa xác định"
+    "translator": "Chưa xác định",
+    "sampleText": "Giáo dục không chỉ dừng lại ở việc truyền đạt tri thức sách vở, mà cốt lõi là dạy con người cách sống, cách làm việc và ứng xử tử tế.\nNhiều bài học tưởng chừng đơn giản nhưng lại là nền móng định hình nhân cách cả một đời người.",
+    "tableOfContents": "Phần 1: Con em học gì trong trường | 15\nPhần 2: Sức ảnh hưởng của người thầy | 85\nPhần 3: Những vấn đề giáo dục đương đại | 140"
   },
   {
     "id": "67d5",
     "title": "Một mình một ngựa",
     "image": "/image/ebooksph1.jpg",
-    "category": "upcoming",
+    "category": "van-hoa-xa-hoi",
     "author": "Ma Văn Kháng",
     "description": "Đây là phần mô tả chi tiết sách...",
     "pages": 347,
@@ -81,13 +91,15 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2024",
-    "translator": "Chưa xác định"
+    "translator": "Chưa xác định",
+    "sampleText": "Cuộc đời tựa như một thảo nguyên rộng lớn, nơi mỗi chúng ta đều là một kỵ sĩ cô độc trên hành trình chinh phục những ước vọng riêng...\nĐộc lập không có nghĩa là cô đơn, mà là sự tự chủ tối thượng trước mọi giông bão cuộc đời.",
+    "tableOfContents": "Chương 1: Khởi đầu đơn độc | 10\nChương 2: Sức mạnh nội tại | 95\nChương 3: Vượt qua thử thách | 180\nChương 4: Thảo nguyên bình yên | 290"
   },
   {
     "id": "67d6",
     "title": "Người gieo chữ",
     "image": "/image/ebooksph2.jpg",
-    "category": "upcoming",
+    "category": "van-hoa-xa-hoi",
     "author": "Phùng Quang Thuận",
     "description": "Đây là phần mô tả chi tiết sách...",
     "pages": 177,
@@ -95,13 +107,15 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2024",
-    "translator": "Chưa xác định"
+    "translator": "Chưa xác định",
+    "sampleText": "Hành trình mang ánh sáng tri thức đến vùng cao xa xôi đầy rẫy những gian nan thử thách, nhưng nụ cười của trẻ nhỏ chính là động lực to lớn nhất.\nMỗi con chữ được gieo xuống là một hy vọng tươi sáng nảy mầm giữa đá sỏi khô cằn.",
+    "tableOfContents": "Chương 1: Những bước chân đầu tiên | 8\nChương 2: Lớp học trên mây | 52\nChương 3: Ánh sáng bản làng | 110\nChương 4: Trái ngọt nở hoa | 155"
   },
   {
     "id": "67d7",
     "title": "Gặp gỡ ở La Pan Tẩn",
     "image": "/image/ebooksph3.jpg",
-    "category": "upcoming",
+    "category": "van-hoa-xa-hoi",
     "author": "Ma Văn Kháng",
     "description": "Nơi đây, đuốc pơ mu thay đèn dầu. Bắp và sèo đắng là lương thực chính. Lanh trồng ngoài bãi, khung cửi dệt đóng lấy, tự khép kín vòng tròn may mặc. Nơi đây, ngoại trừ hạt muối, là trọn vẹn đời sống tự cấp. Nơi đây xa cách hết thảy. Điện đài không. Báo chí không. Thông tin không. Dân ở đây chưa nhìn thấy chiếc xe đạp. Nơi đây không có chữ. Nơi đây, đời sống tâm linh dồi dào, thờ cúng sầm uất đủ các loại ma, lời thề còn giữ nguyên sự thiêng liêng nguyên thủy. Nơi đây, một cõi giới riêng tây. Nơi đây, ý chí tự lập khát vọng bình đẳng truyền lưu đời đời trong huyết mạch trẻ già, những con người sống nửa đời hôm nay, nửa đời là những kẻ lưu vong sau cuộc bại trận trong quá khứ lịch sử mịt mờ không văn tự.\n\nLa Pan Tẩn, một cuốn sách lạ, muốn hiểu nó phải lần giở từ trang đầu và đọc kĩ từng dòng.",
     "pages": 255,
@@ -109,13 +123,15 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2024",
-    "translator": "Chưa xác định"
+    "translator": "Chưa xác định",
+    "sampleText": "Bản làng nhỏ chìm trong sương mù của vùng cao Tây Bắc ẩn chứa những câu chuyện mộc mạc mà lay động lòng người sâu sắc.\nCuộc sống tự cấp tự túc xa rời khói bụi thị thành đưa con người về với những giá trị nguyên bản nhất.",
+    "tableOfContents": "Chương 1: Đường lên rẻo cao | 12\nChương 2: Đời sống sương mù | 65\nChương 3: Lời thề nguyên thủy | 145\nChương 4: Khát vọng La Pan Tẩn | 215"
   },
   {
     "id": "67d8",
     "title": "Phút giây huyền diệu",
     "image": "/image/ebooksph4.jpg",
-    "category": "upcoming",
+    "category": "suc-khoe-cuoc-song",
     "author": "Ma Văn Kháng",
     "description": "Đây là phần mô tả chi tiết sách...",
     "pages": 357,
@@ -123,13 +139,15 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2024",
-    "translator": "Chưa xác định"
+    "translator": "Chưa xác định",
+    "sampleText": "Trong guồng quay hối hả của cuộc sống hiện đại, đôi khi chỉ một phút lắng đọng tâm hồn cũng mang lại sự thay đổi diệu kỳ.\nTìm kiếm sự an yên từ bên trong chính là chìa khóa mở ra cánh cửa hạnh phúc đích thực.",
+    "tableOfContents": "Chương 1: Sự hỗn loạn thường nhật | 9\nChương 2: Lắng nghe nhịp thở | 80\nChương 3: Khơi nguồn năng lượng | 170\nChương 4: Sống trọn từng phút giây | 275"
   },
   {
     "id": "67d9",
     "title": "Chim én liệng trời cao",
     "image": "/image/ebooksph5.jpg",
-    "category": "upcoming",
+    "category": "thieu-nhi",
     "author": "Ma Văn Kháng",
     "description": "Chà chà là những con chim én! Thức dậy sớm nhất vào những ngày đầu hạ là bọn này. Những con chim én ngực nở, ức trắng như bôi vôi, đuôi tẽ như đuôi cá chép, có đôi cánh dài nhọn hoắt. Những con chim én có tài bay liệng đáng được xếp vào bậc cao thủ. Nhất là khi nắng lên và khoảng trời trên đồng lúa đã trở nên một không gian vừa cao xanh vừa ngát thơm hương lúa đang vào đòng. Khi lao vun vút như những mũi tên. Lúc dang rộng đôi cánh xoay vòng êm ả. Bầy sinh vật lông vũ lúc này như muốn chứng tỏ mình mới thật sự là những kẻ có đặc quyền tự do vừa tài ba vừa mạnh mẽ nhất thế gian. Mình là kẻ có sức mạnh chinh phục cả bầu trời bất chấp cả gió mưa giông bão.",
     "pages": 389,
@@ -137,13 +155,15 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2024",
-    "translator": "Chưa xác định"
+    "translator": "Chưa xác định",
+    "sampleText": "Bầy chim én bay liệng tự do giữa bầu trời xanh biếc báo hiệu mùa xuân ấm áp đang tràn về khắp muôn nơi.\nSự tự do và sức sống mãnh liệt của thiên nhiên luôn là bài học lớn cho con người về lòng quả cảm.",
+    "tableOfContents": "Chương 1: Cánh én đầu xuân | 10\nChương 2: Bầu trời tự do | 90\nChương 3: Giông bão thử thách | 200\nChương 4: Khát vọng bay cao | 310"
   },
   {
     "id": "67d10",
     "title": "Doanh nhân Việt Nam trong lịch sử",
     "image": "/image/ebooknb1.jpg",
-    "category": "featured",
+    "category": "kinh-te",
     "author": "Trần Thuận (Chủ biên)",
     "description": "Trong những bước thăng trầm, dẫu thành công hay thất bại, doanh nhân Việt luôn để lại nhiều bài học cho hậu thế, cho hôm nay, để mỗi doanh nhân Việt Nam làm hành trang tiếp bước. Thực tế chứng minh rằng, doanh nhân Việt Nam đang ngày càng hội nhập mạnh mẽ và sâu sắc với thế giới, nhiều doanh nhân Việt Nam đã thực sự đóng vai trò to lớn trong việc kích thích nền sản xuất của đất nước. Và mới đây, tạp chí Forbes của Mỹ vừa công bố danh sách tỷ phú thế giới năm 2021, trong đó Việt Nam lần đầu tiên có 6 đại diện.\n\nCuốn sách này là một công trình nghiên cứu công phu, nghiêm túc của nhóm tác giả do PGS. TS. Trần Thuận chủ biên. Phần chính yếu trong tập sách này là kết quả nghiên cứu của một đề tài khoa học cấp Đại học quốc gia (tương đương đề tài cấp Bộ) đã được nghiệm thu và đánh giá loại tốt về chất lượng khoa học.\n\nCuốn sách ngoài chương 1 có tính lý luận và chương 6 mang tính khái quát nêu bật những đặc điểm cơ bản của doanh nhân Việt Nam từ trước đến nay, 5 chương còn lại, mỗi chương đề cập đến doanh nhân Việt Nam trong mỗi thời đoạn lịch sử với tình hình cụ thể của đất nước, giúp người đọc nhận thức đầy đủ hơn tính chất và đặc điểm của doanh nhân nước nhà.",
     "pages": 506,
@@ -151,13 +171,15 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2024",
-    "translator": "Chưa xác định"
+    "translator": "Chưa xác định",
+    "sampleText": "Từ những thương nhân thời phong kiến đến thế hệ doanh nhân hiện đại, tinh thần tự cường và nhạy bén luôn là kim chỉ nam cho sự phát triển kinh tế nước nhà.\nLịch sử ghi nhận những đóng góp to lớn của họ trong việc khẳng định vị thế quốc gia trên trường quốc tế.",
+    "tableOfContents": "Chương 1: Lý luận về doanh nhân Việt | 15\nChương 2: Thương nhân thời kỳ phong kiến | 70\nChương 3: Giai đoạn đổi mới hội nhập | 210\nChương 4: Đặc điểm và bài học tương lai | 420"
   },
   {
     "id": "67d11",
     "title": "Đã có Mắm còn thêm Xì Dầu",
     "image": "/image/ebooknb2.jpg",
-    "category": "featured",
+    "category": "thieu-nhi",
     "author": "Nguyễn Thị Thanh Bình",
     "description": "Một con mèo mất mẹ được một bà mẹ của hai anh con trai trong một phút “nhẹ dạ” đã mang về nhà.\n\nSau những dở khóc dở cười, sau những chuyện kinh thiên động địa, sau những phê phán ngấm ngầm, sau những hiểu nhầm của bà mẹ vô tư “cứ làm như mèo là người” thì cô mèo cũng dần hiểu được tình yêu thương của mọi người trong nhà với cô.\n\nVượt ra khỏi cánh cửa căn hộ chung cư luôn khép kín, cô mèo còn gặp nhiều người khác, người ưa người ghét, cuộc sống của cô một ngày bị đảo lộn khi người mẹ mang về một con chó. Chó với mèo vốn không ưa nhau, nhưng khi cùng sống dưới một mái nhà, thì mọi cập kênh cũng phải được kê cho bằng…",
     "pages": 210,
@@ -165,13 +187,15 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2024",
-    "translator": "Chưa xác định"
+    "translator": "Chưa xác định",
+    "sampleText": "Cuộc sống gia đình đảo lộn hoàn toàn kể từ ngày cô mèo Mắm phải chia sẻ không gian sống với chú chó Xì Dầu mới đến.\nNhững cuộc chiến dở khóc dở cười dần nhường chỗ cho sự thấu hiểu và tình cảm gia đình ấm áp.",
+    "tableOfContents": "Chương 1: Sự xuất hiện của Mắm | 8\nChương 2: Kẻ thù mang tên Xì Dầu | 45\nChương 3: Những trận chiến nảy lửa | 95\nChương 4: Kê cho bằng những khác biệt | 160"
   },
   {
     "id": "67d12",
     "title": "Câu chuyện khoa học",
     "image": "/image/ebooknb3.jpg",
-    "category": "featured",
+    "category": "giao-trinh",
     "author": "Nguyễn Văn A",
     "description": "Đây là phần mô tả chi tiết sách...",
     "pages": 300,
@@ -179,26 +203,30 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2024",
-    "translator": "Không có"
+    "translator": "Không có",
+    "sampleText": "Khoa học không hề khô khan mà đầy ắp những câu chuyện khám phá kỳ diệu làm thay đổi nhận thức của nhân loại.\nMỗi phát minh vĩ đại đều bắt đầu từ những câu hỏi tò mò giản đơn nhất của con người.",
+    "tableOfContents": "Chương 1: Những câu hỏi vĩ đại | 11\nChương 2: Kỷ nguyên của ánh sáng | 85\nChương 3: Những bộ óc thiên tài | 160\nChương 4: Tương lai và khám phá mới | 240"
   },
   {
     "id": "67d13",
     "title": "Người quay tơ",
     "image": "/image/ebooknb4.jpg",
-    "category": "featured",
+    "category": "van-hoa-xa-hoi",
     "author": "Nhất Linh",
     "description": "Tác phẩm “Người quay tơ” là một tuyển tập 11 truyện ngắn của nhà văn Nhất Linh, bao gồm cả truyện dịch cổ và truyện dịch từ tiếng nước ngoài. Bằng ngòi bút sắc bén, văn phong rõ ràng, tác giả đã phản ánh một cách chân thật hiện thực xã hội lúc bấy giờ, những mảnh đời, những màu sắc nhân sinh khác nhau trong cuộc sống.\n\nĐó có thể là một Từ Nương tài sắc vẹn toàn, đẹp cả người lẫn nết, nhưng trước những thăng trầm, loạn lạc của xã hội đổi thay, cuối cùng cô phải chịu nỗi đau khôn cùng mất cả chồng cả con mà trở nên điên dại (trong Người quay tơ). Đó là thực trạng những kẻ mưu mô, giảo quyệt thì lên làm chủ và ngày càng giàu có, còn những người hiền từ, chất phác, tính toán đơn giản, tin người… sẽ làm tôi mọi cho lớp người nói trên (Nô lệ). Hoặc câu chuyện về một người tu hành nhưng vẫn chưa vứt bỏ được lòng tham trần tục, vẫn bị tiền tài hấp dẫn để sa đà vào con đường quyền lực, danh vọng (trong Sư bác chùa Kênh)…\n\nMỗi chuyện là một đề tài, một vấn đề xã hội nhức nhối cần phải thủ tiêu hoặc cải cách.",
     "pages": 86,
     "price": 20000,
     "stock": 50,
     "publishDate": "2024",
-    "translator": "Chưa xác định"
+    "translator": "Chưa xác định",
+    "sampleText": "Tuyển tập truyện ngắn khắc họa sâu sắc những kiếp nhân sinh trôi nổi giữa dòng đời biến động của xã hội cũ.\nTừng sợi tơ được quay ra như những sợi tơ lòng đong đầy nước mắt và niềm hy vọng nhỏ nhoi.",
+    "tableOfContents": "Truyện 1: Người quay tơ | 5\nTruyện 2: Nô lệ của danh vọng | 25\nTruyện 3: Sư bác chùa Kênh | 50\nTruyện 4: Tuyển tập truyện ngắn dịch | 70"
   },
   {
     "id": "67d14",
     "title": "Cái vội của người mình",
     "image": "/image/ebooknb5.jpg",
-    "category": "featured",
+    "category": "van-hoa-xa-hoi",
     "author": "Vương Trí Nhàn",
     "description": "Cuốn sách này lấy tên là Cái vội của người mình cũng là để quán triệt tinh thần một cái nhìn dựa hẳn vào những quan sát từ đời sống hàng ngày nhưng đã cố gắng bước đầu vươn lên những khái quát cần thiết.\n\nViệc viết về những điều tốt đẹp đã là nội dung chủ yếu trong các công trình của các nhà văn nhà báo khác, phần những người chuyên đi vào thói hư tật xấu như tôi thì độ dăm bảy phần trăm. Và chăng khi đi sâu vào thói hư tật xấu, thật ra tôi có tìm hiểu rộng hơn các mặt tích cực của tính cách dân tộc.\n\nNội dung các phần:\n- Phần 1: Những thói hư tật xấu bộc lộ trong làm ăn kiếm sống, đi lại, các hoạt động nghề nghiệp.\n- Phần 2: Những bất cập trong thói quen sinh hoạt, trong đời sống tinh thần mỗi cá nhân, trong các mối quan hệ người với người hàng ngày.\n- Phần 3: Những di lụy quá khứ đồng thời trong mỗi thói hư tật xấu đều mang dấu vết thời đại.\n- Phần 4: Những hạn chế kéo dài trong tổ chức và quản lý xã hội.\n- Phần 5: Nhìn thói hư tật xấu ở tầm khái quát để dần dần tiến tới cách khắc phục có hiệu quả.",
     "pages": 346,
@@ -206,13 +234,15 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2024",
-    "translator": "Chưa xác định"
+    "translator": "Chưa xác định",
+    "sampleText": "Sự vội vã trong thói quen sinh hoạt và công việc của người Việt hiện đại vừa là động lực vừa là lực cản cho sự phát triển bền vững.\nNhìn thẳng vào những thói hư tật xấu để tự sửa đổi là biểu hiện của một tinh thần tự cường chân chính.",
+    "tableOfContents": "Phần 1: Cái vội trong cuộc sống | 12\nPhần 2: Bất cập trong giao tiếp | 95\nPhần 3: Di lụy quá khứ & Tương lai | 210\nPhần 4: Giải pháp khắc phục lâu dài | 300"
   },
   {
     "id": "67d15",
     "title": "Combo ebook NNC Nguyễn Đình Tư: Khảo cứu về Nam Kỳ",
     "image": "/image/ebookcompo1.jpg",
-    "category": "combo",
+    "category": "kgvh",
     "author": "Nguyễn Văn A",
     "description": "Đây là phần mô tả chi tiết sách...",
     "pages": 300,
@@ -220,13 +250,15 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2024",
-    "translator": "Không có"
+    "translator": "Không có",
+    "sampleText": "Bộ tác phẩm khảo cứu đồ sộ về vùng đất Nam Kỳ từ lịch sử địa lý đến văn hóa xã hội đặc trưng của người dân phương Nam.\nTài liệu quý giá giúp thế hệ sau hiểu rõ hơn về hành trình khai phá và gìn giữ dải đất vùng biên thùy.",
+    "tableOfContents": "Tập 1: Khai hoang mở đất Nam Kỳ | 15\nTập 2: Địa lý hành chính lục tỉnh | 110\nTập 3: Văn hóa và con người phương Nam | 220"
   },
   {
     "id": "67d16",
     "title": "Combo ebook Einstein",
     "image": "/image/ebookcompo2.jpg",
-    "category": "combo",
+    "category": "giao-trinh",
     "author": "Nguyễn Văn A",
     "description": "Đây là phần mô tả chi tiết sách...",
     "pages": 300,
@@ -234,13 +266,15 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2024",
-    "translator": "Không có"
+    "translator": "Không có",
+    "sampleText": "Khám phá tư duy của nhà vật lý vĩ đại nhất thế kỷ XX thông qua các công trình nghiên cứu và bài viết cá nhân.\nThuyết tương đối và thế giới quan khoa học của ông đã thay đổi hoàn toàn cách chúng ta nhìn nhận vũ trụ.",
+    "tableOfContents": "Tập 1: Cuộc đời và Sự nghiệp | 10\nTập 2: Thuyết tương đối rộng & hẹp | 120\nTập 3: Di sản khoa học cho nhân loại | 240"
   },
   {
     "id": "67d17",
     "title": "Combo ebook về Viết Content & \"Câu View\"",
     "image": "/image/ebookcompo3.jpg",
-    "category": "combo",
+    "category": "kinh-te",
     "author": "Nguyễn Văn A",
     "description": "Đây là phần mô tả chi tiết sách...",
     "pages": 300,
@@ -248,13 +282,15 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2024",
-    "translator": "Không có"
+    "translator": "Không có",
+    "sampleText": "Nghệ thuật sáng tạo nội dung thu hút người đọc và chiến lược xây dựng thương hiệu cá nhân hiệu quả trong thời đại số.\nViết không chỉ để đọc, viết là để chạm đến cảm xúc và kích thích hành động của khách hàng.",
+    "tableOfContents": "Tập 1: Tư duy viết content đa kênh | 12\nTập 2: Công thức viết tiêu đề thu hút | 95\nTập 3: Sáng tạo nội dung viral | 210"
   },
   {
     "id": "67d18",
     "title": "Combo ebook Tác giả Isabelle Muller",
     "image": "/image/ebookcompo4.jpg",
-    "category": "combo",
+    "category": "thieu-nhi",
     "author": "Nguyễn Văn A",
     "description": "Đây là phần mô tả chi tiết sách...",
     "pages": 300,
@@ -262,13 +298,15 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2024",
-    "translator": "Không có"
+    "translator": "Không có",
+    "sampleText": "Những câu chuyện truyền cảm hứng mạnh mẽ về nghị lực sống phi thường vượt qua nghịch cảnh của tác giả Isabelle Muller.\nTình mẫu tử thiêng liêng và lòng nhân ái bao dung luôn tỏa sáng giữa những chương tối tăm nhất của cuộc đời.",
+    "tableOfContents": "Tập 1: Con gái của chim phượng hoàng | 15\nTập 2: Hành trình tìm lại chính mình | 130\nTập 3: Ước vọng cho tương lai | 245"
   },
   {
     "id": "67d19",
     "title": "Combo ebook Giữ cho rừng mãi xanh",
     "image": "/image/ebookcompo5.jpg",
-    "category": "combo",
+    "category": "suc-khoe-cuoc-song",
     "author": "Nguyễn Văn A",
     "description": "Đây là phần mô tả chi tiết sách...",
     "pages": 300,
@@ -276,7 +314,8 @@
     "discount": "15%",
     "stock": 50,
     "publishDate": "2024",
-    "translator": "Không có"
+    "translator": "Không có",
+    "sampleText": "Lời kêu gọi khẩn thiết về bảo vệ môi trường và giữ gìn màu xanh của những cánh rừng già - lá phổi xanh của trái đất.\nHành động nhỏ từ mỗi cá nhân hôm nay quyết định sự sinh tồn của thế hệ mai sau.",
+    "tableOfContents": "Tập 1: Tiếng gọi từ đại ngàn | 12\nTập 2: Thực trạng tàn phá rừng | 105\nTập 3: Giải pháp và hành động xanh | 215"
   }
-]
-
+];

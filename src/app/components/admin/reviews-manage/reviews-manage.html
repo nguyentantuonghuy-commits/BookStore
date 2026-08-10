@@ -1,0 +1,217 @@
+<div class="container-fluid py-4" *ngIf="canViewReviews(); else noPermission">
+  <!-- Tiêu đề trang -->
+  <div class="row mb-4 align-items-center justify-content-between">
+    <div class="col-sm-6">
+      <h3 class="fw-bold text-gradient-luxury m-0">Quản lý Đánh giá & Nhận xét</h3>
+      <p class="text-muted m-0 fs-7">Kiểm duyệt và quản lý các đánh giá sách từ độc giả sachweb.vn</p>
+    </div>
+  </div>
+
+  <!-- Cards Thống kê nhanh -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3 col-sm-6">
+      <div class="stat-card glass-card p-3 rounded-3 d-flex align-items-center gap-3" (click)="filterByRating('All')"
+        [class.active]="selectedRating() === 'All'" style="cursor: pointer;">
+        <div class="stat-icon bg-primary text-white rounded-3 d-flex align-items-center justify-content-center"
+          style="width: 48px; height: 48px;">
+          <i class="bi bi-chat-left-text fs-4"></i>
+        </div>
+        <div>
+          <h4 class="fw-bold m-0">{{ totalCount() }}</h4>
+          <span class="text-muted fs-8">Tổng đánh giá</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+      <div class="stat-card glass-card p-3 rounded-3 d-flex align-items-center gap-3" (click)="filterByRating(5)"
+        [class.active]="selectedRating() === 5" style="cursor: pointer;">
+        <div class="stat-icon bg-success text-white rounded-3 d-flex align-items-center justify-content-center"
+          style="width: 48px; height: 48px;">
+          <i class="bi bi-star-fill fs-4 text-warning"></i>
+        </div>
+        <div>
+          <h4 class="fw-bold m-0 text-success">{{ fiveStarCount() }}</h4>
+          <span class="text-muted fs-8">5 Sao (Tuyệt vời)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+      <div class="stat-card glass-card p-3 rounded-3 d-flex align-items-center gap-3" (click)="filterByRating(4)"
+        [class.active]="selectedRating() === 4" style="cursor: pointer;">
+        <div class="stat-icon bg-warning text-white rounded-3 d-flex align-items-center justify-content-center"
+          style="width: 48px; height: 48px;">
+          <i class="bi bi-star-half fs-4 text-white"></i>
+        </div>
+        <div>
+          <h4 class="fw-bold m-0 text-warning">{{ fourStarCount() }}</h4>
+          <span class="text-muted fs-8">4 Sao (Khá tốt)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+      <div class="stat-card glass-card p-3 rounded-3 d-flex align-items-center gap-3" (click)="filterByRating(3)"
+        [class.active]="selectedRating() === 3" style="cursor: pointer;">
+        <div class="stat-icon bg-danger text-white rounded-3 d-flex align-items-center justify-content-center"
+          style="width: 48px; height: 48px;">
+          <i class="bi bi-exclamation-triangle fs-4"></i>
+        </div>
+        <div>
+          <h4 class="fw-bold m-0 text-danger">{{ belowThreeCount() }}</h4>
+          <span class="text-muted fs-8">3 Sao trở xuống</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bộ lọc và Tìm kiếm -->
+  <div class="glass-card p-3 rounded-3 mb-4">
+    <div class="row g-3 align-items-center">
+      <!-- Ô Tìm kiếm -->
+      <div class="col-lg-4 col-md-6">
+        <div class="search-box-wrapper d-flex align-items-center bg-light border px-3 py-2 rounded-pill">
+          <i class="bi bi-search text-muted me-2"></i>
+          <input type="text" class="form-control bg-transparent border-0 p-0 fs-7" placeholder="Tìm theo tên sách, độc giả, nội dung..."
+            [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event); currentPage.set(1)" />
+        </div>
+      </div>
+
+      <!-- Lọc theo số sao -->
+      <div class="col-lg-8 col-md-6 d-flex justify-content-md-end gap-2 flex-wrap">
+        <button type="button" class="btn btn-sm px-3 rounded-pill fw-semibold"
+          [class.btn-primary]="selectedRating() === 'All'" [class.btn-light]="selectedRating() !== 'All'"
+          (click)="filterByRating('All')">Tất cả</button>
+        <button type="button" class="btn btn-sm px-3 rounded-pill fw-semibold" *ngFor="let star of [5,4,3,2,1]"
+          [class.btn-primary]="selectedRating() === star" [class.btn-light]="selectedRating() !== star"
+          (click)="filterByRating(star)">
+          {{ star }} <i class="bi bi-star-fill text-warning"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Danh sách đánh giá -->
+  <div class="glass-card rounded-3 overflow-hidden shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th scope="col" style="width: 250px;">Sách</th>
+            <th scope="col" style="width: 180px;">Độc giả</th>
+            <th scope="col" style="width: 120px;">Đánh giá</th>
+            <th scope="col">Nội dung nhận xét</th>
+            <th scope="col" style="width: 150px;">Thời gian</th>
+            <th scope="col" style="width: 80px;" class="text-center">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rev of pagedReviews()">
+            <!-- Sách -->
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <img [src]="getBookImage(rev.bookId)" class="rounded border" style="width: 36px; height: 50px; object-fit: cover;" alt="" />
+                <div class="text-truncate" style="max-width: 190px;">
+                  <span class="fw-bold fs-7-5 d-block" [title]="getBookTitle(rev.bookId)">{{ getBookTitle(rev.bookId) }}</span>
+                  <span class="text-muted fs-9 d-block">ID: {{ rev.bookId }}</span>
+                </div>
+              </div>
+            </td>
+
+            <!-- Độc giả -->
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <div class="avatar-circle d-flex align-items-center justify-content-center fw-bold bg-secondary text-white rounded-circle fs-8"
+                  style="width: 30px; height: 30px;">
+                  {{ getInitials(rev.customerName) }}
+                </div>
+                <div class="d-flex flex-column align-items-start">
+                  <span class="fw-semibold fs-7-5">{{ rev.customerName }}</span>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill fw-bold mt-1 px-1.5 py-0.5 d-inline-flex align-items-center" 
+                        *ngIf="isVerifiedPurchase(rev.userId, rev.bookId)" 
+                        style="font-size: 8px;"
+                        title="Độc giả đã mua cuốn sách này tại sachweb.vn">
+                    <i class="bi bi-patch-check-fill me-0.5"></i>Đã mua hàng
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <!-- Điểm đánh giá -->
+            <td>
+              <div class="stars fs-8 text-nowrap">
+                <i class="bi bi-star-fill text-warning" *ngFor="let s of [1,2,3,4,5].slice(0, rev.rating)"></i>
+                <i class="bi bi-star text-muted" *ngFor="let s of [1,2,3,4,5].slice(rev.rating)"></i>
+              </div>
+            </td>
+
+            <!-- Nội dung nhận xét -->
+            <td>
+              <p class="m-0 fs-7-5 text-wrap-custom" style="max-width: 450px;">{{ rev.comment }}</p>
+            </td>
+
+            <!-- Thời gian -->
+            <td class="text-muted fs-8">
+              {{ rev.createdAt | date:'dd/MM/yyyy HH:mm' }}
+            </td>
+
+            <!-- Hành động -->
+            <td class="text-center">
+              <button type="button" class="btn btn-sm btn-outline-danger border-0 rounded-circle" *ngIf="canDeleteReviews()"
+                (click)="deleteReview(rev.id)" title="Xóa đánh giá">
+                <i class="bi bi-trash3-fill"></i>
+              </button>
+            </td>
+          </tr>
+
+          <!-- Hàng trống khi không có kết quả -->
+          <tr *ngIf="filteredReviews().length === 0">
+            <td colspan="6" class="text-center py-5 text-muted">
+              <i class="bi bi-chat-left-x fs-1 mb-2 d-block"></i>
+              <span>Không tìm thấy đánh giá nào trùng khớp.</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Phân trang -->
+    <div class="d-flex align-items-center justify-content-between px-4 py-3 bg-light border-top flex-wrap gap-2"
+      *ngIf="totalPages() > 1">
+      <span class="fs-8 text-muted">
+        Hiển thị dòng {{ (currentPage() - 1) * pageSize() + 1 }} - 
+        {{ Math.min(currentPage() * pageSize(), filteredReviews().length) }} trên tổng số 
+        {{ filteredReviews().length }} đánh giá
+      </span>
+      <nav aria-label="Page navigation">
+        <ul class="pagination pagination-sm m-0 gap-1">
+          <li class="page-item" [class.disabled]="currentPage() === 1">
+            <button class="page-link rounded-circle d-flex align-items-center justify-content-center p-0" style="width: 28px; height: 28px;"
+              (click)="setPage(currentPage() - 1)"><i class="bi bi-chevron-left"></i></button>
+          </li>
+          <li class="page-item" *ngFor="let p of [].constructor(totalPages()); let i = index"
+            [class.active]="currentPage() === (i + 1)">
+            <button class="page-link rounded-circle d-flex align-items-center justify-content-center p-0" style="width: 28px; height: 28px;"
+              (click)="setPage(i + 1)">{{ i + 1 }}</button>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage() === totalPages()">
+            <button class="page-link rounded-circle d-flex align-items-center justify-content-center p-0" style="width: 28px; height: 28px;"
+              (click)="setPage(currentPage() + 1)"><i class="bi bi-chevron-right"></i></button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<!-- Mẫu khi không có quyền xem -->
+<ng-template #noPermission>
+  <div class="container py-5 text-center">
+    <div class="p-5 rounded-3 bg-white shadow-sm border mx-auto" style="max-width: 500px;">
+      <i class="bi bi-shield-slash fs-1 text-danger mb-3"></i>
+      <h4 class="fw-bold mb-2">Quyền truy cập bị từ chối</h4>
+      <p class="text-muted fs-7 mb-0">Bạn không có quyền xem nội dung này. Vui lòng liên hệ quản trị viên cấp quyền REVIEWS_VIEW.</p>
+    </div>
+  </div>
+</ng-template>

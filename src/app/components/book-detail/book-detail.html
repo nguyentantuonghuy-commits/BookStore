@@ -6,7 +6,7 @@
         <a routerLink="/" class="text-muted"><i class="bi bi-house-door-fill me-1"></i>Trang chủ</a>
       </li>
       <li class="breadcrumb-item">
-        <a routerLink="/" class="text-muted">{{ categoryName(book.category) }}</a>
+        <a (click)="selectCategory(categoryName(book.category))" class="text-muted" style="cursor: pointer;">{{ categoryName(book.category) }}</a>
       </li>
       <li class="breadcrumb-item active text-truncate" aria-current="page" style="max-width: 300px">
         {{ book.title }}
@@ -15,151 +15,304 @@
   </nav>
 
   <div class="row g-4">
-    <!-- CỘT 1: HÌNH ẢNH SÁCH BÊN TRÁI (col-lg-4) -->
-    <div class="col-lg-4">
-      <div class="book-image-card glass-card glow-on-hover">
-        <div class="discount-ribbon" *ngIf="book.discount && book.discount !== '0%'">
-          <span>-{{ book.discount }}</span>
-        </div>
-        <img [src]="book.image" [alt]="book.title" class="img-fluid book-main-img" />
-      </div>
-    </div>
-
-    <!-- CỘT 2: THÔNG TIN CHI TIẾT & MÔ TẢ Ở GIỮA (col-lg-5) -->
-    <div class="col-lg-5">
-      <!-- Tag Danh mục -->
-      <div class="book-meta-badge mb-2">
-        <a
-          (click)="selectCategory(categoryName(book.category))"
-          class="category-tag text-decoration-none"
-          style="cursor: pointer"
-        >
-          <i class="bi bi-tag-fill me-1"></i>{{ categoryName(book.category) }}
-        </a>
-      </div>
-
-      <h1 class="detail-title text-gradient-luxury">{{ book.title }}</h1>
-
-      <!-- Đánh giá sao -->
-      <div class="rating-box d-flex align-items-center gap-2 mb-3">
-        <div class="stars">
-          <i class="bi bi-star-fill text-warning"></i>
-          <i class="bi bi-star-fill text-warning"></i>
-          <i class="bi bi-star-fill text-warning"></i>
-          <i class="bi bi-star-fill text-warning"></i>
-          <i class="bi bi-star-half text-warning"></i>
-        </div>
-        <span class="rating-text">4.8 / 5</span>
-        <span class="divider">|</span>
-        <span class="review-count">128 đánh giá</span>
-      </div>
-
-      <!-- Khung giá sách cực đẹp -->
-      <div class="price-container mb-4">
-        <div class="price-wrapper d-flex align-items-baseline gap-3">
-          <span class="new-price">
-            {{ formatPrice(discountPrice(book.price, book.discount || '0%')) }} đ
-          </span>
-          <span class="old-price" *ngIf="book.discount && book.discount !== '0%'">
-            {{ formatPrice(book.price) }} đ
-          </span>
-        </div>
-        <div class="price-badge-row mt-1" *ngIf="book.discount && book.discount !== '0%'">
-          Tiết kiệm được:
-          <strong
-            >{{ formatPrice(book.price - discountPrice(book.price, book.discount)) }} đ</strong
-          >
-          <span class="pct-badge">-{{ book.discount }}</span>
-        </div>
-      </div>
-
-      <!-- Lưới thông số kỹ thuật 2x2 chuyên nghiệp -->
-      <div class="spec-grid mb-4">
-        <div class="spec-item glass-card glow-on-hover">
-          <div class="spec-icon">
-            <i class="bi bi-person-badge"></i>
-          </div>
-          <div class="spec-content">
-            <label>Tác giả</label>
-            <span>{{ book.author }}</span>
+    <!-- CỘT CHÍNH CHI TIẾT VÀ ĐÁNH GIÁ (col-lg-9) -->
+    <div class="col-lg-9">
+      <div class="row g-4 mb-4">
+        <!-- Cột hình ảnh sách bên trái (col-md-5) -->
+        <div class="col-md-5">
+          <div class="book-image-card glass-card glow-on-hover">
+            <div class="discount-ribbon" *ngIf="book.discount && book.discount !== '0%'">
+              <span>-{{ book.discount }}</span>
+            </div>
+            <img [src]="book.image" [alt]="book.title" class="img-fluid book-main-img" />
           </div>
         </div>
 
-        <div class="spec-item glass-card glow-on-hover">
-          <div class="spec-icon">
-            <i class="bi bi-calendar3"></i>
+        <!-- Cột thông tin chi tiết ở giữa (col-md-7) -->
+        <div class="col-md-7">
+          <!-- Tag Danh mục -->
+          <div class="book-meta-badge mb-2">
+            <a (click)="selectCategory(categoryName(book.category))" class="category-tag text-decoration-none"
+              style="cursor: pointer">
+              <i class="bi bi-tag-fill me-1"></i>{{ categoryName(book.category) }}
+            </a>
           </div>
-          <div class="spec-content">
-            <label>Năm xuất bản</label>
-            <span>{{ book.publishDate }}</span>
+
+          <h1 class="detail-title text-gradient-luxury">{{ book.title }}</h1>
+
+          <!-- Đánh giá sao động -->
+          <div class="rating-box d-flex align-items-center gap-2 mb-3">
+            <div class="stars">
+              <i class="bi bi-star-fill text-warning" *ngFor="let s of ratingStarsCount().full"></i>
+              <i class="bi bi-star-half text-warning" *ngFor="let s of ratingStarsCount().half"></i>
+              <i class="bi bi-star text-warning" *ngFor="let s of ratingStarsCount().empty"></i>
+            </div>
+            <span class="rating-text">{{ averageRating() }} / 5</span>
+            <span class="divider">|</span>
+            <span class="review-count">{{ reviewsForBook().length }} đánh giá</span>
+          </div>
+
+          <!-- Khung giá sách cực đẹp -->
+          <div class="price-container mb-4">
+            <div class="price-wrapper d-flex align-items-baseline gap-3">
+              <span class="new-price">
+                {{ formatPrice(discountPrice(book.price, book.discount || '0%')) }} đ
+              </span>
+              <span class="old-price" *ngIf="book.discount && book.discount !== '0%'">
+                {{ formatPrice(book.price) }} đ
+              </span>
+            </div>
+            <div class="price-badge-row mt-1" *ngIf="book.discount && book.discount !== '0%'">
+              Tiết kiệm được:
+              <strong>{{ formatPrice(book.price - discountPrice(book.price, book.discount)) }} đ</strong>
+              <span class="pct-badge">-{{ book.discount }}</span>
+            </div>
+          </div>
+
+          <!--  Thông tin sách -->
+          <div class="spec-grid mb-4">
+            <div class="spec-item glass-card glow-on-hover">
+              <div class="spec-icon">
+                <i class="bi bi-person-badge"></i>
+              </div>
+              <div class="spec-content">
+                <label>Tác giả</label>
+                <span>{{ book.author }}</span>
+              </div>
+            </div>
+
+            <div class="spec-item glass-card glow-on-hover">
+              <div class="spec-icon">
+                <i class="bi bi-calendar3"></i>
+              </div>
+              <div class="spec-content">
+                <label>Năm xuất bản</label>
+                <span>{{ book.publishDate }}</span>
+              </div>
+            </div>
+
+            <div class="spec-item glass-card glow-on-hover">
+              <div class="spec-icon">
+                <i class="bi bi-book-half"></i>
+              </div>
+              <div class="spec-content">
+                <label>Số trang</label>
+                <span>{{ book.pages || 'N/A' }} trang</span>
+              </div>
+            </div>
+
+            <div class="spec-item glass-card glow-on-hover">
+              <div class="spec-icon">
+                <i class="bi bi-translate"></i>
+              </div>
+              <div class="spec-content">
+                <label>Dịch giả</label>
+                <span>{{ book.translator || 'Không có' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Giới thiệu sách -->
+          <div class="description-section mb-4">
+            <h4 class="section-subtitle mb-2 text-gradient-luxury">
+              <i class="bi bi-journal-text me-2 text-primary-theme"></i>Giới thiệu sách
+            </h4>
+            <div class="description-container" [class.expanded]="isExpanded()">
+              <p class="book-description">{{ book.description }}</p>
+              <div class="fade-overlay" *ngIf="!isExpanded()"></div>
+            </div>
+            <button type="button" class="btn toggle-expand-btn mt-1" (click)="toggleExpand()">
+              <span>{{ isExpanded() ? 'Thu gọn nội dung' : 'Xem thêm nội dung' }}</span>
+              <i class="bi" [class.bi-chevron-up]="isExpanded()" [class.bi-chevron-down]="!isExpanded()"></i>
+            </button>
+          </div>
+
+          <!-- Khu vực mua hàng cao cấp -->
+          <div class="purchase-action-container p-3 rounded-4 mb-3">
+            <div class="quantity-row d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+              <div class="d-flex align-items-center gap-3">
+                <span class="qty-label fw-bold">Số lượng:</span>
+                <div class="custom-qty-box">
+                  <button type="button" class="qty-btn" (click)="decreaseQuantity()" [disabled]="quantity() <= 1">
+                    <i class="bi bi-dash"></i>
+                  </button>
+                  <span class="qty-val">{{ quantity() }}</span>
+                  <button type="button" class="qty-btn" (click)="increaseQuantity()" [disabled]="quantity() >= book.stock">
+                    <i class="bi bi-plus"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="stock-status-badge d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill fs-7 fw-bold"
+                [ngClass]="book.stock <= 0 ? 'out-of-stock' : (book.stock <= 5 ? 'low-stock' : 'in-stock')">
+                <span class="status-dot"></span>
+                <i class="bi" [ngClass]="book.stock <= 0 ? 'bi-x-circle-fill' : (book.stock <= 5 ? 'bi-exclamation-triangle-fill' : 'bi-check-circle-fill')"></i>
+                <span>{{ book.stock <= 0 ? 'Tạm hết hàng' : (book.stock <= 5 ? 'Chỉ còn ' + book.stock + ' cuốn' : 'Còn lại ' + book.stock + ' cuốn') }}</span>
+              </div>
+            </div>
+
+            <button type="button" class="btn add-cart-btn-premium w-100 shimmer-hover" (click)="addToCart()" [disabled]="book.stock <= 0">
+              <i class="bi bi-cart-plus-fill fs-5 me-2"></i>
+              {{ book.stock <= 0 ? 'HẾT HÀNG' : 'THÊM VÀO GIỎ HÀNG' }}
+            </button>
           </div>
         </div>
+      </div> <!-- Kết thúc row g-4 thông tin sách -->
 
-        <div class="spec-item glass-card glow-on-hover">
-          <div class="spec-icon">
-            <i class="bi bi-book-half"></i>
-          </div>
-          <div class="spec-content">
-            <label>Số trang</label>
-            <span>{{ book.pages || 'N/A' }} trang</span>
-          </div>
-        </div>
-
-        <div class="spec-item glass-card glow-on-hover">
-          <div class="spec-icon">
-            <i class="bi bi-translate"></i>
-          </div>
-          <div class="spec-content">
-            <label>Dịch giả</label>
-            <span>{{ book.translator || 'Không có' }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Giới thiệu sách có nút Xem thêm/Thu gọn thông minh để giải quyết mô tả siêu dài -->
-      <div class="description-section mb-4">
-        <h4 class="section-subtitle mb-2 text-gradient-luxury">
-          <i class="bi bi-journal-text me-2 text-primary-theme"></i>Giới thiệu sách
+      <!-- PHẦN ĐÁNH GIÁ VÀ NHẬN XÉT (Độ rộng đầy đủ của col-lg-9) -->
+      <div class="reviews-section mt-5 mb-4 animate-fade-in">
+        <h4 class="section-subtitle mb-4 text-gradient-luxury">
+          <i class="bi bi-chat-left-text me-2 text-primary-theme"></i>Đánh giá & Nhận xét từ Độc giả
         </h4>
-        <div class="description-container" [class.expanded]="isExpanded()">
-          <p class="book-description">{{ book.description }}</p>
-          <div class="fade-overlay" *ngIf="!isExpanded()"></div>
-        </div>
-        <button type="button" class="btn toggle-expand-btn mt-1" (click)="toggleExpand()">
-          <span>{{ isExpanded() ? 'Thu gọn nội dung' : 'Xem thêm nội dung' }}</span>
-          <i
-            class="bi"
-            [class.bi-chevron-up]="isExpanded()"
-            [class.bi-chevron-down]="!isExpanded()"
-          ></i>
-        </button>
-      </div>
 
-      <!-- Khu vực mua hàng cao cấp -->
-      <div class="purchase-action-container p-3 rounded-4 bg-light mb-3">
-        <div class="quantity-row d-flex align-items-center gap-3 mb-3">
-          <span class="qty-label fw-bold">Số lượng:</span>
-          <div class="custom-qty-box">
-            <button type="button" class="qty-btn" (click)="decreaseQuantity()">
-              <i class="bi bi-dash"></i>
+        <!-- Thông báo nhận xét thành công dạng alert -->
+        <div class="alert alert-success d-flex align-items-center gap-2 rounded-4 mb-4 border-0 shadow-sm animate-fade-in" *ngIf="reviewMessage()">
+          <i class="bi bi-check-circle-fill fs-5 text-success"></i>
+          <span class="fw-semibold">{{ reviewMessage() }}</span>
+        </div>
+
+        <!-- Khung tổng quan đánh giá kiểu luxury grid -->
+        <div class="rating-overview-card glass-card p-4 rounded-4 mb-4">
+          <div class="row align-items-center g-4">
+            <!-- Điểm số trung bình -->
+            <div class="col-md-4 text-center border-end-md">
+              <span class="avg-score">{{ averageRating() }}</span>
+              <div class="stars mb-2 fs-5">
+                <i class="bi bi-star-fill text-warning" *ngFor="let s of ratingStarsCount().full"></i>
+                <i class="bi bi-star-half text-warning" *ngFor="let s of ratingStarsCount().half"></i>
+                <i class="bi bi-star text-warning" *ngFor="let s of ratingStarsCount().empty"></i>
+              </div>
+              <span class="total-reviews text-muted d-block">{{ reviewsForBook().length }} lượt đánh giá</span>
+            </div>
+
+            <!-- Thanh tiến trình phân bố sao -->
+            <div class="col-md-5">
+              <div class="rating-bar-item d-flex align-items-center gap-2 mb-2" *ngFor="let item of ratingBreakdown()"
+                   (click)="toggleRatingFilter(item.stars)"
+                   [class.active-filter]="selectedRatingFilter() === item.stars"
+                   style="cursor: pointer; padding: 4px 8px; border-radius: 8px; transition: all 0.2s ease;"
+                   title="Click để lọc đánh giá {{ item.stars }} sao">
+                <span class="star-label fs-8 fw-semibold text-secondary" style="width: 50px;">{{ item.stars }} sao</span>
+                <div class="progress flex-grow-1" style="height: 6px; background-color: rgba(0,0,0,0.05);">
+                  <div class="progress-bar bg-warning rounded-pill" role="progressbar" [style.width.%]="item.percentage"></div>
+                </div>
+                <span class="percent-label fs-8 text-muted text-end" style="width: 35px;">{{ item.percentage }}%</span>
+              </div>
+            </div>
+
+            <!-- Nút kêu gọi viết nhận xét -->
+            <div class="col-md-3 text-center">
+              <h6 class="fw-bold mb-2">Chia sẻ ý kiến của bạn</h6>
+              <p class="text-muted fs-8 mb-3">
+                Ý kiến của bạn sẽ giúp những độc giả khác chọn được cuốn sách phù hợp nhất.
+              </p>
+              <a *ngIf="!authService.isLoggedIn()" routerLink="/login" class="btn btn-outline-gold rounded-pill btn-sm px-4 fw-bold">
+                Đăng nhập để nhận xét
+              </a>
+              <button *ngIf="authService.isLoggedIn()" (click)="showWriteForm.set(!showWriteForm())" class="btn btn-gold-theme rounded-pill btn-sm px-4 fw-bold shimmer-hover">
+                {{ showWriteForm() ? 'Hủy nhận xét' : 'Viết đánh giá' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form gửi đánh giá (chỉ hiển thị khi đã đăng nhập và showWriteForm = true) -->
+        <div class="write-review-form glass-card p-4 rounded-4 mb-4 animate-fade-in" *ngIf="authService.isLoggedIn() && showWriteForm()">
+          <h5 class="fw-bold fs-6 mb-3 text-gradient-luxury">Viết nhận xét mới</h5>
+
+          <div class="rating-input-row d-flex align-items-center gap-3 mb-3">
+            <span class="fw-semibold">Đánh giá của bạn:</span>
+            <div class="star-rating-selector d-flex gap-2">
+              <button type="button" class="star-select-btn bg-transparent border-0 p-0" *ngFor="let star of [1,2,3,4,5]" 
+                      (click)="ratingInput.set(star)" [class.active]="star <= ratingInput()" style="cursor: pointer;">
+                <i class="bi fs-4 text-warning" [class.bi-star-fill]="star <= ratingInput()" [class.bi-star]="star > ratingInput()"></i>
+              </button>
+            </div>
+            <span class="rating-label-desc text-muted fs-7">
+              {{ ratingInput() === 5 ? 'Tuyệt vời' : (ratingInput() === 4 ? 'Rất tốt' : (ratingInput() === 3 ? 'Bình thường' : (ratingInput() === 2 ? 'Kém' : 'Rất kém'))) }}
+            </span>
+          </div>
+
+          <div class="mb-3">
+            <textarea class="form-control review-textarea rounded-3" rows="3" 
+                      placeholder="Nhập nội dung nhận xét của bạn về cuốn sách..." 
+                      [(ngModel)]="commentInput" name="commentInput"></textarea>
+          </div>
+
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-gold-theme px-4 rounded-pill fw-bold shimmer-hover" (click)="submitReview()" style="padding: 8px 24px;">
+              Gửi đánh giá
             </button>
-            <span class="qty-val">{{ quantity() }}</span>
-            <button type="button" class="qty-btn" (click)="increaseQuantity()">
-              <i class="bi bi-plus"></i>
+            <button type="button" class="btn btn-outline-secondary px-4 rounded-pill fw-bold" (click)="showWriteForm.set(false)" style="padding: 8px 24px;">
+              Hủy
             </button>
           </div>
         </div>
 
-        <button type="button" class="btn add-cart-btn-premium w-100 shimmer-hover" (click)="addToCart()">
-          <i class="bi bi-cart-plus-fill fs-5 me-2"></i>
-          THÊM VÀO GIỎ HÀNG
-        </button>
-      </div>
+        <!-- Bộ lọc sao đang hoạt động (Google-like) -->
+        <div class="filter-status-banner d-flex align-items-center justify-content-between p-2.5 px-3 rounded-3 mb-3 border border-gold-subtle bg-gold-light animate-fade-in" *ngIf="selectedRatingFilter() !== null">
+          <span class="fs-8 fw-semibold text-secondary">
+            <i class="bi bi-funnel-fill text-gold me-2"></i>
+            Đang lọc: Xem các nhận xét <strong>{{ selectedRatingFilter() }} sao</strong>
+          </span>
+          <button (click)="selectedRatingFilter.set(null)" class="btn btn-sm btn-link p-0 text-gold text-decoration-none fw-bold fs-8">
+            <i class="bi bi-x-circle-fill me-1"></i>Hiển thị tất cả
+          </button>
+        </div>
 
-      <div class="alert alert-success mt-3 py-2 animate-fade-in" *ngIf="message()">
-        <i class="bi bi-check-circle-fill me-2"></i>{{ message() }}
+        <!-- Danh sách nhận xét -->
+        <div class="reviews-list-container d-flex flex-column gap-3">
+          <div class="review-item-card glass-card p-3.5 rounded-4 animate-fade-in" *ngFor="let rev of filteredReviews()">
+            <div class="d-flex align-items-start gap-3">
+              <!-- Avatar người dùng hiển thị ảnh hoặc chữ cái đầu -->
+              <div class="review-avatar-frame rounded-circle overflow-hidden flex-shrink-0 bg-gold-light text-gold fw-bold d-flex align-items-center justify-content-center" style="width: 46px; height: 46px; border: 2px solid #fff; box-shadow: var(--shadow-sm);">
+                <img [src]="getCustomerAvatar(rev.userId)" *ngIf="getCustomerAvatar(rev.userId)" class="w-100 h-100 object-fit-cover" alt="" />
+                <span *ngIf="!getCustomerAvatar(rev.userId)">{{ rev.customerName ? rev.customerName.substring(0,2).toUpperCase() : 'KH' }}</span>
+              </div>
+
+              <!-- Nội dung nhận xét -->
+              <div class="flex-grow-1">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-1.5">
+                  <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <h6 class="review-user-name mb-0 fw-bold fs-7 text-dark">{{ rev.customerName || 'Độc giả' }}</h6>
+                    <span class="badge bg-gold-subtle text-gold border border-gold-subtle rounded-pill fs-9 fw-bold px-2 py-0.5" 
+                          *ngIf="isVerifiedPurchase(rev.userId, rev.bookId)" 
+                          title="Độc giả đã mua cuốn sách này tại sachweb.vn" style="font-size: 10px;">
+                      <i class="bi bi-patch-check-fill me-0.5"></i>Đã mua hàng
+                    </span>
+                  </div>
+                  <span class="review-time text-muted font-monospace fs-8">{{ rev.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+                
+                <!-- Điểm đánh giá sao -->
+                <div class="stars mb-2 fs-8.5">
+                  <i class="bi bi-star-fill text-warning" *ngFor="let star of [1,2,3,4,5].slice(0, rev.rating)"></i>
+                  <i class="bi bi-star text-muted" *ngFor="let star of [1,2,3,4,5].slice(rev.rating)"></i>
+                </div>
+
+                <!-- Văn bản nhận xét -->
+                <p class="review-text-content mb-0 text-secondary fs-7-5 lh-base">{{ rev.comment }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-reviews-prompt text-center py-5 glass-card rounded-4 text-muted animate-fade-in" *ngIf="reviewsForBook().length === 0">
+            <i class="bi bi-chat-dots fs-3 mb-2 text-muted"></i>
+            <p class="mb-0 fs-7 fw-medium">Chưa có đánh giá nào cho cuốn sách này.</p>
+            <p class="text-muted fs-8 mb-0">Hãy là người đầu tiên chia sẻ cảm nhận của bạn!</p>
+          </div>
+
+          <div class="empty-reviews-prompt text-center py-5 glass-card rounded-4 text-muted animate-fade-in" *ngIf="reviewsForBook().length > 0 && filteredReviews().length === 0">
+            <i class="bi bi-funnel fs-3 mb-2 text-gold"></i>
+            <p class="mb-0 fs-7 fw-medium text-dark">Không có đánh giá {{ selectedRatingFilter() }} sao nào.</p>
+            <p class="text-muted fs-8 mb-3">Vui lòng chọn bộ lọc khác hoặc hiển thị tất cả nhận xét.</p>
+            <button (click)="selectedRatingFilter.set(null)" class="btn btn-outline-gold rounded-pill btn-sm px-4 fw-bold">
+              Xem tất cả nhận xét
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
+    </div> <!-- Kết thúc col-lg-9 -->
 
     <!-- CỘT 3: SIDEBAR BÊN PHẢI (col-lg-3) -->
     <aside class="col-lg-3">
@@ -171,42 +324,23 @@
 
         <div class="search-box-wrapper">
           <i class="bi bi-search search-input-icon"></i>
-          <input
-            type="text"
-            #sidebarSearchInput
-            class="search-input"
-            placeholder="Tìm sách khác..."
-            [value]="sidebarQuery()"
-            (input)="onSidebarInput(sidebarSearchInput.value)"
-            (keydown)="onSidebarKeyDown($event, getSidebarSuggestions())"
-            (focus)="showSidebarDropdown.set(true)"
-            (blur)="onSidebarBlur()"
-            autocomplete="off"
-          />
-          <button
-            type="button"
-            class="search-btn"
-            (click)="onSidebarSearch(sidebarSearchInput.value)"
-          >
+          <input type="text" #sidebarSearchInput class="search-input" placeholder="Tìm sách khác..."
+            [value]="sidebarQuery()" (input)="onSidebarInput(sidebarSearchInput.value)"
+            (keydown)="onSidebarKeyDown($event, getSidebarSuggestions())" (focus)="showSidebarDropdown.set(true)"
+            (blur)="onSidebarBlur()" autocomplete="off" />
+          <button type="button" class="search-btn" (click)="onSidebarSearch(sidebarSearchInput.value)">
             <i class="bi bi-search"></i>
           </button>
 
           <!-- Dropdown Gợi ý tìm kiếm cao cấp kèm hình ảnh và chọn phím Up/Down/Enter -->
-          <div
-            class="sidebar-suggestions-dropdown"
-            *ngIf="showSidebarDropdown() && getSidebarSuggestions().length > 0"
-          >
+          <div class="sidebar-suggestions-dropdown" *ngIf="showSidebarDropdown() && getSidebarSuggestions().length > 0">
             <div class="suggestions-header">
               <i class="bi bi-stars text-warning"></i> GỢI Ý ĐỀ XUẤT CHO BẠN
             </div>
 
-            <div
-              class="sidebar-suggestion-item"
-              *ngFor="let book of getSidebarSuggestions(); let i = index"
-              [class.active-highlight]="i === activeSuggestionIndex()"
-              (click)="selectSidebarSuggestion(book)"
-              (mouseenter)="activeSuggestionIndex.set(i)"
-            >
+            <div class="sidebar-suggestion-item" *ngFor="let book of getSidebarSuggestions(); let i = index"
+              [class.active-highlight]="i === activeSuggestionIndex()" (click)="selectSidebarSuggestion(book)"
+              (mouseenter)="activeSuggestionIndex.set(i)">
               <img [src]="book.image" class="sidebar-suggest-thumb" alt="{{ book.title }}" />
               <div class="sidebar-suggest-info">
                 <span class="sidebar-suggest-title">{{ book.title }}</span>
@@ -221,12 +355,8 @@
       <div class="sidebar-card glass-card glow-on-hover mb-4">
         <h4 class="sidebar-title text-gradient-luxury">Thể loại sách</h4>
         <ul class="category-list-premium">
-          <li *ngFor="let category of bookService.getCategories().slice(1)">
-            <a
-              class="category-link"
-              (click)="selectCategory(category.name)"
-              style="cursor: pointer"
-            >
+          <li *ngFor="let category of categories().slice(1)">
+            <a class="category-link" (click)="selectCategory(category.name)" style="cursor: pointer">
               <i class="bi bi-chevron-right list-arrow"></i>
               <span class="cat-name">{{ category.name }}</span>
             </a>
@@ -249,20 +379,14 @@
                   <span class="related-price">
                     {{ formatPrice(discountPrice(related.price, related.discount || '0%')) }}đ
                   </span>
-                  <span
-                    class="related-discount"
-                    *ngIf="related.discount && related.discount !== '0%'"
-                  >
+                  <span class="related-discount" *ngIf="related.discount && related.discount !== '0%'">
                     -{{ related.discount }}
                   </span>
                 </div>
               </div>
             </a>
           </div>
-          <div
-            class="empty-related text-center text-muted py-3"
-            *ngIf="relatedBooks(book).length === 0"
-          >
+          <div class="empty-related text-center text-muted py-3" *ngIf="relatedBooks(book).length === 0">
             Không có sách cùng thể loại khác.
           </div>
         </div>

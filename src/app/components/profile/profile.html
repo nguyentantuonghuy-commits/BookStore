@@ -1,0 +1,228 @@
+<div class="profile-wrapper" (mousemove)="onMouseMove($event)">
+  <div class="light-bg-glow glow-1"></div>
+  <div class="light-bg-glow glow-2"></div>
+  
+  <!-- Interactive Cursor-Follow Glow Spot -->
+  <div class="interactive-cursor-glow" [style.transform]="glowTransform()"></div>
+
+  <div *ngIf="successMessage()" class="luxury-toast success-toast shadow-lg animate-toast-in">
+    <div class="toast-accent-line"></div>
+    <div class="d-flex align-items-center gap-3 p-3">
+      <div class="toast-icon toast-icon-success rounded-circle d-flex align-items-center justify-content-center">
+        <i class="bi bi-check-lg fs-5"></i>
+      </div>
+      <div class="flex-grow-1">
+        <h6 class="fw-bold mb-0 text-dark">Cập nhật thành công</h6>
+        <p class="mb-0 text-muted fs-8">{{ successMessage() }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage()" class="luxury-toast error-toast shadow-lg animate-toast-in">
+    <div class="toast-accent-line-error"></div>
+    <div class="d-flex align-items-center gap-3 p-3">
+      <div class="toast-icon bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center">
+        <i class="bi bi-exclamation-triangle fs-5"></i>
+      </div>
+      <div class="flex-grow-1">
+        <h6 class="fw-bold mb-0 text-dark">Cập nhật thất bại</h6>
+        <p class="mb-0 text-muted fs-8">{{ errorMessage() }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container position-relative py-5 content-z-index">
+    <nav aria-label="breadcrumb" class="mb-4 animate-fade-in">
+      <ol class="breadcrumb bg-transparent p-0 m-0">
+        <li class="breadcrumb-item"><a routerLink="/" class="text-accent text-decoration-none fw-semibold">Trang chủ</a></li>
+        <li class="breadcrumb-item active text-muted fw-medium" aria-current="page">Hồ sơ cá nhân</li>
+      </ol>
+    </nav>
+
+    <div class="profile-card-container p-4 p-md-5 animate-fade-in">
+      <div class="row g-5">
+
+        <!-- Left Sidebar (Stagger 1) -->
+        <div class="col-lg-4 col-md-5 text-center text-md-start profile-sidebar animate-slide-up stagger-1">
+          <div class="avatar-holder-section mb-4 text-center">
+            <div class="avatar-circle-wrapper mx-auto">
+              <img [src]="avatarPreview() || '/image/avatar.jpg'" alt="Profile Avatar" class="w-100 h-100 object-fit-cover rounded-circle" />
+              <label for="avatarInput" class="avatar-camera-overlay shadow-sm" title="Thay đổi ảnh đại diện">
+                <i class="bi bi-camera-fill"></i>
+              </label>
+              <input type="file" id="avatarInput" accept="image/*" class="d-none" (change)="onAvatarChange($event)" />
+            </div>
+            <p class="text-muted small mt-3 mb-0">Hỗ trợ JPG, PNG. Tối đa 2MB.</p>
+          </div>
+
+          <div class="text-center mb-4">
+            <h3 class="profile-fullname mb-2">{{ currentUser()?.name }}</h3>
+            <div class="d-flex flex-wrap gap-2 justify-content-center">
+              <span class="profile-badge badge-role">
+                <i class="bi" [class.bi-person-badge]="currentUser()?.role === 'customer'" [class.bi-shield-check]="currentUser()?.role !== 'customer'"></i>
+                {{ currentUser()?.role === 'customer' ? 'Thành viên' : 'Quản trị viên' }}
+              </span>
+              <span class="profile-badge badge-status">
+                <span class="status-pulse-dot"></span> Hoạt động
+              </span>
+            </div>
+          </div>
+
+          <div class="security-light-panel p-4 rounded-4 mt-4">
+            <h6 class="panel-title mb-3">
+              <i class="bi bi-shield-lock-fill me-2 text-accent"></i>Liên kết & Bảo mật
+            </h6>
+
+            <ng-container *ngIf="currentUser()?.isGoogleAccount; else localSecurityWidget">
+              <div class="integration-card d-flex align-items-center gap-3 p-3 rounded-3 mb-3">
+                <div class="brand-logo-circle bg-white shadow-sm d-flex align-items-center justify-content-center">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 20px; height: 20px;" />
+                </div>
+                <div class="overflow-hidden">
+                  <div class="d-flex align-items-center gap-2 mb-1">
+                    <h6 class="fw-bold text-dark mb-0 fs-7">Google</h6>
+                    <span class="badge badge-gold-sync rounded-pill" style="font-size: 10px;">Đã đồng bộ</span>
+                  </div>
+                  <p class="text-muted fs-8 mb-0 text-truncate">{{ currentUser()?.email }}</p>
+                </div>
+              </div>
+              <p class="text-secondary small mb-4">
+                Tài khoản của bạn được bảo vệ trực tiếp bởi hệ thống của Google.
+              </p>
+              <a href="https://myaccount.google.com" target="_blank" class="btn btn-outline-premium w-100">
+                <i class="bi bi-box-arrow-up-right me-2"></i> Quản lý Google
+              </a>
+            </ng-container>
+
+            <ng-template #localSecurityWidget>
+              <div class="integration-card d-flex align-items-center gap-3 p-3 rounded-3 mb-3">
+                <div class="brand-logo-circle bg-white text-warning shadow-sm">
+                  <i class="bi bi-key-fill fs-5"></i>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-1">
+                    <h6 class="fw-bold text-dark mb-0 fs-7">Mật khẩu</h6>
+                    <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill" style="font-size: 10px;">Cục bộ</span>
+                  </div>
+                  <p class="text-muted fs-8 mb-0">Mã hóa bảo mật cao</p>
+                </div>
+              </div>
+              <p class="text-secondary small mb-4">
+                Cập nhật mật khẩu định kỳ để bảo vệ tài khoản của bạn tốt hơn.
+              </p>
+              <a routerLink="/change-password" class="btn btn-primary-premium w-100">
+                <i class="bi bi-shield-key me-2"></i> Đổi mật khẩu
+              </a>
+            </ng-template>
+          </div>
+        </div>
+
+        <!-- Right Content Area (Stagger 2) -->
+        <div class="col-lg-8 col-md-7 animate-slide-up stagger-2">
+          <div class="form-content-panel ps-lg-4">
+            <div class="mb-5 animate-slide-up stagger-3">
+              <h2 class="fw-bold text-dark mb-2">Thông Tin Cá Nhân</h2>
+              <p class="text-muted">Cập nhật thông tin liên lạc và tùy chọn hiển thị của bạn</p>
+            </div>
+
+            <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+              <div class="row g-4">
+
+                <!-- Fullname (Stagger 4) -->
+                <div class="col-12 animate-slide-up stagger-4">
+                  <label class="luxury-form-label">Họ và tên <span class="text-danger">*</span></label>
+                  <div class="input-group-premium" [class.focused]="profileForm.get('fullname')?.touched">
+                    <i class="bi bi-person input-icon-left"></i>
+                    <input type="text" class="form-control-premium" formControlName="fullname" placeholder="Nhập họ và tên đầy đủ" />
+                  </div>
+                  <div class="validation-message mt-2" *ngIf="profileForm.get('fullname')?.touched && profileForm.get('fullname')?.invalid">
+                    <i class="bi bi-exclamation-circle-fill me-1"></i> Họ và tên tối thiểu 2 ký tự.
+                  </div>
+                </div>
+
+                <!-- Email (Stagger 5) -->
+                <div class="col-12 animate-slide-up stagger-5">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="luxury-form-label mb-0">Địa chỉ Email</label>
+                    <span class="lock-badge-light">
+                      <i class="bi bi-lock-fill me-1"></i> Cố định
+                    </span>
+                  </div>
+                  <div class="input-group-premium disabled-bg">
+                    <i class="bi bi-envelope input-icon-left text-muted"></i>
+                    <input type="email" class="form-control-premium text-muted" formControlName="email" readonly />
+                  </div>
+                </div>
+
+                <!-- Phone (Stagger 6) -->
+                <div class="col-md-6 animate-slide-up stagger-6">
+                  <label class="luxury-form-label">Số điện thoại</label>
+                  <div class="input-group-premium">
+                    <i class="bi bi-telephone input-icon-left"></i>
+                    <input type="text" class="form-control-premium" formControlName="phone" placeholder="Nhập số điện thoại" />
+                  </div>
+                  <div class="validation-message mt-2" *ngIf="profileForm.get('phone')?.touched && profileForm.get('phone')?.invalid">
+                    <i class="bi bi-exclamation-circle-fill me-1"></i> Số điện thoại không hợp lệ (9-11 số).
+                  </div>
+                </div>
+
+                <!-- Birthday (Stagger 6) -->
+                <div class="col-md-6 animate-slide-up stagger-6">
+                  <label class="luxury-form-label">Ngày sinh</label>
+                  <div class="input-group-premium">
+                    <i class="bi bi-calendar-event input-icon-left"></i>
+                    <input type="date" class="form-control-premium" formControlName="dob" />
+                  </div>
+                </div>
+
+                <!-- Gender (Stagger 7) -->
+                <div class="col-12 animate-slide-up stagger-7">
+                  <label class="luxury-form-label mb-3 d-block">Giới tính</label>
+                  <div class="d-flex gap-3 flex-wrap flex-md-nowrap">
+                    <label class="gender-option-light gender-male flex-fill" [class.selected]="profileForm.get('gender')?.value === 'nam'">
+                      <input type="radio" value="nam" formControlName="gender" class="d-none" />
+                      <div class="option-inner shadow-sm">
+                        <i class="bi bi-gender-male fs-5"></i> <span>Nam</span>
+                      </div>
+                    </label>
+                    <label class="gender-option-light gender-female flex-fill" [class.selected]="profileForm.get('gender')?.value === 'nữ'">
+                      <input type="radio" value="nữ" formControlName="gender" class="d-none" />
+                      <div class="option-inner shadow-sm">
+                        <i class="bi bi-gender-female fs-5"></i> <span>Nữ</span>
+                      </div>
+                    </label>
+                    <label class="gender-option-light gender-other flex-fill" [class.selected]="profileForm.get('gender')?.value === 'khác'">
+                      <input type="radio" value="khác" formControlName="gender" class="d-none" />
+                      <div class="option-inner shadow-sm">
+                        <i class="bi bi-gender-ambiguous fs-5"></i> <span>Khác</span>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Address (Stagger 8) -->
+                <div class="col-12 animate-slide-up stagger-8">
+                  <label class="luxury-form-label">Địa chỉ liên hệ / Giao hàng</label>
+                  <div class="input-group-premium align-items-start pt-2">
+                    <i class="bi bi-geo-alt input-icon-left mt-2"></i>
+                    <textarea class="form-control-premium" formControlName="address" rows="3" placeholder="Nhập địa chỉ chi tiết của bạn"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Footer Actions (Stagger 9) -->
+              <div class="d-flex justify-content-end gap-3 mt-5 pt-4 border-top animate-slide-up stagger-9">
+                <a routerLink="/" class="btn btn-light-cancel px-4 py-2 rounded-pill fw-bold">Hủy bỏ</a>
+                <button type="submit" [disabled]="isSaving() || isLoading()" class="btn btn-primary-gradient px-4 py-2 rounded-pill fw-bold shadow-sm d-flex align-items-center gap-2">
+                  <i class="bi" [ngClass]="isSaving() ? 'bi-arrow-repeat' : 'bi-check-circle-fill'"></i>
+                  {{ isSaving() ? 'ĐANG LƯU...' : 'LƯU THAY ĐỔI' }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

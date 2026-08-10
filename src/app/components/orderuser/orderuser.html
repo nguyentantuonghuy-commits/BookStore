@@ -1,0 +1,468 @@
+<div class="orders-container animate-fade-in">
+  <!-- Top Banner Header Section -->
+  <div class="header-section mb-5">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <span
+          class="badge bg-gold-subtle text-gold text-uppercase tracking-wider mb-2 px-3 py-2 rounded-pill fs-9 fw-bold">
+          Tài khoản khách hàng
+        </span>
+        <h1 class="display-6 fw-bold text-gradient-luxury font-serif mb-2">Đơn Hàng Của Tôi</h1>
+        <p class="text-muted fs-6 mb-0">
+          Theo dõi trạng thái vận chuyển, chi tiết sản phẩm và tải biên lai hóa đơn mua sắm.
+        </p>
+      </div>
+      <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <button (click)="router.navigate(['/'])"
+          class="btn btn-outline-dark-theme px-4 py-2.5 rounded-pill shadow-sm fw-semibold d-inline-flex align-items-center gap-2">
+          <i class="bi bi-arrow-left"></i> Tiếp Tục Mua Sách
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Left column: Order List Cards -->
+    <div class="col-lg-8">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold font-serif text-dark mb-0">Lịch sử đơn hàng ({{ orders().length }})</h4>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="orders().length === 0" class="card glass-card border-0 rounded-4 p-5 text-center shadow-sm">
+        <div class="d-flex flex-column align-items-center gap-3">
+          <i class="bi bi-bag-x text-muted fs-1 animate-pulse"></i>
+          <h5 class="text-dark fw-bold mb-1">Bạn chưa có đơn hàng nào</h5>
+          <p class="text-muted fs-7">Hãy khám phá các tác phẩm đặc sắc và đặt mua ngay hôm nay.</p>
+          <button (click)="router.navigate(['/products'])" class="btn btn-primary-theme px-4 py-2 mt-2">
+            Xem sản phẩm
+          </button>
+        </div>
+      </div>
+
+      <!-- Order Cards -->
+      <div class="d-flex flex-column gap-4" *ngIf="orders().length > 0">
+        <div class="order-card card border-0 rounded-4 shadow-sm overflow-hidden transition-all"
+          *ngFor="let order of orders()">
+
+          <!-- Card Header -->
+          <div
+            class="order-card-header p-4 bg-light border-bottom d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div class="d-flex align-items-center gap-3">
+              <span class="order-id-badge font-monospace">Mã đơn: {{ order.id }}</span>
+              <span class="order-date text-muted fs-8">
+                <i class="bi bi-clock me-1"></i>{{ order.createdAt | date : 'dd/MM/yyyy HH:mm' }}
+              </span>
+            </div>
+            <div class="status-badge-wrapper" [ngClass]="getOrderStatusClass(order.status)">
+              <span class="status-dot"></span>
+              <span class="status-text fw-bold fs-8 pe-1">{{ order.status }}</span>
+            </div>
+          </div>
+
+          <!-- Card Body -->
+          <div class="order-card-body p-4 bg-white">
+
+            <!-- Products List (Full Width - Stacked) -->
+            <div class="products-section mb-4">
+              <h6 class="text-secondary text-uppercase tracking-wider fs-9 fw-bold mb-3">Sản phẩm đặt mua</h6>
+              <div class="d-flex flex-column gap-3">
+                <div class="order-item-row d-flex align-items-center gap-3" *ngFor="let item of order.items">
+                  <div class="book-cover-thumbnail rounded overflow-hidden shadow-sm flex-shrink-0"
+                    style="width: 52px; height: 72px;">
+                    <img [src]="item.image || '/image/avatar.jpg'" alt="Cover" class="w-100 h-100 object-fit-cover" />
+                  </div>
+                  <div class="flex-grow-1 min-w-0">
+                    <h6 class="mb-1 fw-bold text-dark fs-7-5 text-wrap-2line" [title]="item.title || item.productId">
+                      {{ item.title || item.productId }}
+                    </h6>
+                    <div class="d-flex align-items-center gap-2 text-muted fs-8">
+                      <span>Số lượng: <strong class="text-dark">x{{ item.quantity }}</strong></span>
+                      <span>•</span>
+                      <span>Đơn giá: <strong class="text-dark">{{ item.unitPrice || (item.price / item.quantity) |
+                          number }} đ</strong></span>
+                    </div>
+                  </div>
+                  <div class="text-end flex-shrink-0 ms-3">
+                    <span class="font-monospace fs-7 text-dark fw-bold">{{ item.price | number }} đ</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Divider -->
+            <hr class="my-4 opacity-10" />
+
+            <!-- Delivery & Payment Row (Full Width - 2 Columns) -->
+            <div class="row g-4 mb-4">
+              <!-- Left side: Shipping Details Box -->
+              <div class="col-md-6">
+                <div class="p-3 rounded-3 bg-light border border-light-subtle h-100">
+                  <h6
+                    class="text-secondary text-uppercase tracking-wider fs-9 fw-bold mb-3 d-flex align-items-center gap-1.5">
+                    <i class="bi bi-geo-alt-fill text-gold"></i> Địa chỉ nhận hàng
+                  </h6>
+                  <div class="delivery-info lh-sm">
+                    <div class="fw-bold text-dark fs-7-5 mb-1-5">{{ order.fullname }}</div>
+                    <div class="text-muted fs-8 mb-1"><i class="bi bi-telephone me-1-5"></i>{{ order.phone }}</div>
+                    <div class="text-muted fs-8 mb-2"><i class="bi bi-envelope me-1-5"></i>{{ order.email }}</div>
+                    <div class="text-dark fs-8 mt-2 fw-semibold lh-base">
+                      {{ order.address }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right side: Payment Details Box -->
+              <div class="col-md-6">
+                <div
+                  class="p-3 rounded-3 bg-light border border-light-subtle h-100 d-flex flex-column justify-content-between">
+                  <div>
+                    <h6
+                      class="text-secondary text-uppercase tracking-wider fs-9 fw-bold mb-3 d-flex align-items-center gap-1.5">
+                      <i class="bi bi-credit-card-fill text-gold"></i> Tóm tắt thanh toán
+                    </h6>
+                    <div class="d-flex justify-content-between mb-2 fs-8 text-muted align-items-center">
+                      <span>Phương thức:</span>
+                      <span class="fw-semibold text-dark">{{ order.paymentMethod === 'BANK_TRANSFER' ? 'Chuyển khoản
+                        (VietQR)' : 'Thanh toán COD' }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2 fs-8 text-muted align-items-center">
+                      <span>Trạng thái thanh toán:</span>
+                      <span class="badge rounded-pill px-3 py-1.5 fs-8 fw-bold d-inline-flex align-items-center gap-2"
+                        [ngClass]="order.paymentStatus === 'Đã thanh toán' ? 'bg-success-subtle text-success border border-success-subtle' : (order.paymentStatus === 'Chờ xác nhận' ? 'bg-warning-subtle text-warning border border-warning-subtle' : 'bg-secondary-subtle text-secondary border border-secondary-subtle')">
+                        <i class="bi me-2"
+                          [ngClass]="order.paymentStatus === 'Đã thanh toán' ? 'bi-check-circle-fill' : (order.paymentStatus === 'Chờ xác nhận' ? 'bi-clock-history' : 'bi-exclamation-circle-fill')"></i>
+                        {{ order.paymentStatus || 'Chưa thanh toán' }}
+                      </span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2 fs-8 text-muted align-items-center">
+                      <span>Tạm tính:</span>
+                      <span class="font-monospace text-dark">{{ (order.subtotal ?? (order.total - (order.shippingCost || 0) + (order.discountAmount || 0))) | number }} đ</span>
+                    </div>
+                    <div *ngIf="(order.discountAmount || 0) > 0" class="d-flex justify-content-between mb-2 fs-8 align-items-center">
+                      <span class="text-muted">Khuyến mãi <strong *ngIf="order.promotion?.code">({{ order.promotion.code }})</strong>:</span>
+                      <span class="text-success fw-semibold">−{{ order.discountAmount | number }} đ</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2 fs-8 text-muted align-items-center">
+                      <span>Phí vận chuyển:</span>
+                      <span class="fw-semibold" [class.text-success]="!(order.shippingCost || 0)">
+                        {{ (order.shippingCost || 0) === 0 ? 'Miễn phí' : ((order.shippingCost || 0) | number) + ' đ' }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="border-top pt-2 mt-2 d-flex justify-content-between align-items-center">
+                    <span class="text-dark fw-bold fs-7.5">Tổng thanh toán:</span>
+                    <span class="text-gold fw-bold font-monospace fs-5">{{ order.total | number }} đ</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Divider -->
+            <hr class="my-4 opacity-10" />
+
+            <!-- Stepper Progress Tracker -->
+            <div class="order-progress-tracker-luxury mb-2 mt-3">
+              <div class="progress-bar-container position-relative">
+                <div class="progress-line bg-light">
+                  <div class="progress-line-fill"
+                    [style.width]="order.status === 'Đã giao hàng' ? '100%' : (order.status === 'Hủy đơn hàng' ? '100%' : '50%')"
+                    [ngClass]="order.status === 'Hủy đơn hàng' ? 'bg-danger' : 'bg-success'">
+                  </div>
+                </div>
+
+                <div class="steps-wrapper d-flex justify-content-between">
+                  <!-- Step 1 -->
+                  <div class="step-node active" [ngClass]="order.status === 'Hủy đơn hàng' ? 'cancelled' : 'success'">
+                    <div class="step-circle shadow-sm">
+                      <i class="bi bi-check-lg" *ngIf="order.status !== 'Hủy đơn hàng'"></i>
+                      <i class="bi bi-x-lg" *ngIf="order.status === 'Hủy đơn hàng'"></i>
+                    </div>
+                    <span class="step-label">Đặt hàng</span>
+                  </div>
+
+                  <!-- Step 2 -->
+                  <div class="step-node"
+                    [ngClass]="order.status === 'Đang xử lý' ? 'active warning' : (order.status === 'Đã giao hàng' ? 'active success' : 'disabled')">
+                    <div class="step-circle shadow-sm">
+                      <i class="bi bi-clock-history" *ngIf="order.status === 'Đang xử lý'"></i>
+                      <i class="bi bi-check-lg" *ngIf="order.status === 'Đã giao hàng'"></i>
+                      <i class="bi bi-dash" *ngIf="order.status === 'Hủy đơn hàng'"></i>
+                    </div>
+                    <span class="step-label">Xử lý</span>
+                  </div>
+
+                  <!-- Step 3 -->
+                  <div class="step-node"
+                    [ngClass]="order.status === 'Đã giao hàng' ? 'active success' : (order.status === 'Hủy đơn hàng' ? 'active danger' : 'disabled')">
+                    <div class="step-circle shadow-sm">
+                      <i class="bi bi-truck" *ngIf="order.status === 'Đã giao hàng'"></i>
+                      <i class="bi bi-x-circle-fill" *ngIf="order.status === 'Hủy đơn hàng'"></i>
+                      <i class="bi bi-gift" *ngIf="order.status === 'Đang xử lý'"></i>
+                    </div>
+                    <span class="step-label">{{ order.status === 'Hủy đơn hàng' ? 'Đã hủy' : 'Hoàn thành' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Card Footer (Actions) -->
+          <div class="order-card-footer p-4 bg-light bg-opacity-50 border-top d-flex justify-content-end gap-2">
+            <button (click)="viewOrderDetails(order)"
+              class="btn btn-sm btn-outline-dark rounded-pill px-4 py-2 d-flex align-items-center gap-2 fs-8 fw-semibold shadow-xs"
+              title="Xem chi tiết hóa đơn">
+              <i class="bi bi-file-earmark-text-fill"></i> Chi tiết hóa đơn
+            </button>
+            <button *ngIf="order.status === 'Đang xử lý'" (click)="updateStatus(order.id, 'Hủy đơn hàng')"
+              class="btn btn-sm btn-danger rounded-pill px-4 py-2 d-flex align-items-center gap-2 fs-8 fw-semibold shadow-xs"
+              title="Yêu cầu hủy đơn hàng">
+              <i class="bi bi-trash3-fill"></i> Hủy đơn
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Right column: Customer Hub Panel -->
+    <div class="col-lg-4">
+      <div class="card customer-hub-card border-0 rounded-4 shadow-sm p-4 text-center sticky-top"
+        style="top: 100px; background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(255, 255, 255, 0.5);">
+        <div class="avatar-wrapper mx-auto mb-3 position-relative" style="width: 80px; height: 80px;">
+          <div
+            class="avatar-frame rounded-circle d-flex align-items-center justify-content-center bg-gold-light text-gold fw-bold fs-3 shadow mx-auto"
+            style="width: 80px; height: 80px; border: 3px solid #ffffff; background: var(--gold-light);">
+            {{ (checkoutService.currentUser()?.name || 'U').substring(0, 1).toUpperCase() }}
+          </div>
+          <span
+            class="status-dot-active position-absolute bottom-0 end-0 rounded-circle bg-success border border-2 border-white"
+            style="width: 16px; height: 16px; transform: translate(-10%, -10%);"></span>
+        </div>
+        <h5 class="fw-bold text-dark mb-1">{{ checkoutService.currentUser()?.name || 'Người dùng' }}</h5>
+        <span class="badge bg-gold-subtle text-gold px-3 py-1.5 rounded-pill fs-8 fw-semibold mb-4">Khách Hàng Thân
+          Thiết</span>
+
+        <div class="text-start border-top pt-4 mt-2">
+          <div class="info-row d-flex align-items-center gap-3 mb-3">
+            <div class="info-icon bg-light rounded-circle d-flex align-items-center justify-content-center"
+              style="width: 36px; height: 36px;">
+              <i class="bi bi-envelope text-muted"></i>
+            </div>
+            <div>
+              <div class="text-muted fs-9 text-uppercase tracking-wider fw-bold">Địa chỉ Email</div>
+              <div class="text-dark fs-8 fw-semibold text-truncate" style="max-width: 220px;"
+                [title]="checkoutService.currentUser()?.email">{{ checkoutService.currentUser()?.email }}</div>
+            </div>
+          </div>
+
+          <div class="info-row d-flex align-items-center gap-3 mb-3">
+            <div class="info-icon bg-light rounded-circle d-flex align-items-center justify-content-center"
+              style="width: 36px; height: 36px;">
+              <i class="bi bi-shield-check text-muted"></i>
+            </div>
+            <div>
+              <div class="text-muted fs-9 text-uppercase tracking-wider fw-bold">Trạng thái tài khoản</div>
+              <div class="text-success fs-8 fw-bold d-flex align-items-center gap-1.5">
+                <span class="status-dot bg-success" style="width: 6px; height: 6px; border-radius: 50%;"></span> Đang
+                hoạt động
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-top pt-4 mt-4 d-grid gap-2">
+          <button (click)="router.navigate(['/products'])"
+            class="btn btn-dark rounded-pill py-2.5 d-flex align-items-center justify-content-center gap-2 fs-8 fw-bold transition-all hover-scale-sm"
+            style="background-color: #121212; border: none; color: #c5a880;">
+            <i class="bi bi-bag-plus-fill text-warning"></i> Tiếp tục mua hàng
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Detailed Invoice/Receipt Overlay Modal (Copy of luxury invoice style) -->
+<div class="custom-modal-overlay open" *ngIf="selectedOrder() as order" (click)="closeModal()">
+  <div class="custom-modal-card open" (click)="$event.stopPropagation()">
+    <!-- Invoice Header -->
+    <div class="modal-invoice-header p-4 text-white d-flex justify-content-between align-items-start position-relative">
+      <div>
+        <span class="invoice-badge text-uppercase mb-2 d-inline-block">BIÊN LAI ĐIỆN TỬ</span>
+        <h4 class="fw-bold mb-1 font-monospace text-warning">{{ order.id }}</h4>
+        <p class="text-white-50 fs-8 mb-0">Ngày mua: {{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
+      </div>
+      <div class="text-end">
+        <div
+          class="status-pill text-white border border-white-50 mb-3 px-3 py-1.5 rounded-pill fs-8 fw-bold d-inline-flex align-items-center"
+          style="background-color: rgba(255, 255, 255, 0.12); backdrop-filter: blur(4px);">
+          <i [class]="getOrderStatusIcon(order.status) + ' me-2'"></i>
+          {{ order.status }}
+        </div>
+        <button class="btn-close-modal border-0 bg-transparent text-white opacity-75 hover-opacity-100"
+          (click)="closeModal()">
+          <i class="bi bi-x-lg fs-5"></i>
+        </button>
+      </div>
+      <div class="modal-header-shape"></div>
+    </div>
+
+    <!-- Invoice Details Body -->
+    <div class="modal-invoice-body p-4 custom-scrollbar">
+      <!-- Customer & Billing Details -->
+      <div class="row g-4 mb-4">
+        <div class="col-sm-6">
+          <div class="billing-section-title text-secondary text-uppercase tracking-wider fs-9 fw-bold mb-2">Thông tin
+            giao hàng</div>
+          <h6 class="fw-bold text-dark mb-1">{{ order.fullname }}</h6>
+          <p class="text-muted fs-8 mb-0">SĐT: {{ order.phone }}</p>
+          <p class="text-muted fs-8 mb-0">Email: {{ order.email }}</p>
+        </div>
+        <div class="col-sm-6 text-sm-end">
+          <div class="billing-section-title text-secondary text-uppercase tracking-wider fs-9 fw-bold mb-2">Địa chỉ giao
+            hàng</div>
+          <p class="text-dark fs-8 mb-0 fw-semibold">{{ order.address }}</p>
+        </div>
+      </div>
+
+      <!-- Receipt/Bill Image verification (If payment receipt exists) -->
+      <div *ngIf="order.paymentReceipt" class="mb-4 p-3.5 rounded-4 border position-relative overflow-hidden"
+        style="background: linear-gradient(135deg, #fafafa 0%, #f4f3f0 100%); border-color: rgba(197, 168, 128, 0.25) !important;">
+        <!-- Header Info -->
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h6 class="text-secondary text-uppercase tracking-wider fs-9 fw-bold mb-0 d-flex align-items-center gap-2">
+            <span class="p-1 bg-gold bg-opacity-10 text-gold rounded-3 d-inline-flex"
+              style="background-color: rgba(197, 168, 128, 0.1);">
+              <i class="bi bi-receipt-cutoff text-gold fs-7"></i>
+            </span>
+            Minh chứng chuyển khoản
+          </h6>
+          <span
+            class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1 rounded-pill fs-9 fw-bold">
+            <i class="bi bi-check-circle-fill me-1"></i> Đã đính kèm
+          </span>
+        </div>
+
+        <p class="text-muted mb-3" style="font-size: 0.725rem;">
+          Hình ảnh biên lai giao dịch ngân hàng do bạn gửi khi thực hiện đặt hàng:
+        </p>
+
+        <!-- Centered Image Container -->
+        <div
+          class="position-relative text-center overflow-hidden rounded-3 border bg-white shadow-sm p-1.5 mx-auto transition-all hover-shadow-md preview-img-container"
+          style="max-width: 100%; width: 100%;">
+          <img [src]="order.paymentReceipt" alt="Biên lai chuyển khoản" class="img-fluid rounded"
+            style="max-height: 400px; width: 100%; object-fit: contain; cursor: pointer;"
+            (click)="showReceiptModal(order.paymentReceipt)" title="Xem ảnh lớn" />
+
+          <!-- Lens indicator overlay -->
+          <div
+            class="preview-lens-indicator position-absolute top-50 start-50 translate-middle bg-dark bg-opacity-60 text-white rounded-pill px-3 py-2 opacity-0 transition-all pointer-events-none d-flex align-items-center gap-1.5"
+            style="backdrop-filter: blur(4px);">
+            <i class="bi bi-zoom-in fs-6"></i>
+            <span style="font-size: 0.75rem;">Phóng to xem chi tiết</span>
+          </div>
+        </div>
+
+        <div class="text-center text-muted fs-8 mt-2">
+          <i class="bi bi-info-circle me-1 text-gold"></i> Click vào hình ảnh phía trên để xem phiên bản kích thước đầy
+          đủ
+        </div>
+      </div>
+
+      <!-- Items Table -->
+      <div class="table-responsive mb-4">
+        <table class="table table-sm invoice-items-table align-middle">
+          <thead>
+            <tr class="text-uppercase tracking-wider fs-9 text-secondary border-bottom">
+              <th class="ps-2">Sản phẩm</th>
+              <th class="text-center" style="width: 80px">SL</th>
+              <th class="text-end" style="width: 120px">Đơn giá</th>
+              <th class="text-end pe-2" style="width: 140px">Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of order.items">
+              <td class="ps-2">
+                <div class="d-flex align-items-center gap-2 py-1">
+                  <img *ngIf="item.image" [src]="item.image" class="rounded object-fit-cover shadow-sm"
+                    style="width: 32px; height: 42px;" />
+                  <div class="fw-bold text-dark fs-8 text-truncate" style="max-width: 220px;" [title]="item.title">{{
+                    item.title || item.productId }}</div>
+                </div>
+              </td>
+              <td class="text-center text-dark font-monospace fs-8">{{ item.quantity }}</td>
+              <td class="text-end text-muted font-monospace fs-8">{{ item.unitPrice || (item.price / item.quantity) |
+                number }} đ</td>
+              <td class="text-end text-dark font-monospace fs-8 fw-semibold pe-2">{{ item.price | number }} đ</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Summary Details -->
+      <div class="row justify-content-end mb-2">
+        <div class="col-sm-6">
+          <div class="d-flex justify-content-between py-1 border-bottom border-light">
+            <span class="text-muted fs-8">Phương thức:</span>
+            <span class="text-dark fs-8 fw-semibold">{{ order.paymentMethod === 'BANK_TRANSFER' ? 'Chuyển khoản' : 'COD'
+              }}</span>
+          </div>
+          <div class="d-flex justify-content-between py-1.5 border-bottom border-light align-items-center">
+            <span class="text-muted fs-8">Thanh toán:</span>
+            <span class="badge rounded-pill px-3 py-1 fs-8 fw-bold d-inline-flex align-items-center gap-2"
+              [ngClass]="order.paymentStatus === 'Đã thanh toán' ? 'bg-success-subtle text-success border border-success-subtle' : (order.paymentStatus === 'Chờ xác nhận' ? 'bg-warning-subtle text-warning border border-warning-subtle' : 'bg-secondary-subtle text-secondary border border-secondary-subtle')">
+              <i class="bi me-2"
+                [ngClass]="order.paymentStatus === 'Đã thanh toán' ? 'bi-check-circle-fill' : (order.paymentStatus === 'Chờ xác nhận' ? 'bi-clock-history' : 'bi-exclamation-circle-fill')"></i>
+              {{ order.paymentStatus || 'Chưa thanh toán' }}
+            </span>
+          </div>
+          <div class="d-flex justify-content-between py-1 border-bottom border-light">
+            <span class="text-muted fs-8">Tổng tiền hàng:</span>
+            <span class="text-dark font-monospace fs-8 fw-semibold">{{ (order.subtotal ?? (order.total - (order.shippingCost || 0) + (order.discountAmount || 0))) | number }} đ</span>
+          </div>
+          <div *ngIf="(order.discountAmount || 0) > 0" class="d-flex justify-content-between py-1 border-bottom border-light">
+            <span class="text-muted fs-8">Khuyến mãi <strong *ngIf="order.promotion?.code">({{ order.promotion.code }})</strong>:</span>
+            <span class="text-success font-monospace fs-8 fw-semibold">−{{ order.discountAmount | number }} đ</span>
+          </div>
+          <div class="d-flex justify-content-between py-1 border-bottom border-light">
+            <span class="text-muted fs-8">Phí vận chuyển:</span>
+            <span class="font-monospace fs-8 fw-semibold" [class.text-success]="!(order.shippingCost || 0)">
+              {{ (order.shippingCost || 0) === 0 ? 'Miễn phí' : ((order.shippingCost || 0) | number) + ' đ' }}
+            </span>
+          </div>
+          <div class="d-flex justify-content-between py-2 mt-1">
+            <span class="text-dark fw-bold fs-7">Tổng thanh toán:</span>
+            <span class="text-gold fw-bold font-monospace fs-6">{{ order.total | number }} đ</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Invoice Footer Actions -->
+    <div class="modal-invoice-footer p-3 bg-light border-top d-flex justify-content-between align-items-center">
+      <button class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1.5 fs-8" (click)="closeModal()">
+        Đóng biên lai
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox Modal for Receipt Preview -->
+<div *ngIf="lightboxReceiptUrl() as url"
+  class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-75 animate-fade-in"
+  style="z-index: 10000;" (click)="closeLightbox()">
+  <div class="position-relative p-2 bg-white rounded-4 max-w-90 max-h-90 overflow-hidden shadow-lg animate-scale-in"
+    (click)="$event.stopPropagation()">
+    <img [src]="url" alt="Full Receipt" class="img-fluid rounded-3"
+      style="max-height: 80vh; max-width: 90vw; object-fit: contain;" />
+    <button type="button"
+      class="btn btn-dark btn-sm position-absolute top-3 end-3 rounded-circle p-1.5 d-flex align-items-center justify-content-center"
+      (click)="closeLightbox()" style="width: 32px; height: 32px; background: rgba(0,0,0,0.6); border: none;">
+      <i class="bi bi-x-lg text-white"></i>
+    </button>
+  </div>
+</div>

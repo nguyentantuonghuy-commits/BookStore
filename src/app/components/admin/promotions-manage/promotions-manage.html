@@ -1,0 +1,316 @@
+<div class="container-fluid py-4" *ngIf="canView(); else noPermission">
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+      <h3 class="fw-bold text-gradient-luxury mb-1">Quản lý Mã giảm giá & Khuyến mãi</h3>
+      <p class="text-muted mb-0 fs-7">Tạo, theo dõi thời hạn, giới hạn sử dụng và phạm vi áp dụng của từng chương trình.</p>
+    </div>
+    <button type="button" class="btn btn-dark rounded-pill px-4 py-2 fw-bold" (click)="openCreateModal()" *ngIf="canCreate()">
+      <i class="bi bi-plus-circle me-2"></i>Tạo mã giảm giá
+    </button>
+  </div>
+
+  <div class="alert alert-danger rounded-4 border-0" *ngIf="errorMessage() && !isModalOpen()">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ errorMessage() }}
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-xl-3 col-sm-6">
+      <button class="promotion-stat-card w-100 text-start" [class.active]="statusFilter() === 'ALL'" (click)="setStatusFilter('ALL')">
+        <span class="stat-icon bg-dark"><i class="bi bi-tags-fill"></i></span>
+        <span><strong>{{ stats().total }}</strong><small>Tổng chương trình</small></span>
+      </button>
+    </div>
+    <div class="col-xl-3 col-sm-6">
+      <button class="promotion-stat-card w-100 text-start" [class.active]="statusFilter() === 'ACTIVE'" (click)="setStatusFilter('ACTIVE')">
+        <span class="stat-icon bg-success"><i class="bi bi-lightning-charge-fill"></i></span>
+        <span><strong>{{ stats().active }}</strong><small>Đang hoạt động</small></span>
+      </button>
+    </div>
+    <div class="col-xl-3 col-sm-6">
+      <button class="promotion-stat-card w-100 text-start" [class.active]="statusFilter() === 'UPCOMING'" (click)="setStatusFilter('UPCOMING')">
+        <span class="stat-icon bg-warning"><i class="bi bi-calendar-event-fill"></i></span>
+        <span><strong>{{ stats().upcoming }}</strong><small>Sắp diễn ra</small></span>
+      </button>
+    </div>
+    <div class="col-xl-3 col-sm-6">
+      <div class="promotion-stat-card w-100 text-start">
+        <span class="stat-icon bg-primary"><i class="bi bi-ticket-perforated-fill"></i></span>
+        <span><strong>{{ stats().usage }}</strong><small>Tổng lượt sử dụng</small></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body p-3">
+      <div class="row g-3 align-items-center">
+        <div class="col-lg-5">
+          <div class="search-field">
+            <i class="bi bi-search"></i>
+            <input type="text" class="form-control" placeholder="Tìm theo mã, tên hoặc nội dung khuyến mãi..."
+              [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event); currentPage.set(1)" />
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <select class="form-select rounded-pill" [ngModel]="statusFilter()" (ngModelChange)="setStatusFilter($event)">
+            <option value="ALL">Tất cả trạng thái</option>
+            <option value="ACTIVE">Đang hoạt động</option>
+            <option value="UPCOMING">Sắp diễn ra</option>
+            <option value="EXPIRED">Đã hết hạn / hết lượt</option>
+            <option value="DISABLED">Tạm ngưng</option>
+          </select>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <select class="form-select rounded-pill" [ngModel]="typeFilter()" (ngModelChange)="typeFilter.set($event); currentPage.set(1)">
+            <option value="ALL">Tất cả loại giảm</option>
+            <option value="PERCENT">Giảm theo phần trăm</option>
+            <option value="FIXED">Giảm số tiền cố định</option>
+          </select>
+        </div>
+        <div class="col-lg-1 text-lg-end">
+          <button class="btn btn-light rounded-circle" title="Làm mới" (click)="promotionService.loadPromotions(true).subscribe()">
+            <i class="bi bi-arrow-clockwise"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0 promotion-table">
+        <thead>
+          <tr>
+            <th>Mã & chương trình</th>
+            <th>Mức giảm</th>
+            <th>Điều kiện áp dụng</th>
+            <th>Thời gian</th>
+            <th>Lượt dùng</th>
+            <th>Trạng thái</th>
+            <th class="text-end">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of pagedPromotions()">
+            <td style="min-width: 230px">
+              <div class="coupon-code mb-2">{{ item.code }}</div>
+              <div class="fw-bold text-dark">{{ item.name }}</div>
+              <small class="text-muted line-clamp-2">{{ item.description || 'Không có mô tả' }}</small>
+            </td>
+            <td style="min-width: 145px">
+              <div class="discount-value">{{ getDiscountLabel(item) }}</div>
+              <small class="text-muted d-block" *ngIf="item.discountType === 'PERCENT' && item.maxDiscount > 0">
+                Tối đa {{ formatPrice(item.maxDiscount) }} đ
+              </small>
+            </td>
+            <td style="min-width: 190px">
+              <span class="scope-pill">{{ getScopeLabel(item) }}</span>
+              <small class="text-muted d-block mt-2">
+                Đơn tối thiểu: <strong>{{ item.minOrderValue > 0 ? formatPrice(item.minOrderValue) + ' đ' : 'Không yêu cầu' }}</strong>
+              </small>
+              <small class="text-muted d-block">Mỗi tài khoản: {{ item.perUserLimit > 0 ? item.perUserLimit + ' lần' : 'Không giới hạn' }}</small>
+            </td>
+            <td style="min-width: 175px">
+              <small class="d-block text-muted"><i class="bi bi-play-circle me-1 text-success"></i>{{ formatDate(item.startAt) }}</small>
+              <small class="d-block text-muted mt-1"><i class="bi bi-stop-circle me-1 text-danger"></i>{{ formatDate(item.endAt) }}</small>
+            </td>
+            <td style="min-width: 145px">
+              <div class="d-flex justify-content-between fs-8 mb-1">
+                <span>{{ item.usedCount || 0 }}</span>
+                <span>{{ item.usageLimit > 0 ? item.usageLimit : '∞' }}</span>
+              </div>
+              <div class="progress usage-progress">
+                <div class="progress-bar" [style.width.%]="getUsagePercent(item)"></div>
+              </div>
+            </td>
+            <td>
+              <span class="status-badge" [ngClass]="getPromotionStatus(item).className">
+                {{ getPromotionStatus(item).label }}
+              </span>
+            </td>
+            <td class="text-end" style="min-width: 145px">
+              <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn-action toggle" [title]="item.isActive ? 'Tạm ngưng' : 'Kích hoạt'"
+                  (click)="toggleStatus(item)" *ngIf="canEdit()">
+                  <i class="bi" [ngClass]="item.isActive ? 'bi-pause-fill' : 'bi-play-fill'"></i>
+                </button>
+                <button type="button" class="btn-action edit" title="Chỉnh sửa" (click)="openEditModal(item)" *ngIf="canEdit()">
+                  <i class="bi bi-pencil-fill"></i>
+                </button>
+                <button type="button" class="btn-action delete" title="Xóa" (click)="deletePromotion(item)" *ngIf="canDelete()"
+                  [disabled]="isDeletingId() === item.id">
+                  <span class="spinner-border spinner-border-sm" *ngIf="isDeletingId() === item.id"></span>
+                  <i class="bi bi-trash-fill" *ngIf="isDeletingId() !== item.id"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="!promotionService.isLoadingAdmin() && pagedPromotions().length === 0">
+            <td colspan="7" class="text-center py-5 text-muted">
+              <i class="bi bi-ticket-perforated fs-1 d-block mb-3 text-gold"></i>
+              Chưa có chương trình khuyến mãi phù hợp.
+            </td>
+          </tr>
+          <tr *ngIf="promotionService.isLoadingAdmin()">
+            <td colspan="7" class="text-center py-5">
+              <span class="spinner-border spinner-border-sm me-2"></span>Đang tải dữ liệu khuyến mãi...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center py-3 px-4" *ngIf="totalPages() > 1">
+      <small class="text-muted">Trang {{ currentPage() }} / {{ totalPages() }}</small>
+      <div class="d-flex gap-2">
+        <button class="btn btn-sm btn-light rounded-circle" [disabled]="currentPage() === 1" (click)="setPage(currentPage() - 1)">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <button class="btn btn-sm btn-light rounded-circle" [disabled]="currentPage() === totalPages()" (click)="setPage(currentPage() + 1)">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noPermission>
+  <div class="alert alert-danger m-4 rounded-4 border-0">
+    <i class="bi bi-shield-lock-fill me-2"></i>Bạn không có quyền truy cập trang quản lý khuyến mãi.
+  </div>
+</ng-template>
+
+<div class="promotion-modal-overlay" *ngIf="isModalOpen()" (click)="closeModal()">
+  <div class="promotion-modal bg-white rounded-4 shadow-lg" (click)="$event.stopPropagation()">
+    <div class="modal-header p-4 border-bottom">
+      <div>
+        <h5 class="fw-bold mb-1"><i class="bi bi-ticket-perforated-fill text-gold me-2"></i>{{ isEditing() ? 'Cập nhật khuyến mãi' : 'Tạo khuyến mãi mới' }}</h5>
+        <small class="text-muted">Mọi điều kiện sẽ được máy chủ kiểm tra lại khi khách hàng thanh toán.</small>
+      </div>
+      <button type="button" class="btn-close" (click)="closeModal()"></button>
+    </div>
+
+    <form class="modal-body p-4" (submit)="savePromotion(); $event.preventDefault()">
+      <div class="alert alert-danger rounded-3 py-2" *ngIf="errorMessage()">
+        <i class="bi bi-exclamation-circle me-2"></i>{{ errorMessage() }}
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label fw-bold fs-7">Mã giảm giá <span class="text-danger">*</span></label>
+          <input class="form-control text-uppercase fw-bold" maxlength="30" placeholder="VD: SACHWEB20"
+            [ngModel]="formModel().code" (ngModelChange)="onCodeInput($event)" name="code" [disabled]="isEditing() && formModel().usedCount > 0" />
+          <small class="text-muted" *ngIf="isEditing() && formModel().usedCount > 0">Mã đã phát sinh sử dụng nên không thể đổi code.</small>
+        </div>
+        <div class="col-md-8">
+          <label class="form-label fw-bold fs-7">Tên chương trình <span class="text-danger">*</span></label>
+          <input class="form-control" placeholder="Tên hiển thị cho chương trình"
+            [ngModel]="formModel().name" (ngModelChange)="updateForm('name', $event)" name="name" />
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-bold fs-7">Mô tả</label>
+          <textarea class="form-control" rows="2" placeholder="Mô tả ngắn về ưu đãi..."
+            [ngModel]="formModel().description" (ngModelChange)="updateForm('description', $event)" name="description"></textarea>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-bold fs-7">Loại giảm <span class="text-danger">*</span></label>
+          <select class="form-select" [ngModel]="formModel().discountType" (ngModelChange)="updateForm('discountType', $event)" name="discountType">
+            <option value="PERCENT">Giảm theo phần trăm (%)</option>
+            <option value="FIXED">Giảm số tiền cố định (đ)</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-bold fs-7">Giá trị giảm <span class="text-danger">*</span></label>
+          <input type="number" class="form-control" min="0" step="1"
+            [ngModel]="formModel().discountValue" (ngModelChange)="updateForm('discountValue', +$event)" name="discountValue" />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-bold fs-7">Giảm tối đa</label>
+          <input type="number" class="form-control" min="0" step="1000" [disabled]="formModel().discountType === 'FIXED'"
+            [ngModel]="formModel().maxDiscount" (ngModelChange)="updateForm('maxDiscount', +$event)" name="maxDiscount" />
+          <small class="text-muted">Nhập 0 nếu không giới hạn.</small>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label fw-bold fs-7">Đơn hàng tối thiểu</label>
+          <input type="number" class="form-control" min="0" step="1000"
+            [ngModel]="formModel().minOrderValue" (ngModelChange)="updateForm('minOrderValue', +$event)" name="minOrderValue" />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-bold fs-7">Tổng lượt sử dụng</label>
+          <input type="number" class="form-control" min="0" step="1"
+            [ngModel]="formModel().usageLimit" (ngModelChange)="updateForm('usageLimit', +$event)" name="usageLimit" />
+          <small class="text-muted">Nhập 0 để không giới hạn.</small>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-bold fs-7">Lượt dùng / tài khoản</label>
+          <input type="number" class="form-control" min="0" step="1"
+            [ngModel]="formModel().perUserLimit" (ngModelChange)="updateForm('perUserLimit', +$event)" name="perUserLimit" />
+          <small class="text-muted">Khuyến nghị: 1 lần.</small>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label fw-bold fs-7">Bắt đầu <span class="text-danger">*</span></label>
+          <input type="datetime-local" class="form-control" [ngModel]="formModel().startAt"
+            (ngModelChange)="updateForm('startAt', $event)" name="startAt" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-bold fs-7">Kết thúc <span class="text-danger">*</span></label>
+          <input type="datetime-local" class="form-control" [ngModel]="formModel().endAt"
+            (ngModelChange)="updateForm('endAt', $event)" name="endAt" />
+        </div>
+
+        <div class="col-12">
+          <label class="form-label fw-bold fs-7">Phạm vi áp dụng</label>
+          <div class="scope-selector d-flex flex-wrap gap-2">
+            <button type="button" class="scope-option" [class.active]="formModel().applicableScope === 'ALL'" (click)="onScopeChange('ALL')">
+              <i class="bi bi-bag-check"></i> Toàn bộ đơn hàng
+            </button>
+            <button type="button" class="scope-option" [class.active]="formModel().applicableScope === 'CATEGORY'" (click)="onScopeChange('CATEGORY')">
+              <i class="bi bi-grid"></i> Theo danh mục
+            </button>
+            <button type="button" class="scope-option" [class.active]="formModel().applicableScope === 'PRODUCT'" (click)="onScopeChange('PRODUCT')">
+              <i class="bi bi-book"></i> Theo sản phẩm
+            </button>
+          </div>
+        </div>
+
+        <div class="col-12" *ngIf="formModel().applicableScope === 'CATEGORY'">
+          <label class="form-label fw-bold fs-7">Danh mục được áp dụng <span class="text-danger">*</span></label>
+          <select class="form-select" [ngModel]="formModel().applicableCategory" (ngModelChange)="updateForm('applicableCategory', $event)" name="applicableCategory">
+            <option value="">-- Chọn danh mục --</option>
+            <option *ngFor="let category of categories()" [value]="category.value">{{ category.name }}</option>
+          </select>
+        </div>
+
+        <div class="col-12" *ngIf="formModel().applicableScope === 'PRODUCT'">
+          <label class="form-label fw-bold fs-7">Sản phẩm được áp dụng <span class="text-danger">*</span></label>
+          <div class="product-selector border rounded-3 p-2">
+            <label class="product-check" *ngFor="let book of books()">
+              <input type="checkbox" class="form-check-input" [checked]="isProductSelected(book.id)"
+                (change)="toggleProduct(book.id, $any($event.target).checked)" />
+              <img [src]="book.image" [alt]="book.title" />
+              <span class="text-truncate">{{ book.title }}</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="form-check form-switch d-flex align-items-center gap-2 p-3 bg-light rounded-3">
+            <input class="form-check-input ms-0" type="checkbox" [checked]="formModel().isActive"
+              (change)="updateForm('isActive', $any($event.target).checked)" id="promotion-active" />
+            <label class="form-check-label fw-bold" for="promotion-active">Kích hoạt chương trình ngay khi đến thời gian áp dụng</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 pt-4 mt-4 border-top">
+        <button type="button" class="btn btn-light rounded-pill px-4" (click)="closeModal()" [disabled]="isSaving()">Hủy</button>
+        <button type="submit" class="btn btn-dark rounded-pill px-4 fw-bold" [disabled]="isSaving()">
+          <span class="spinner-border spinner-border-sm me-2" *ngIf="isSaving()"></span>
+          {{ isEditing() ? 'Lưu thay đổi' : 'Tạo mã giảm giá' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

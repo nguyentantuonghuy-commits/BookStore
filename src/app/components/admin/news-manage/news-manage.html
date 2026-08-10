@@ -1,0 +1,452 @@
+<div class="news-manage-container animate-fade-in">
+  <!-- Metrics Header Cards -->
+  <section class="row g-4 mb-4">
+    <!-- Total Articles -->
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="card metric-card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden cursor-pointer"
+        [class.active-gold-card]="selectedCategory() === 'All'" [class.bg-primary-gold]="selectedCategory() === 'All'"
+        [class.text-white]="selectedCategory() === 'All'" [class.bg-cream-card]="selectedCategory() !== 'All'"
+        (click)="selectedCategory.set('All'); currentPage.set(1)">
+        <div class="card-body p-4 position-relative z-index-1">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="fs-7 fw-bold text-uppercase tracking-wider"
+              [class.text-white-50]="selectedCategory() === 'All'"
+              [class.text-muted]="selectedCategory() !== 'All'">Tổng bài viết</span>
+            <div class="metric-icon-box rounded-3">
+              <i class="bi bi-journal-text fs-4"></i>
+            </div>
+          </div>
+          <h3 class="display-6 fw-bold mb-0" [class.text-white]="selectedCategory() === 'All'"
+            [class.text-dark]="selectedCategory() !== 'All'">{{ totalArticles() }}</h3>
+        </div>
+        <div class="metric-shape position-absolute" *ngIf="selectedCategory() === 'All'"></div>
+        <div class="filter-indicator" *ngIf="selectedCategory() === 'All'">Đang Lọc</div>
+      </div>
+    </div>
+
+    <!-- Review Sách Count -->
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="card metric-card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden cursor-pointer"
+        [class.active-gold-card]="selectedCategory() === 'Review Sách'"
+        [class.bg-primary-gold]="selectedCategory() === 'Review Sách'"
+        [class.text-white]="selectedCategory() === 'Review Sách'"
+        [class.bg-cream-card]="selectedCategory() !== 'Review Sách'" (click)="filterByCategory('Review Sách')">
+        <div class="card-body p-4 position-relative z-index-1">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="fs-7 fw-bold text-uppercase tracking-wider"
+              [class.text-white-50]="selectedCategory() === 'Review Sách'"
+              [class.text-muted]="selectedCategory() !== 'Review Sách'">Review Sách</span>
+            <div class="metric-icon-box rounded-3">
+              <i class="bi bi-book fs-4"></i>
+            </div>
+          </div>
+          <h3 class="display-6 fw-bold mb-0" [class.text-white]="selectedCategory() === 'Review Sách'"
+            [class.text-dark]="selectedCategory() !== 'Review Sách'">{{ reviewSachCount() }}</h3>
+        </div>
+        <div class="metric-shape position-absolute" *ngIf="selectedCategory() === 'Review Sách'"></div>
+        <div class="filter-indicator" *ngIf="selectedCategory() === 'Review Sách'">Đang Lọc</div>
+      </div>
+    </div>
+
+    <!-- Sự Kiện Count -->
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="card metric-card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden cursor-pointer"
+        [class.active-gold-card]="selectedCategory() === 'Sự Kiện'"
+        [class.bg-primary-gold]="selectedCategory() === 'Sự Kiện'" [class.text-white]="selectedCategory() === 'Sự Kiện'"
+        [class.bg-cream-card]="selectedCategory() !== 'Sự Kiện'" (click)="filterByCategory('Sự Kiện')">
+        <div class="card-body p-4 position-relative z-index-1">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="fs-7 fw-bold text-uppercase tracking-wider"
+              [class.text-white-50]="selectedCategory() === 'Sự Kiện'"
+              [class.text-muted]="selectedCategory() !== 'Sự Kiện'">Sự Kiện Văn Hóa</span>
+            <div class="metric-icon-box rounded-3">
+              <i class="bi bi-calendar-event fs-4"></i>
+            </div>
+          </div>
+          <h3 class="display-6 fw-bold mb-0" [class.text-white]="selectedCategory() === 'Sự Kiện'"
+            [class.text-dark]="selectedCategory() !== 'Sự Kiện'">{{ suKienCount() }}</h3>
+        </div>
+        <div class="metric-shape position-absolute" *ngIf="selectedCategory() === 'Sự Kiện'"></div>
+        <div class="filter-indicator" *ngIf="selectedCategory() === 'Sự Kiện'">Đang Lọc</div>
+      </div>
+    </div>
+
+    <!-- Kinh Nghiệm Count -->
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="card metric-card border-0 shadow-sm rounded-4 h-100 position-relative overflow-hidden cursor-pointer"
+        [class.active-gold-card]="selectedCategory() === 'Kinh Nghiệm'"
+        [class.bg-primary-gold]="selectedCategory() === 'Kinh Nghiệm'"
+        [class.text-white]="selectedCategory() === 'Kinh Nghiệm'"
+        [class.bg-cream-card]="selectedCategory() !== 'Kinh Nghiệm'" (click)="filterByCategory('Kinh Nghiệm')">
+        <div class="card-body p-4 position-relative z-index-1">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="fs-7 fw-bold text-uppercase tracking-wider"
+              [class.text-white-50]="selectedCategory() === 'Kinh Nghiệm'"
+              [class.text-muted]="selectedCategory() !== 'Kinh Nghiệm'">Kinh Nghiệm</span>
+            <div class="metric-icon-box rounded-3">
+              <i class="bi bi-journal-bookmark fs-4"></i>
+            </div>
+          </div>
+          <h3 class="display-6 fw-bold mb-0" [class.text-white]="selectedCategory() === 'Kinh Nghiệm'"
+            [class.text-dark]="selectedCategory() !== 'Kinh Nghiệm'">{{ kinhNghiemCount() }}</h3>
+        </div>
+        <div class="metric-shape position-absolute" *ngIf="selectedCategory() === 'Kinh Nghiệm'"></div>
+        <div class="filter-indicator" *ngIf="selectedCategory() === 'Kinh Nghiệm'">Đang Lọc</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toolbar Controls -->
+  <section
+    class="toolbar-section bg-white p-3 rounded-4 shadow-sm mb-4 border border-light d-flex flex-wrap gap-3 align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-2 flex-grow-1" style="max-width: 420px;">
+      <div class="input-group search-input-group rounded-pill overflow-hidden border w-100">
+        <span class="input-group-text bg-white border-0 ps-3">
+          <i class="bi bi-search text-muted"></i>
+        </span>
+        <input type="text" class="form-control border-0 py-2 fs-7 ps-2 focus-none"
+          placeholder="Tìm kiếm theo tiêu đề, tác giả, chuyên mục..." [ngModel]="searchTerm()"
+          (ngModelChange)="searchTerm.set($event); currentPage.set(1)" />
+        <span class="input-group-text bg-white border-0 pe-3 cursor-pointer" *ngIf="searchTerm()"
+          (click)="searchTerm.set(''); currentPage.set(1)">
+          <i class="bi bi-x-circle-fill text-muted hover-opacity-75"></i>
+        </span>
+      </div>
+    </div>
+
+    <!-- Category Pills Quick Filter (Tablet/Desktop View) -->
+    <div class="d-flex align-items-center gap-1.5 flex-wrap filter-pills-container">
+      <button class="btn btn-sm btn-filter-pill rounded-pill px-3 py-1.5 fs-7"
+        [class.active]="selectedCategory() === 'All'" (click)="selectedCategory.set('All'); currentPage.set(1)">
+        Tất cả
+      </button>
+      <button class="btn btn-sm btn-filter-pill rounded-pill px-3 py-1.5 fs-7"
+        [class.active]="selectedCategory() === 'Review Sách'" (click)="filterByCategory('Review Sách')">
+        Review Sách
+      </button>
+      <button class="btn btn-sm btn-filter-pill rounded-pill px-3 py-1.5 fs-7"
+        [class.active]="selectedCategory() === 'Sự Kiện'" (click)="filterByCategory('Sự Kiện')">
+        Sự Kiện
+      </button>
+      <button class="btn btn-sm btn-filter-pill rounded-pill px-3 py-1.5 fs-7"
+        [class.active]="selectedCategory() === 'Kinh Nghiệm'" (click)="filterByCategory('Kinh Nghiệm')">
+        Kinh Nghiệm
+      </button>
+    </div>
+
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <button class="btn btn-outline-gold rounded-pill px-3 py-2 fs-7 d-flex align-items-center gap-2"
+        (click)="resetDatabase()" *ngIf="authService.getCurrentUser()?.role === 'admin'">
+        <i class="bi bi-arrow-counterclockwise"></i>
+        <span>Khôi Phục Dữ Liệu Mẫu</span>
+      </button>
+      <button class="btn btn-gold rounded-pill px-4 py-2 fs-7 d-flex align-items-center gap-2 shadow-sm"
+        (click)="openAddModal()" *ngIf="canCreateNews()">
+        <i class="bi bi-plus-lg"></i>
+        <span>Viết Tin Tức Mới</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- News Table -->
+  <section class="card border-0 rounded-4 shadow-sm overflow-hidden mb-4 border border-light bg-white">
+    <div class="table-responsive">
+      <table class="table align-middle table-hover custom-news-table mb-0">
+        <thead>
+          <tr>
+            <th class="ps-4 py-3 text-uppercase fs-8 text-muted tracking-wider" style="width: 40%;">Bài viết</th>
+            <th class="py-3 text-uppercase fs-8 text-muted tracking-wider" style="width: 15%;">Chuyên mục</th>
+            <th class="py-3 text-uppercase fs-8 text-muted tracking-wider" style="width: 15%;">Tác giả</th>
+            <th class="py-3 text-uppercase fs-8 text-muted tracking-wider" style="width: 15%;">Thời gian đăng</th>
+            <th class="pe-4 py-3 text-end text-uppercase fs-8 text-muted tracking-wider" style="width: 15%;">Thao tác
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let art of pagedArticles()">
+            <!-- Title & Image -->
+            <td class="ps-4 py-3">
+              <div class="d-flex align-items-center gap-3">
+                <div class="article-image-preview rounded shadow-xs border overflow-hidden flex-shrink-0"
+                  style="width: 75px; height: 50px;">
+                  <img [src]="art.imageUrl" alt="Article Thumbnail" class="img-fluid w-100 h-100 object-fit-cover" />
+                </div>
+                <div class="min-w-0">
+                  <h6 class="mb-1 fw-bold text-dark text-truncate-2" [title]="art.title">{{ art.title }}</h6>
+                  <p class="mb-0 text-muted fs-8 text-truncate" style="max-width: 300px;">{{ art.summary || 'Không có
+                    tóm tắt' }}</p>
+                </div>
+              </div>
+            </td>
+
+            <!-- Category -->
+            <td class="py-3">
+              <span class="badge rounded-pill px-3 py-1.5 fs-8"
+                [class.bg-category-review]="art.category === 'Review Sách'"
+                [class.bg-category-event]="art.category === 'Sự Kiện'"
+                [class.bg-category-experience]="art.category === 'Kinh Nghiệm'">
+                {{ art.category }}
+              </span>
+            </td>
+
+            <!-- Author -->
+            <td class="py-3">
+              <div class="d-flex align-items-center gap-2">
+                <div
+                  class="avatar-sm rounded-circle d-flex align-items-center justify-content-center text-white bg-gold fw-bold"
+                  style="width: 28px; height: 28px; font-size: 0.75rem;">
+                  {{ art.author.substring(0, 1) }}
+                </div>
+                <span class="fs-7 fw-medium text-dark">{{ art.author }}</span>
+              </div>
+            </td>
+
+            <!-- Date & Read Time -->
+            <td class="py-3">
+              <div class="d-flex flex-column">
+                <span class="fs-7 text-dark fw-medium">{{ art.date }}</span>
+                <small class="text-muted fs-8"><i class="bi bi-clock me-1 text-gold"></i>{{ art.readTime }}</small>
+              </div>
+            </td>
+
+            <!-- Actions -->
+            <td class="pe-4 py-3 text-end">
+              <div class="d-flex justify-content-end gap-2">
+                <button
+                  class="btn btn-action btn-outline-info-custom rounded-circle p-2 d-inline-flex align-items-center justify-content-center"
+                  title="Xem chi tiết" (click)="viewArticleDetail(art)">
+                  <i class="bi bi-eye-fill fs-7"></i>
+                </button>
+                <button
+                  class="btn btn-action btn-outline-primary-custom rounded-circle p-2 d-inline-flex align-items-center justify-content-center"
+                  title="Chỉnh sửa bài viết" (click)="editArticle(art)" *ngIf="canEditNews()">
+                  <i class="bi bi-pencil-fill fs-7"></i>
+                </button>
+                <button
+                  class="btn btn-action btn-outline-danger-custom rounded-circle p-2 d-inline-flex align-items-center justify-content-center"
+                  title="Xóa bài viết" (click)="deleteArticle(art.id)" *ngIf="canDeleteNews()">
+                  <i class="bi bi-trash-fill fs-7"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="pagedArticles().length === 0">
+            <td colspan="5" class="text-center py-5 text-muted">
+              <i class="bi bi-journal-x fs-1 d-block mb-3 text-gold"></i>
+              Không tìm thấy tin tức hay bài viết nào phù hợp.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Footer -->
+    <div class="card-footer bg-transparent border-0 px-4 py-3 d-flex justify-content-between align-items-center"
+      *ngIf="totalPages() > 1">
+      <small class="text-muted">Trang <strong>{{ currentPage() }}</strong> trên {{ totalPages() }}</small>
+      <nav aria-label="Page navigation">
+        <ul class="pagination pagination-sm mb-0 gap-1">
+          <li class="page-item" [class.disabled]="currentPage() === 1">
+            <button class="page-link rounded-circle border-0 d-inline-flex align-items-center justify-content-center"
+              style="width: 32px; height: 32px;" (click)="setPage(currentPage() - 1)">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+          </li>
+          <li class="page-item" *ngFor="let page of [].constructor(totalPages()); let i = index"
+            [class.active]="currentPage() === i + 1">
+            <button class="page-link rounded-circle border-0 d-inline-flex align-items-center justify-content-center"
+              style="width: 32px; height: 32px;" (click)="setPage(i + 1)">
+              {{ i + 1 }}
+            </button>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage() === totalPages()">
+            <button class="page-link rounded-circle border-0 d-inline-flex align-items-center justify-content-center"
+              style="width: 32px; height: 32px;" (click)="setPage(currentPage() + 1)">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+</div>
+
+<!-- Add / Edit Modal popup -->
+<div class="news-modal-overlay" *ngIf="isModalOpen()" (click)="resetForm()">
+  <div class="news-modal-container bg-white rounded-4 shadow-lg border-0 overflow-hidden animate-slide-up"
+    (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div
+      class="modal-news-header p-4 border-bottom d-flex justify-content-between align-items-center bg-cream-gradient">
+      <h5 class="mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+        <i class="bi bi-pencil-square text-gold"></i>
+        <span>{{ isEditing() ? 'Cập Nhật Tin Tức' : 'Đăng Tin Tức Mới' }}</span>
+      </h5>
+      <button class="btn-close focus-none" (click)="resetForm()"></button>
+    </div>
+
+    <!-- Scrollable content -->
+    <form (submit)="onSubmit(); $event.preventDefault()"
+      class="modal-news-body p-4 d-flex flex-column gap-3 overflow-y-auto" style="max-height: calc(85vh - 150px);">
+      <div class="row g-3">
+        <!-- Title -->
+        <div class="col-12">
+          <label class="form-label fw-bold text-dark fs-7">Tiêu đề bài viết <span class="text-danger">*</span></label>
+          <input type="text" class="form-control rounded-3 py-2 fs-7 focus-gold"
+            placeholder="Nhập tiêu đề tin tức nổi bật..." [ngModel]="formArticle().title"
+            (ngModelChange)="formArticle.update(a => ({...a, title: $event}))" name="title" required />
+        </div>
+
+        <!-- Category -->
+        <div class="col-md-6">
+          <label class="form-label fw-bold text-dark fs-7">Chuyên mục <span class="text-danger">*</span></label>
+          <select class="form-select rounded-3 py-2 fs-7 focus-gold" [ngModel]="formArticle().category"
+            (ngModelChange)="formArticle.update(a => ({...a, category: $event}))" name="category" required>
+            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+          </select>
+        </div>
+
+        <!-- Read Time -->
+        <div class="col-md-6">
+          <label class="form-label fw-bold text-dark fs-7">Thời gian đọc <span class="text-danger">*</span></label>
+          <input type="text" class="form-control rounded-3 py-2 fs-7 focus-gold" placeholder="Ví dụ: 5 phút đọc..."
+            [ngModel]="formArticle().readTime" (ngModelChange)="formArticle.update(a => ({...a, readTime: $event}))"
+            name="readTime" required />
+        </div>
+
+        <!-- Author -->
+        <div class="col-md-6">
+          <label class="form-label fw-bold text-dark fs-7">Tác giả <span class="text-danger">*</span></label>
+          <input type="text" class="form-control rounded-3 py-2 fs-7 focus-gold" [ngModel]="formArticle().author"
+            (ngModelChange)="formArticle.update(a => ({...a, author: $event}))" name="author" required />
+        </div>
+
+        <!-- Date -->
+        <div class="col-md-6">
+          <label class="form-label fw-bold text-dark fs-7">Ngày đăng <span class="text-danger">*</span></label>
+          <input type="text" class="form-control rounded-3 py-2 fs-7 focus-gold" placeholder="DD/MM/YYYY"
+            [ngModel]="formArticle().date" (ngModelChange)="formArticle.update(a => ({...a, date: $event}))" name="date"
+            required />
+        </div>
+
+        <!-- Image URL / Upload -->
+        <div class="col-12">
+          <label class="form-label fw-bold text-dark fs-7">Ảnh bài viết</label>
+          <div class="d-flex flex-column gap-2">
+            <div class="d-flex gap-2">
+              <input type="text" class="form-control rounded-3 py-2 fs-7 focus-gold flex-grow-1"
+                placeholder="Nhập liên kết ảnh (URL)..." [ngModel]="formArticle().imageUrl"
+                (ngModelChange)="formArticle.update(a => ({...a, imageUrl: $event}))" name="imageUrl" />
+              <div class="position-relative">
+                <input type="file" class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer"
+                  accept="image/*" (change)="onFileSelected($event)" style="z-index: 2;" />
+                <button type="button" class="btn btn-outline-secondary rounded-3 py-2 px-3 fs-7 text-nowrap"><i
+                    class="bi bi-upload me-1"></i> Tải ảnh lên</button>
+              </div>
+            </div>
+            <!-- Image preview banner -->
+            <div class="article-banner-preview rounded-3 overflow-hidden border mt-1"
+              style="height: 150px; background-color: #f8fafc;">
+              <img [src]="formArticle().imageUrl" alt="Preview Banner" class="w-100 h-100 object-fit-cover"
+                onerror="this.src='https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=600'" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="col-12">
+          <label class="form-label fw-bold text-dark fs-7">Tóm tắt ngắn bài viết <span
+              class="text-danger">*</span></label>
+          <textarea class="form-control rounded-3 py-2 fs-7 focus-gold" rows="2"
+            placeholder="Tóm tắt ngắn gọn nội dung tin tức để người xem xem nhanh..." [ngModel]="formArticle().summary"
+            (ngModelChange)="formArticle.update(a => ({...a, summary: $event}))" name="summary" required></textarea>
+        </div>
+
+        <!-- Content -->
+        <div class="col-12">
+          <label class="form-label fw-bold text-dark fs-7">Nội dung chi tiết bài viết <span
+              class="text-danger">*</span></label>
+          <textarea class="form-control rounded-3 py-2 fs-7 focus-gold" rows="6"
+            placeholder="Viết nội dung bài viết chi tiết tại đây..." [ngModel]="formArticle().content"
+            (ngModelChange)="formArticle.update(a => ({...a, content: $event}))" name="content" required></textarea>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="d-flex justify-content-end gap-2 border-top pt-3 mt-2">
+        <button type="button" class="btn btn-outline-secondary rounded-pill px-4 fs-7 py-2" (click)="resetForm()">Hủy
+          bỏ</button>
+        <button type="submit" class="btn btn-gold rounded-pill px-4 fs-7 py-2 shadow-sm"><i
+            class="bi bi-check-lg me-1"></i>Lưu bài viết</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Detail Modal popup -->
+<div class="news-modal-overlay" *ngIf="isDetailModalOpen()" (click)="closeDetailModal()">
+  <div class="news-modal-container bg-white rounded-4 shadow-lg border-0 overflow-hidden animate-slide-up"
+    (click)="$event.stopPropagation()" style="max-width: 800px;">
+    <!-- Hero Header -->
+    <div class="position-relative" style="height: 250px;">
+      <img [src]="selectedArticleForDetail()?.imageUrl" alt="Banner Image" class="w-100 h-100 object-fit-cover"
+        onerror="this.src='https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=600'" />
+      <div class="position-absolute top-0 start-0 w-100 h-100"
+        style="background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.75) 100%);"></div>
+
+      <!-- Close Button -->
+      <button class="btn-close btn-close-white position-absolute top-0 end-0 m-3 shadow-none focus-none"
+        (click)="closeDetailModal()"></button>
+
+      <!-- Info over banner -->
+      <div class="position-absolute bottom-0 start-0 p-4 w-100 text-white">
+        <span class="badge rounded-pill px-3 py-1.5 fs-8 mb-2"
+          [class.bg-category-review]="selectedArticleForDetail()?.category === 'Review Sách'"
+          [class.bg-category-event]="selectedArticleForDetail()?.category === 'Sự Kiện'"
+          [class.bg-category-experience]="selectedArticleForDetail()?.category === 'Kinh Nghiệm'">
+          {{ selectedArticleForDetail()?.category }}
+        </span>
+        <h4 class="fw-bold mb-2 text-white">{{ selectedArticleForDetail()?.title }}</h4>
+        <div class="d-flex align-items-center gap-3 fs-7 opacity-90">
+          <span><i class="bi bi-person me-1 text-gold"></i>{{ selectedArticleForDetail()?.author }}</span>
+          <span><i class="bi bi-calendar3 me-1 text-gold"></i>{{ selectedArticleForDetail()?.date }}</span>
+          <span><i class="bi bi-clock me-1 text-gold"></i>{{ selectedArticleForDetail()?.readTime }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content body -->
+    <div class="modal-news-body p-4 d-flex flex-column gap-3 overflow-y-auto" style="max-height: calc(85vh - 310px);">
+      <!-- Summary Box -->
+      <div class="summary-box p-3 rounded-3 bg-light border-start border-4 border-gold">
+        <p class="mb-0 text-dark fw-semibold fs-7 italic-text leading-relaxed">
+          <i class="bi bi-quote fs-4 text-gold me-1 align-middle"></i>
+          {{ selectedArticleForDetail()?.summary }}
+        </p>
+      </div>
+
+      <!-- Main Content -->
+      <div class="article-detail-content fs-6 text-dark leading-relaxed">
+        <p *ngFor="let paragraph of (selectedArticleForDetail()?.content || '').split('\n')" class="mb-3 text-secondary"
+          style="text-align: justify;">
+          {{ paragraph }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="d-flex justify-content-between align-items-center p-3 border-top bg-light">
+      <span class="fs-8 text-muted ms-2">Mã bài viết: <strong>{{ selectedArticleForDetail()?.id }}</strong></span>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-secondary rounded-pill px-4 fs-7 py-2" (click)="closeDetailModal()">Đóng
+          lại</button>
+        <button class="btn btn-gold rounded-pill px-4 fs-7 py-2 shadow-sm d-flex align-items-center gap-2"
+          (click)="editFromDetail(selectedArticleForDetail()!)" *ngIf="canEditNews()">
+          <i class="bi bi-pencil-fill"></i>
+          <span>Chỉnh sửa</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

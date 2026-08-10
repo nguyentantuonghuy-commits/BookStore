@@ -1,0 +1,325 @@
+/* Premium Variables & Design Tokens */
+:host {
+  --primary-theme: #121212;
+  --primary-hover: #222222;
+  --gold-main: #c5a880;
+  --gold-hover: #b4966e;
+  --gold-light: rgba(197, 168, 128, 0.08);
+  --dark-light: rgba(18, 18, 18, 0.05);
+  --teal-color: #0d9488;
+  --teal-light: rgba(13, 148, 136, 0.08);
+  --danger-color: #e11d48;
+  --danger-light: rgba(225, 29, 72, 0.08);
+  --success-color: #16a34a;
+  --success-light: rgba(22, 163, 74, 0.08);
+  --border-color: #cbd5e1;
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Typography & Headings */
+.font-serif {
+  font-family: var(--font-serif), 'Playfair Display', Georgia, serif;
+}
+
+.font-sans {
+  font-family: var(--font-sans), 'Plus Jakarta Sans', sans-serif;
+}
+
+.fs-75 {
+  font-size: 0.9rem;
+}
+
+.fs-85 {
+  font-size: 0.8rem;
+}
+
+.fs-85 {
+  font-size: 0.825rem;
+}
+
+.fs-9 {
+  font-size: 0.75rem;
+}
+
+.leading-normal {
+  line-height: 1.4;
+}
+
+/* Header Section */
+.header-section {
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.bg-gold-subtle {
+  background-color: var(--gold-light) !important;
+}
+
+.text-gold {
+  color: var(--gold-main) !important;
+}
+
+/* Stat Cards */
+.bg-gold-light {
+  background-color: var(--gold-light);
+}
+
+.bg-dark-light {
+  background-color: var(--dark-light);
+}
+
+.bg-teal-light {
+  background-color: var(--teal-light);
+}
+
+/* Subtab Navigation Buttons */
+.subtab-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+}
+
+.subtab-btn:hover {
+  color: var(--primary-theme);
+}
+
+.subtab-btn.active {
+  color: var(--gold-main);
+}
+
+.subtab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--gold-main);
+}
+
+/* Left panel: Role Items */
+.role-item-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01);
+}
+
+.role-item-card:hover {
+  border-color: var(--gold-main) !important;
+  background-color: rgba(197, 168, 128, 0.02) !important;
+  transform: translateX(4px);
+}
+
+.role-item-card.active {
+  border-color: var(--gold-main) !important;
+  background-color: var(--gold-light) !important;
+  box-shadow: 0 4px 10px rgba(197, 168, 128, 0.08);
+}
+
+.role-item-card.active h6 {
+  color: var(--gold-hover);
+}
+
+/* Right panel: Permission matrices */
+.btn-save-role {
+  background: linear-gradient(135deg, #121212, #222222) !important;
+  color: #c5a880 !important;
+  border: 1px solid rgba(197, 168, 128, 0.3) !important;
+  font-size: 0.85rem !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.btn-save-role:hover:not(:disabled) {
+  background: #c5a880 !important;
+  color: #121212 !important;
+  border-color: #c5a880 !important;
+}
+
+.btn-save-role:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.module-group-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.01);
+}
+
+.module-indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--gold-main);
+  display: inline-block;
+}
+
+/* Custom switch & checkbox design for luxury appearance */
+.custom-switch-luxury {
+  cursor: pointer;
+}
+
+.custom-switch-luxury:checked {
+  background-color: var(--gold-main) !important;
+  border-color: var(--gold-main) !important;
+}
+
+.custom-switch-luxury:focus {
+  box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.15) !important;
+}
+
+.custom-checkbox-luxury {
+  cursor: pointer;
+  width: 17px;
+  height: 17px;
+}
+
+.custom-checkbox-luxury:checked {
+  background-color: var(--gold-main) !important;
+  border-color: var(--gold-main) !important;
+}
+
+.custom-checkbox-luxury:focus {
+  box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.15) !important;
+}
+
+.permission-checkbox-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01);
+}
+
+.permission-checkbox-card:hover {
+  border-color: var(--gold-main) !important;
+  background-color: rgba(197, 168, 128, 0.01) !important;
+}
+
+.permission-checkbox-card.checked {
+  border-color: var(--gold-main) !important;
+  background-color: var(--gold-light) !important;
+}
+
+/* User Role Assign Section Table */
+.custom-luxury-table {
+  width: 100%;
+}
+
+.custom-luxury-table thead th {
+  background-color: rgba(197, 168, 128, 0.02);
+  border-bottom: 2px solid rgba(197, 168, 128, 0.1);
+  font-weight: 700;
+  color: #64748b;
+  padding: 18px 24px;
+  letter-spacing: 0.05em;
+}
+
+.employee-row-luxury {
+  transition: all 0.25s ease;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.employee-row-luxury:hover {
+  background-color: rgba(197, 168, 128, 0.02);
+}
+
+.employee-row-luxury td {
+  padding: 18px 24px;
+}
+
+.emp-id-badge {
+  font-family: monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gold-main);
+  background: var(--gold-light);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(197, 168, 128, 0.15);
+}
+
+.bg-dark-subtle {
+  background-color: var(--dark-light) !important;
+}
+
+.text-dark-accent {
+  color: #334155 !important;
+}
+
+/* Search Box */
+.search-box-luxury {
+  position: relative;
+  width: 300px;
+  max-width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+.form-control-search-luxury {
+  width: 100%;
+  padding: 8px 16px 8px 42px;
+  border-radius: 30px;
+  border: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  color: #1e293b;
+  font-size: 0.85rem;
+  font-family: var(--font-sans), sans-serif;
+  transition: all 0.25s ease;
+}
+
+.form-control-search-luxury:focus {
+  outline: none;
+  background-color: #ffffff;
+  border-color: #c5a880;
+  box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.15);
+}
+
+/* Role Dropdown Select */
+.select-role-assign {
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 8px 14px;
+  background-color: #ffffff;
+  color: var(--primary-theme);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.select-role-assign:focus {
+  border-color: var(--gold-main);
+  box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.15);
+}
+
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

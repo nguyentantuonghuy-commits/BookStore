@@ -1,0 +1,92 @@
+<section class="promotion-page">
+  <div class="promotion-hero">
+    <div class="container position-relative">
+      <div class="hero-badge"><i class="bi bi-stars me-2"></i>Ưu đãi dành cho bạn</div>
+      <h1>Khuyến Mãi &amp; Mã Giảm Giá</h1>
+      <p>Chọn ưu đãi phù hợp, lưu mã vào giỏ hàng và mua sách với mức giá tốt hơn.</p>
+      <div class="hero-actions">
+        <a routerLink="/products" class="btn btn-dark rounded-pill px-4 py-2">Khám phá sách</a>
+        <a routerLink="/cart" class="btn btn-light border rounded-pill px-4 py-2">Mở giỏ hàng</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container py-5">
+    <div class="section-heading d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+      <div>
+        <span class="eyebrow">ƯU ĐÃI ĐANG ÁP DỤNG</span>
+        <h2 class="mb-1">Mã giảm giá hiện có</h2>
+        <p class="text-muted mb-0">Mã sẽ được kiểm tra lại theo tài khoản, sản phẩm và giá trị đơn hàng khi thanh toán.</p>
+      </div>
+      <button type="button" class="btn btn-outline-dark rounded-pill px-3" (click)="loadPromotions()" [disabled]="isLoading()">
+        <i class="bi bi-arrow-clockwise me-1"></i>Làm mới
+      </button>
+    </div>
+
+    <div *ngIf="isLoading()" class="state-box text-center py-5">
+      <div class="spinner-border text-secondary mb-3"></div>
+      <div>Đang tải chương trình khuyến mãi...</div>
+    </div>
+
+    <div *ngIf="!isLoading() && errorMessage()" class="state-box error-state text-center py-5">
+      <i class="bi bi-exclamation-triangle fs-1 d-block mb-3"></i>
+      <h5>Không thể tải khuyến mãi</h5>
+      <p>{{ errorMessage() }}</p>
+      <button class="btn btn-dark rounded-pill px-4" (click)="loadPromotions()">Thử lại</button>
+    </div>
+
+    <div *ngIf="!isLoading() && !errorMessage() && promotions().length === 0" class="state-box text-center py-5">
+      <i class="bi bi-ticket-perforated fs-1 d-block mb-3 text-muted"></i>
+      <h5>Hiện chưa có mã giảm giá đang hoạt động</h5>
+      <p class="text-muted mb-0">Hãy quay lại sau để nhận những ưu đãi mới từ Sachweb.vn.</p>
+    </div>
+
+    <div *ngIf="!isLoading() && !errorMessage() && promotions().length > 0" class="row g-4">
+      <div class="col-md-6 col-xl-4" *ngFor="let item of promotions()">
+        <article class="promotion-card h-100">
+          <div class="ticket-edge ticket-edge-left"></div>
+          <div class="ticket-edge ticket-edge-right"></div>
+
+          <div class="card-top">
+            <div class="discount-mark">{{ discountLabel(item) }}</div>
+            <span class="remaining-badge">{{ remainingLabel(item) }}</span>
+          </div>
+
+          <h3>{{ item.name }}</h3>
+          <p class="description">{{ item.description || 'Ưu đãi đặc biệt dành cho khách hàng Sachweb.vn.' }}</p>
+
+          <div class="condition-list">
+            <div><i class="bi bi-bag-check"></i>Đơn tối thiểu: <strong>{{ item.minOrderValue ? formatPrice(item.minOrderValue) + ' đ' : 'Không yêu cầu' }}</strong></div>
+            <div *ngIf="item.discountType === 'PERCENT'"><i class="bi bi-shield-check"></i>Giảm tối đa: <strong>{{ item.maxDiscount ? formatPrice(item.maxDiscount) + ' đ' : 'Không giới hạn' }}</strong></div>
+            <div><i class="bi bi-grid"></i>{{ scopeLabel(item) }}</div>
+            <div><i class="bi bi-person-check"></i>Mỗi tài khoản: <strong>{{ item.perUserLimit ? item.perUserLimit + ' lượt' : 'Không giới hạn' }}</strong></div>
+            <div><i class="bi bi-clock"></i>Hạn dùng: <strong>{{ endDate(item) }}</strong></div>
+          </div>
+
+          <div class="code-box">
+            <div>
+              <small>MÃ GIẢM GIÁ</small>
+              <strong>{{ item.code }}</strong>
+            </div>
+            <button type="button" class="copy-button" (click)="copyCode(item.code)" [title]="copiedCode() === item.code ? 'Đã sao chép' : 'Sao chép mã'">
+              <i class="bi" [ngClass]="copiedCode() === item.code ? 'bi-check-lg' : 'bi-copy'"></i>
+              {{ copiedCode() === item.code ? 'Đã chép' : 'Sao chép' }}
+            </button>
+          </div>
+
+          <button type="button" class="btn-use-code" (click)="usePromotion(item)">
+            Dùng mã trong giỏ hàng <i class="bi bi-arrow-right ms-2"></i>
+          </button>
+        </article>
+      </div>
+    </div>
+
+    <div class="policy-note mt-5">
+      <i class="bi bi-info-circle-fill"></i>
+      <div>
+        <strong>Quy tắc áp dụng</strong>
+        <p class="mb-0">Mỗi đơn chỉ sử dụng một mã. Mức giảm không vượt quá giá trị sản phẩm đủ điều kiện. Lượt sử dụng chỉ được ghi nhận khi đơn hàng lưu thành công; đơn bị hủy sẽ được trả lại lượt mã.</p>
+      </div>
+    </div>
+  </div>
+</section>

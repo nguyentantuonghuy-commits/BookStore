@@ -1,0 +1,247 @@
+<div class="news-page-wrapper animate-fade-in">
+
+  <!-- Hero banner -->
+  <section class="news-hero text-center d-flex align-items-center justify-content-center">
+    <div class="news-hero-glow-1"></div>
+    <div class="news-hero-glow-2"></div>
+    <div class="hero-content position-relative z-index-2 px-3">
+      <span class="badge-tag mb-3"><i class="bi bi-journal-bookmark-fill"></i> BLOG TRI THỨC</span>
+      <h1 class="hero-light-title mb-3"><span class="hero-accent-text">Tin Tức &amp; Góc Nhìn Văn Học</span></h1>
+      <p class="hero-light-desc mx-auto mb-0" style="max-width: 600px;">Nơi chia sẻ những bài review sách sâu sắc, cẩm
+        nang đọc sách hiệu quả và tin tức sự kiện văn hóa mới nhất từ Sachweb.</p>
+    </div>
+  </section>
+
+  <!-- Filter & Search Controls -->
+  <div class="container my-5">
+    <div class="row g-4 justify-content-between align-items-center mb-5">
+      <!-- Category Pills -->
+      <div class="col-lg-7 col-md-12">
+        <div class="d-flex flex-wrap gap-2">
+          <button *ngFor="let cat of categories" class="btn btn-filter rounded-pill px-4 py-2"
+            [class.active]="selectedCategory() === cat" (click)="selectCategory(cat)">
+            {{ cat }}
+          </button>
+        </div>
+      </div>
+      <!-- Search Input -->
+      <div class="col-lg-4 col-md-8 ms-auto">
+        <div class="search-box-container">
+          <i class="bi bi-search search-box-icon"></i>
+          <input type="text" class="form-control search-box-input" placeholder="Tìm kiếm bài viết..."
+            [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="text-center py-5 my-4" *ngIf="filteredArticles().length === 0">
+      <i class="bi bi-journal-x display-1 text-muted opacity-50 mb-3 d-block"></i>
+      <h4 class="fw-bold text-dark">Không tìm thấy bài viết nào</h4>
+      <p class="text-muted">Vui lòng thử từ khóa tìm kiếm hoặc danh mục khác.</p>
+      <button class="btn btn-primary-luxury px-4 py-2 mt-2"
+        (click)="searchQuery.set(''); selectedCategory.set('Tất cả')">
+        Đặt lại bộ lọc
+      </button>
+    </div>
+
+    <!-- Articles Grid -->
+    <div class="row g-4" *ngIf="filteredArticles().length > 0">
+      <div class="col-lg-4 col-md-6 col-sm-12 d-flex" *ngFor="let article of filteredArticles()">
+        <article
+          class="card news-card border-0 rounded-4 shadow-sm w-100 overflow-hidden d-flex flex-column transition-all">
+          <!-- Card Image with Zoom effect -->
+          <div class="card-img-wrapper overflow-hidden position-relative" style="height: 220px; cursor: pointer;"
+            (click)="viewArticleDetail(article)">
+            <img [src]="article.imageUrl" [alt]="article.title" class="w-100 h-100 object-fit-cover transition-all" />
+            <span class="category-badge-premium rounded-pill px-3 py-1.5 fw-bold">
+              {{ article.category }}
+            </span>
+          </div>
+
+          <!-- Card Body -->
+          <div class="card-body p-4 d-flex flex-column flex-grow-1">
+            <div class="d-flex align-items-center gap-3 text-muted fs-8 mb-3">
+              <span class="d-flex align-items-center gap-1">
+                <i class="bi bi-calendar3 text-gold"></i> {{ article.date }}
+              </span>
+              <span class="d-flex align-items-center gap-1">
+                <i class="bi bi-clock text-gold"></i> {{ article.readTime }}
+              </span>
+            </div>
+
+            <h5 class="card-title fw-bold text-dark font-serif mb-2 line-clamp-2" [title]="article.title">
+              {{ article.title }}
+            </h5>
+
+            <p class="card-text text-secondary fs-8-5 line-clamp-3 mb-4">
+              {{ article.summary }}
+            </p>
+
+            <div class="mt-auto d-flex justify-content-between align-items-center pt-3 border-top border-light">
+              <span class="text-muted fs-8-5 fw-semibold">Bởi: {{ article.author }}</span>
+              <button class="btn btn-read-more-premium d-flex align-items-center gap-1.5"
+                (click)="viewArticleDetail(article)">
+                <span>Đọc tiếp</span>
+                <i class="bi bi-arrow-right-short fs-6"></i>
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subscription Banner section -->
+  <section class="subscribe-section light-theme py-5 mt-5">
+    <!-- Glow Orbs for background depth -->
+    <div class="subscribe-glow subscribe-glow-1"></div>
+    <div class="subscribe-glow subscribe-glow-2"></div>
+
+    <div class="container position-relative z-index-2">
+      <div class="subscribe-card-centered glass-card-light text-center py-5 px-4 px-md-5 mx-auto"
+        style="max-width: 960px;">
+
+        <!-- Form state (Not Subscribed) -->
+        <div *ngIf="!emailSubscribed()" class="animate-fade-in">
+          <!-- Header Content -->
+          <span class="subscribe-badge mb-3">
+            <i class="bi bi-envelope-paper-heart text-gold me-1.5 animate-pulse-slow"></i>
+            Bản Tin Đặc Quyền
+          </span>
+
+          <h2 class="subscribe-title font-serif fw-bold text-dark mb-3">
+            Kết Nối Với Thế Giới <span class="text-gradient-gold-dark">Văn Chương Đương Đại</span>
+          </h2>
+
+          <p class="subscribe-desc text-muted mx-auto mb-4.5" style="max-width: 660px;">
+            Gia nhập cộng đồng độc giả tinh hoa để nhận cẩm nang đọc sách hàng tuần, thông báo sớm nhất về các tác phẩm
+            giới hạn và mã coupon giảm giá 10%.
+          </p>
+
+          <!-- Inline Subscription Form -->
+          <form (submit)="subscribeNewsletter(emailInput.value); $event.preventDefault();"
+            class="subscribe-form-pill-container mx-auto mb-4">
+            <div class="subscribe-input-pill-group">
+              <span class="pill-input-icon">
+                <i class="bi bi-envelope-at text-muted"></i>
+              </span>
+              <input #emailInput type="email" class="form-control-pill" placeholder="Nhập địa chỉ email của bạn..."
+                required email />
+              <button type="submit" class="btn btn-subscribe-pill shimmer-hover glow-on-hover">
+                <span>Tham Gia Ngay</span>
+                <i class="bi bi-arrow-right-short fs-5 ms-1 btn-arrow-move"></i>
+              </button>
+            </div>
+          </form>
+
+          <!-- Horizontal Benefits -->
+          <div
+            class="benefits-row-horizontal d-flex flex-wrap justify-content-center align-items-center gap-3 mb-4 mt-3">
+            <span class="benefit-item-horizontal d-flex align-items-center gap-2 px-3.5 py-2 rounded-pill">
+              <i class="bi bi-gift-fill text-gold fs-7"></i>
+              <span>Coupon Giảm Giá 10%</span>
+            </span>
+            <span class="benefit-item-horizontal d-flex align-items-center gap-2 px-3.5 py-2 rounded-pill">
+              <i class="bi bi-journal-bookmark-fill text-gold fs-7"></i>
+              <span>Đặc Quyền Sách Giới Hạn</span>
+            </span>
+            <span class="benefit-item-horizontal d-flex align-items-center gap-2 px-3.5 py-2 rounded-pill">
+              <i class="bi bi-bell-fill text-gold fs-7"></i>
+              <span>Sự Kiện &amp; Tri Thức VIP</span>
+            </span>
+          </div>
+
+          <!-- Trust Shield -->
+          <div class="d-flex align-items-center justify-content-center gap-2 text-muted fs-9">
+            <i class="bi bi-shield-lock-fill text-gold"></i>
+            <span>Chúng tôi cam kết bảo mật &amp; không spam email của bạn.</span>
+          </div>
+        </div>
+
+        <!-- Success state (Subscribed) -->
+        <div *ngIf="emailSubscribed()" class="subscribe-success-state py-4 animate-scale-up">
+          <div class="success-checkmark-wrapper mx-auto mb-4">
+            <div class="success-checkmark-circle">
+              <i class="bi bi-patch-check-fill text-gold"></i>
+            </div>
+          </div>
+
+          <h3 class="fw-bold font-serif text-dark mb-2">Đăng Ký Thành Công!</h3>
+          <p class="text-muted fs-8-5 px-3 mx-auto mb-4" style="max-width: 500px;">
+            Cảm ơn bạn đã tham gia Bản Tin Văn Học. Hãy kiểm tra hộp thư đến (và thư rác nếu chưa nhận được) để nhận mã
+            ưu đãi giảm giá 10% ngay nhé!
+          </p>
+
+          <button (click)="resetSubscription()" class="btn btn-outline-gold rounded-pill px-4 py-2 fs-8-5">
+            <i class="bi bi-arrow-left-short me-1"></i> Thay đổi email
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Article Detail View Modal -->
+  <div class="modal-backdrop-luxury open d-flex align-items-center justify-content-center" *ngIf="selectedArticle()"
+    (click)="closeDetailModal()">
+    <div
+      class="modal-container-luxury modal-dialog-custom rounded-4 shadow-lg overflow-hidden position-relative bg-white"
+      (click)="$event.stopPropagation()">
+      <!-- Close Button -->
+      <button class="btn-close-custom" (click)="closeDetailModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+      <!-- Modal Image Banner -->
+      <div class="modal-img-banner position-relative" style="height: 320px;">
+        <img [src]="selectedArticle()?.imageUrl" [alt]="selectedArticle()?.title"
+          class="w-100 h-100 object-fit-cover" />
+        <div class="modal-img-overlay"></div>
+        <div class="modal-img-content position-absolute bottom-0 start-0 p-4.5 text-white z-index-2 w-100">
+          <span class="badge bg-gold text-dark rounded-pill px-3 py-1.5 fs-8 fw-bold mb-2.5">
+            {{ selectedArticle()?.category }}
+          </span>
+          <h2 class="fw-bold font-serif mb-0 text-white display-6 text-shadow">{{ selectedArticle()?.title }}</h2>
+        </div>
+      </div>
+
+      <!-- Modal Content Body -->
+      <div class="modal-body-scroll p-4.5 custom-scrollbar">
+        <!-- Meta Tags -->
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
+          <span class="modal-meta-tag d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill fs-8">
+            <i class="bi bi-person-circle text-gold"></i>
+            <span>Tác giả: <strong>{{ selectedArticle()?.author }}</strong></span>
+          </span>
+          <span class="modal-meta-tag d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill fs-8">
+            <i class="bi bi-calendar3 text-gold"></i>
+            <span>Ngày đăng: <strong>{{ selectedArticle()?.date }}</strong></span>
+          </span>
+          <span class="modal-meta-tag d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill fs-8">
+            <i class="bi bi-clock text-gold"></i>
+            <span>Thời gian: <strong>{{ selectedArticle()?.readTime }}</strong></span>
+          </span>
+        </div>
+
+        <p class="lead-text fw-semibold mb-4 text-dark fs-7.5">
+          {{ selectedArticle()?.summary }}
+        </p>
+
+        <div class="article-content text-secondary fs-8-5 lh-lg">
+          <p>{{ selectedArticle()?.content }}</p>
+          <p>Đọc sách không chỉ mang lại cho ta nguồn tri thức vô hạn, mà còn bồi đắp tâm hồn, mở rộng thế giới quan và
+            rèn luyện chiều sâu tư duy. Hãy ghé thăm gian hàng của Sachweb để chọn mua những cuốn sách giấy chất lượng
+            hoặc đăng ký tài khoản Ebook để mang cả tủ sách cá nhân bên mình mỗi ngày nhé!</p>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer-custom p-3.5 border-top text-end bg-white">
+        <button class="btn btn-luxury-close px-5 py-2.5 fw-bold" (click)="closeDetailModal()">
+          <i class="bi bi-arrow-left me-2"></i> Quay lại danh sách
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

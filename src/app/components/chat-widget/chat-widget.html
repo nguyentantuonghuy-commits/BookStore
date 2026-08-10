@@ -1,0 +1,157 @@
+<!-- Floating Action Button (FAB) -->
+<div class="chat-widget-fab-container">
+  <button 
+    class="chat-widget-fab" 
+    [class.open]="isOpen()" 
+    (click)="toggleChat()"
+    title="Hỗ trợ trực tuyến Sachweb"
+    aria-label="Mở cửa sổ chat hỗ trợ">
+    
+    @if (isOpen()) {
+      <i class="bi bi-x-lg"></i>
+    } @else {
+      <i class="bi bi-chat-dots-fill"></i>
+      @if (unreadUserCount() > 0) {
+        <span class="chat-fab-badge">{{ unreadUserCount() }}</span>
+      }
+    }
+  </button>
+  
+  @if (!isOpen()) {
+    <div class="chat-fab-tooltip" (click)="toggleChat()">
+      <span class="pulse-dot"></span>
+      Cần hỗ trợ? Chat ngay!
+    </div>
+  }
+</div>
+
+<!-- Chat Window Drawer -->
+@if (isOpen()) {
+  <div class="chat-widget-window">
+    <!-- Header -->
+    <div class="chat-window-header">
+      <div class="header-info">
+        <div class="avatar-status">
+          <img 
+            [src]="getAvatarUrl('/image/danhmuc3.png', 'Sachweb CSKH')" 
+            (error)="onAvatarError($event, 'Sachweb CSKH')"
+            alt="Sachweb Support" 
+            class="cskh-avatar" 
+          />
+          <span class="online-indicator"></span>
+        </div>
+        <div class="title-meta">
+          <h5 class="header-title">Hỗ Trợ Sachweb.vn</h5>
+          <p class="header-status">
+            <i class="bi bi-shield-check text-warning me-1"></i> Trực tuyến | Tư vấn 24/7
+          </p>
+        </div>
+      </div>
+      <button class="btn-close-widget" (click)="toggleChat()" title="Thu nhỏ">
+        <i class="bi bi-dash-lg"></i>
+      </button>
+    </div>
+
+    <!-- Mode Switcher Tabs -->
+    <div class="chat-mode-tabs">
+      <button 
+        class="mode-tab-btn" 
+        [class.active]="currentMode() === 'ai'" 
+        (click)="setMode('ai')">
+        <i class="bi bi-robot me-1"></i> AI Tư Vấn 24/7
+      </button>
+      <button 
+        class="mode-tab-btn live-tab" 
+        [class.active]="currentMode() === 'live'" 
+        (click)="setMode('live')">
+        <i class="bi bi-headset me-1"></i> Live Chat Admin
+      </button>
+    </div>
+
+    <!-- Quick Prompts Bar -->
+    <div class="quick-prompts-bar">
+      @for (prompt of suggestedChips(); track prompt) {
+        <button class="quick-prompt-chip" (click)="sendQuickPrompt(prompt)">
+          {{ prompt }}
+        </button>
+      }
+    </div>
+
+    <!-- Messages Container -->
+    <div #messagesContainer class="chat-messages-container">
+      @for (msg of messages(); track msg.id) {
+        @if (msg.sender === 'system') {
+          <div class="message-system">
+            <span class="system-badge">
+              <i class="bi bi-info-circle me-1"></i> {{ msg.text }}
+            </span>
+          </div>
+        } @else if (msg.sender === 'user') {
+          <div class="message-row user-row">
+            <div class="message-bubble user-bubble">
+              <div class="bubble-text">{{ msg.text }}</div>
+              <div class="bubble-time">{{ formatTime(msg.timestamp) }}</div>
+            </div>
+          </div>
+        } @else {
+          <div class="message-row admin-row">
+            <img 
+              [src]="getAvatarUrl(msg.senderAvatar, msg.senderName)" 
+              (error)="onAvatarError($event, msg.senderName)"
+              alt="Admin Avatar" 
+              class="sender-avatar" 
+            />
+            <div class="message-bubble admin-bubble">
+              <div class="sender-name">{{ msg.senderName }} <span class="role-tag">CSKH</span></div>
+              <div class="bubble-text">{{ msg.text }}</div>
+              <div class="bubble-time">{{ formatTime(msg.timestamp) }}</div>
+            </div>
+          </div>
+        }
+      }
+
+      @if (isBotTyping()) {
+        <div class="message-row admin-row bot-typing-row">
+          <img 
+            [src]="getAvatarUrl('/image/danhmuc3.png', 'Sachweb Bot CSKH')" 
+            alt="Bot Avatar" 
+            class="sender-avatar" 
+          />
+          <div class="bot-typing-bubble">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Footer Input Area -->
+    <div class="chat-input-footer">
+      @if (currentSession()?.status === 'closed') {
+        <div class="session-closed-notice">
+          <i class="bi bi-lock-fill me-1"></i> Phiên hỗ trợ này đã hoàn tất. 
+          <button class="btn-reopen-inline" (click)="sendMessage('Em muốn hỏi thêm về đơn hàng')">
+            Hỏi thêm
+          </button>
+        </div>
+      } @else {
+        <div class="input-wrapper">
+          <textarea 
+            class="chat-textarea" 
+            [(ngModel)]="inputText" 
+            (keydown)="handleKeyDown($event)"
+            placeholder="Nhập thắc mắc hoặc nhắn hỗ trợ tại đây..." 
+            rows="1"></textarea>
+          <button 
+            class="btn-send-chat" 
+            [disabled]="!inputText || !inputText.trim()" 
+            (click)="sendMessage()" 
+            title="Gửi tin nhắn">
+            <i class="bi bi-send-fill"></i>
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+}

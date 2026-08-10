@@ -1,0 +1,411 @@
+<!-- TRANG SẢN PHẨM - BỐ CỤC SIDEBAR + TONE SÁNG -->
+<div class="products-page" [class.is-loaded]="isLoaded()">
+
+  <!-- HERO BANNER SÁNG -->
+  <section class="hero-section">
+    <div class="hero-deco-1"></div>
+    <div class="hero-deco-2"></div>
+    <div class="hero-deco-3"></div>
+    <div class="hero-deco-4"></div>
+
+    <div class="hero-container">
+      <div class="hero-text-col">
+        <span class="hero-label"><i class="bi bi-stars"></i> BỘ SƯU TẬP ĐỘC QUYỀN</span>
+        <h1 class="hero-heading">Không Gian <span class="accent">Tri Thức Số</span></h1>
+        <p class="hero-desc">Khám phá tinh hoa tri thức nhân loại qua những tác phẩm Ebook kinh điển, được tuyển chọn kỹ
+          lưỡng.</p>
+
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-num">20K+</span>
+            <span class="stat-label">Sách Điện Tử</span>
+          </div>
+          <div class="stat-item-divider"></div>
+          <div class="stat-item">
+            <span class="stat-num">15+</span>
+            <span class="stat-label">Thể Loại</span>
+          </div>
+          <div class="stat-item-divider"></div>
+          <div class="stat-item">
+            <span class="stat-num">4.9★</span>
+            <span class="stat-label">Đánh Giá</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual-col">
+        <div class="hero-image-frame">
+          <img src="image/hero_ebook.png" alt="Không Gian Tri Thức Số" class="hero-main-img" />
+          <div class="floating-overlay-book book-left" *ngIf="bookService.allBooks()[0] as b">
+            <img [src]="b.image" [alt]="b.title" />
+          </div>
+          <div class="floating-overlay-book book-right" *ngIf="bookService.allBooks()[1] as b">
+            <img [src]="b.image" [alt]="b.title" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN LAYOUT: SIDEBAR + CONTENT -->
+  <div class="main-layout">
+
+    <!-- ===== LEFT SIDEBAR ===== -->
+    <aside class="sidebar" [class.mobile-open]="showMobileFilters()">
+      <div class="sidebar-inner">
+        <button class="sidebar-close d-lg-none" (click)="toggleMobileFilters()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+
+        <!-- Header -->
+        <div class="sidebar-header">
+          <h3><i class="bi bi-funnel"></i> Bộ Lọc Tìm Kiếm</h3>
+          <button class="btn-clear-all" *ngIf="hasActiveFilters()" (click)="resetFilters()">Xóa hết</button>
+        </div>
+
+        <!-- Search -->
+        <div class="sidebar-section search-sidebar-card">
+          <label class="section-label"><i class="bi bi-compass text-primary-theme me-1"></i> TÌM KIẾM NHANH</label>
+          <div class="search-box-wrapper mt-2">
+            <i class="bi bi-search search-input-icon"></i>
+            <input type="text" #sidebarSearchInput class="search-input" placeholder="Tìm sách..."
+              [value]="localSearchQuery()" (input)="onSidebarInput(sidebarSearchInput.value)"
+              (keydown)="onSidebarKeyDown($event, getSidebarSuggestions())" (focus)="showSidebarDropdown.set(true)"
+              (blur)="onSidebarBlur()" autocomplete="off" />
+            <button type="button" class="search-btn" (click)="onSidebarSearch(sidebarSearchInput.value)">
+              <i class="bi bi-search"></i>
+            </button>
+
+            <!-- Dropdown Gợi ý tìm kiếm cao cấp -->
+            <div class="sidebar-suggestions-dropdown"
+              *ngIf="showSidebarDropdown() && getSidebarSuggestions().length > 0">
+              <div class="suggestions-header">
+                <i class="bi bi-stars text-warning"></i> GỢI Ý ĐỀ XUẤT CHO BẠN
+              </div>
+
+              <div class="sidebar-suggestion-item" *ngFor="let book of getSidebarSuggestions(); let i = index"
+                [class.active-highlight]="i === activeSuggestionIndex()" (click)="selectSidebarSuggestion(book)"
+                (mouseenter)="activeSuggestionIndex.set(i)">
+                <img [src]="book.image" class="sidebar-suggest-thumb" alt="{{ book.title }}" />
+                <div class="sidebar-suggest-info">
+                  <span class="sidebar-suggest-title">{{ book.title }}</span>
+                  <span class="sidebar-suggest-author">Tác giả: {{ book.author }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="sidebar-section">
+          <label class="section-label">Danh mục</label>
+          <div class="category-list">
+            <button class="cat-item" [class.active]="selectedCategory() === 'all'" (click)="setCategory('all')">
+              <span class="cat-name"><i class="bi bi-grid-fill"></i> Tất cả Ebook</span>
+              <span class="cat-count">{{ getCategoryCount('all') }}</span>
+            </button>
+            <button *ngFor="let cat of categories.slice(1)" class="cat-item"
+              [class.active]="selectedCategory() === cat.value" (click)="setCategory(cat.value)">
+              <span class="cat-name">
+                <img *ngIf="cat.icon" [src]="cat.icon" [alt]="cat.name" class="cat-icon" />
+                {{ cat.name }}
+              </span>
+              <span class="cat-count">{{ getCategoryCount(cat.value) }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Price Range -->
+        <div class="sidebar-section">
+          <label class="section-label">Khoảng giá</label>
+          <div class="price-list">
+            <label class="price-item" [class.active]="selectedPriceRange() === 'all'">
+              <input type="radio" name="price" [checked]="selectedPriceRange() === 'all'"
+                (change)="setPriceRange('all')" />
+              <span class="radio-dot"></span>
+              <span>Mọi mức giá</span>
+            </label>
+            <label class="price-item" [class.active]="selectedPriceRange() === 'under-50'">
+              <input type="radio" name="price" [checked]="selectedPriceRange() === 'under-50'"
+                (change)="setPriceRange('under-50')" />
+              <span class="radio-dot"></span>
+              <span>Dưới 50.000đ</span>
+            </label>
+            <label class="price-item" [class.active]="selectedPriceRange() === '50-100'">
+              <input type="radio" name="price" [checked]="selectedPriceRange() === '50-100'"
+                (change)="setPriceRange('50-100')" />
+              <span class="radio-dot"></span>
+              <span>50.000đ – 100.000đ</span>
+            </label>
+            <label class="price-item" [class.active]="selectedPriceRange() === 'above-100'">
+              <input type="radio" name="price" [checked]="selectedPriceRange() === 'above-100'"
+                (change)="setPriceRange('above-100')" />
+              <span class="radio-dot"></span>
+              <span>Trên 100.000đ</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Mobile overlay -->
+    <div class="sidebar-overlay d-lg-none" [class.show]="showMobileFilters()" (click)="toggleMobileFilters()"></div>
+
+    <!-- ===== RIGHT CONTENT ===== -->
+    <main class="content-area">
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <button class="btn-mobile-filter d-lg-none" (click)="toggleMobileFilters()">
+            <i class="bi bi-funnel-fill"></i> Bộ lọc
+          </button>
+          <span class="toolbar-count">
+            Hiển thị <strong>{{ startIndex() }}–{{ endIndex() }}</strong> của <strong>{{ totalItems() }}</strong> sản
+            phẩm
+          </span>
+        </div>
+        <div class="toolbar-right">
+          <div class="view-switcher">
+            <button [class.active]="viewMode() === 'grid'" (click)="viewMode.set('grid')"><i
+                class="bi bi-grid-3x3-gap-fill"></i></button>
+            <button [class.active]="viewMode() === 'list'" (click)="viewMode.set('list')"><i
+                class="bi bi-list-ul"></i></button>
+          </div>
+          <div class="sort-select-wrap">
+            <select class="sort-select" [ngModel]="selectedSort()" (ngModelChange)="setSort($event)">
+              <option value="name-asc">Sắp xếp: Tên sách (A–Z)</option>
+              <option value="name-desc">Sắp xếp: Tên sách (Z–A)</option>
+              <option value="price-asc">Sắp xếp: Giá thấp → cao</option>
+              <option value="price-desc">Sắp xếp: Giá cao → thấp</option>
+              <option value="discount-desc">Sắp xếp: Giảm giá nhiều nhất</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active tags -->
+      <div class="active-tags" *ngIf="hasActiveFilters()">
+        <span class="tag" *ngIf="localSearchQuery()">
+          <i class="bi bi-search"></i> "{{ localSearchQuery() }}"
+          <button (click)="localSearchQuery.set('')"><i class="bi bi-x"></i></button>
+        </span>
+        <span class="tag filter-wishlist-tag" *ngIf="filterByWishlist()">
+          <i class="bi bi-heart-fill"></i> Sách yêu thích
+          <button (click)="disableWishlistFilter()"><i class="bi bi-x"></i></button>
+        </span>
+        <span class="tag" *ngIf="selectedCategory() !== 'all'">
+          <i class="bi bi-tag"></i> {{ bookService.getCategoryName(selectedCategory()) }}
+          <button (click)="setCategory('all')"><i class="bi bi-x"></i></button>
+        </span>
+        <span class="tag" *ngIf="selectedPriceRange() !== 'all'">
+          <i class="bi bi-cash"></i> {{ selectedPriceRange() === 'under-50' ? 'Dưới 50k' : selectedPriceRange() ===
+          '50-100' ? '50k–100k' : 'Trên 100k' }}
+          <button (click)="setPriceRange('all')"><i class="bi bi-x"></i></button>
+        </span>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-box" *ngIf="totalItems() === 0">
+        <div class="empty-icon"><i class="bi bi-journal-x"></i></div>
+        <h3>Không tìm thấy sách phù hợp</h3>
+        <p>Thử thay đổi từ khóa hoặc đặt lại bộ lọc để tìm kiếm thêm.</p>
+        <button class="btn-reset" (click)="resetFilters()"><i class="bi bi-arrow-counterclockwise"></i> Đặt lại bộ
+          lọc</button>
+      </div>
+
+      <!-- ===== GRID VIEW ===== -->
+      <div class="book-grid" *ngIf="viewMode() === 'grid' && totalItems() > 0">
+        <div class="grid-card-wrap" *ngFor="let book of pagedBooks(); trackBy: trackByBookId; let i = index"
+          [style.--i]="i">
+          <article class="book-card">
+            <div class="card-image">
+              <span class="badge-discount" *ngIf="book.discount && book.discount !== '0%'">-{{ book.discount }}</span>
+              <button class="btn-wishlist" [class.active]="wishlist().includes(book.id)"
+                (click)="toggleWishlist(book.id, $event)" title="Yêu thích">
+                <i class="bi" [class.bi-heart-fill]="wishlist().includes(book.id)"
+                  [class.bi-heart]="!wishlist().includes(book.id)"></i>
+              </button>
+              <a [routerLink]="['/book', book.id]" class="card-image-link">
+                <img [src]="book.image" [alt]="book.title" loading="lazy" />
+              </a>
+              <div class="card-hover-overlay" [routerLink]="['/book', book.id]" style="cursor: pointer;">
+                <button class="btn-quick" (click)="openQuickView(book, $event)"><i class="bi bi-eye"></i> Xem
+                  nhanh</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <span class="card-category">{{ bookService.getCategoryName(book.category) }}</span>
+              <h3 class="card-title" [routerLink]="['/book', book.id]">{{ book.title }}</h3>
+              <p class="card-author">Tác giả: {{ book.author }}</p>
+              <div class="card-price">
+                <span class="price-now">{{ formatPrice(discountPrice(book.price, book.discount)) }}đ</span>
+                <span class="price-old" *ngIf="book.discount && book.discount !== '0%'">{{ formatPrice(book.price)
+                  }}đ</span>
+              </div>
+              <div class="card-actions">
+                <button class="btn-cart-icon" (click)="addToCart(book, $event)" title="Thêm giỏ hàng"><i
+                    class="bi bi-bag-plus"></i></button>
+                <button class="btn-buy" (click)="buyNow(book, $event)"><i class="bi bi-credit-card"></i> Mua
+                  ngay</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- ===== LIST VIEW ===== -->
+      <div class="book-list-view" *ngIf="viewMode() === 'list' && totalItems() > 0">
+        <article class="list-card" *ngFor="let book of pagedBooks(); trackBy: trackByBookId; let i = index"
+          [style.--i]="i">
+          <div class="list-card-img" [routerLink]="['/book', book.id]">
+            <span class="badge-discount" *ngIf="book.discount && book.discount !== '0%'">-{{ book.discount }}</span>
+            <button class="btn-wishlist" [class.active]="wishlist().includes(book.id)"
+              (click)="toggleWishlist(book.id, $event)" title="Yêu thích">
+              <i class="bi" [class.bi-heart-fill]="wishlist().includes(book.id)"
+                [class.bi-heart]="!wishlist().includes(book.id)"></i>
+            </button>
+            <img [src]="book.image" [alt]="book.title" loading="lazy" />
+          </div>
+          <div class="list-card-body">
+            <div>
+              <span class="card-category">{{ bookService.getCategoryName(book.category) }}</span>
+              <h3 class="card-title" [routerLink]="['/book', book.id]">{{ book.title }}</h3>
+              <p class="card-author">Tác giả: <strong>{{ book.author }}</strong></p>
+              <p class="list-desc">{{ book.description || 'Chưa có mô tả chi tiết cho tác phẩm này.' }}</p>
+            </div>
+            <div class="list-card-footer">
+              <div class="card-price">
+                <span class="price-now">{{ formatPrice(discountPrice(book.price, book.discount)) }}đ</span>
+                <span class="price-old" *ngIf="book.discount && book.discount !== '0%'">{{ formatPrice(book.price)
+                  }}đ</span>
+              </div>
+              <div class="card-actions">
+                <button class="btn-quick-sm" (click)="openQuickView(book, $event)"><i class="bi bi-eye"></i></button>
+                <button class="btn-cart-icon" (click)="addToCart(book, $event)"><i class="bi bi-bag-plus"></i></button>
+                <button class="btn-buy" (click)="buyNow(book, $event)"><i class="bi bi-credit-card"></i> Mua
+                  ngay</button>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Pagination -->
+      <nav class="pagination-bar" *ngIf="totalPages() > 1">
+        <button class="pg-btn" [disabled]="activePage() === 1" (click)="setCurrentPage(activePage() - 1)"><i
+            class="bi bi-chevron-left"></i></button>
+        <ng-container *ngFor="let page of getPagination()">
+          <button *ngIf="page !== '...'; else dotsTpl" class="pg-btn" [class.active]="activePage() === page"
+            (click)="setCurrentPage(page)">{{ page }}</button>
+          <ng-template #dotsTpl><span class="pg-dots">•••</span></ng-template>
+        </ng-container>
+        <button class="pg-btn" [disabled]="activePage() === totalPages()" (click)="setCurrentPage(activePage() + 1)"><i
+            class="bi bi-chevron-right"></i></button>
+      </nav>
+
+    </main>
+  </div>
+</div>
+
+<!-- ===== QUICK VIEW MODAL ===== -->
+<div class="qv-backdrop" *ngIf="quickViewBook()" (click)="closeQuickView()">
+  <div class="qv-dialog" (click)="$event.stopPropagation()" *ngIf="quickViewBook() as book">
+    <button class="qv-close" (click)="closeQuickView()"><i class="bi bi-x-lg"></i></button>
+    <div class="qv-grid">
+      <div class="qv-left">
+        <span class="badge-discount" *ngIf="book.discount && book.discount !== '0%'">-{{ book.discount }}</span>
+
+        <!-- Dynamic Book View Area (Cover/Read/Index) -->
+        <div class="qv-viewer-wrap">
+          <!-- 1. Cover Zoom View -->
+          <div class="qv-img-container" *ngIf="activePreview() === 'front'" (mousemove)="onZoom($event)"
+            (mouseleave)="onZoomReset()">
+            <img [src]="book.image" [alt]="book.title" class="qv-img" />
+            <div class="qv-zoom-lens" [class.active]="isZoomed()" [style.left.px]="lensX()" [style.top.px]="lensY()"
+              [style.background-image]="'url(' + book.image + ')'" [style.background-position]="lensBgPos()">
+            </div>
+            <div class="zoom-hint" [class.hidden]="isZoomed()">
+              <i class="bi bi-search"></i> Rê chuột soi kính lúp
+            </div>
+          </div>
+
+          <!-- 2. Dynamic Read Sample View -->
+          <div class="qv-read-preview" *ngIf="activePreview() === 'read'">
+            <div class="read-page">
+              <h5>ĐỌC THỬ TRÍCH ĐOẠN</h5>
+              <p class="read-text" *ngFor="let para of getSampleParagraphs(book.sampleText)">"{{ para }}"</p>
+              <div class="page-num">- Trích trang đầu -</div>
+            </div>
+          </div>
+
+          <!-- 3. Dynamic Index View -->
+          <div class="qv-index-preview" *ngIf="activePreview() === 'index'">
+            <div class="index-page">
+              <h5>MỤC LỤC SÁCH</h5>
+              <ul class="index-list">
+                <li *ngFor="let item of parseTOC(book.tableOfContents)">
+                  <span class="idx-ch" *ngIf="item.ch">{{ item.ch }}</span>
+                  <span class="idx-title">{{ item.title }}</span>
+                  <span class="idx-dots"></span>
+                  <span class="idx-p" *ngIf="item.page">{{ item.page }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive thumbnails to fill space -->
+        <div class="qv-previews">
+          <button class="preview-thumb" [class.active]="activePreview() === 'front'"
+            (click)="activePreview.set('front')">
+            <img [src]="book.image" alt="Thumbnail" />
+            <span>Bìa trước</span>
+          </button>
+          <button class="preview-thumb" [class.active]="activePreview() === 'read'" (click)="activePreview.set('read')">
+            <i class="bi bi-file-earmark-pdf text-danger"></i>
+            <span>Đọc thử</span>
+          </button>
+          <button class="preview-thumb" [class.active]="activePreview() === 'index'"
+            (click)="activePreview.set('index')">
+            <i class="bi bi-list-check text-primary"></i>
+            <span>Mục lục</span>
+          </button>
+        </div>
+
+        <div class="qv-meta">
+          <span *ngIf="book.pages"><i class="bi bi-file-earmark-text"></i> {{ book.pages }} trang</span>
+          <span *ngIf="book.publishDate"><i class="bi bi-calendar3"></i> Năm {{ book.publishDate }}</span>
+          <span *ngIf="book.translator"><i class="bi bi-translate"></i> {{ book.translator }}</span>
+        </div>
+      </div>
+      <div class="qv-right">
+        <span class="card-category">{{ bookService.getCategoryName(book.category) }}</span>
+        <h2 class="qv-title">{{ book.title }}</h2>
+        <p class="qv-author">Tác giả: <strong>{{ book.author }}</strong></p>
+        <div class="qv-price-box">
+          <span class="qv-price">{{ formatPrice(discountPrice(book.price, book.discount)) }}đ</span>
+          <span class="qv-old" *ngIf="book.discount && book.discount !== '0%'">{{ formatPrice(book.price) }}đ</span>
+          <span class="qv-save" *ngIf="book.discount && book.discount !== '0%'">Tiết kiệm {{ formatPrice(book.price - discountPrice(book.price, book.discount)) }}đ</span>
+        </div>
+        <div class="qv-stock mb-3 fs-8 fw-semibold" [ngClass]="book.stock <= 0 ? 'text-danger' : (book.stock <= 5 ? 'text-warning' : 'text-success')">
+          <i class="bi bi-box-seam me-1"></i>
+          {{ book.stock <= 0 ? 'Hết hàng' : 'Còn lại: ' + book.stock + ' cuốn trong kho' }}
+        </div>
+        <div class="qv-desc">
+          <h4>Mô tả</h4>
+          <p>{{ book.description || 'Chưa có mô tả chi tiết.' }}</p>
+        </div>
+        <div class="qv-footer">
+          <div class="qv-qty">
+            <button (click)="decreaseModalQty()" [disabled]="quickViewQuantity() <= (book.stock > 0 ? 1 : 0)"><i class="bi bi-dash"></i></button>
+            <span>{{ quickViewQuantity() }}</span>
+            <button (click)="increaseModalQty()" [disabled]="quickViewQuantity() >= book.stock"><i class="bi bi-plus"></i></button>
+          </div>
+          <button class="btn-cart-text" (click)="addModalToCart()" [disabled]="book.stock <= 0"><i class="bi bi-bag-plus"></i> Thêm giỏ hàng</button>
+          <button class="btn-buy" (click)="buyModalNow()" [disabled]="book.stock <= 0"><i class="bi bi-credit-card"></i> Mua ngay</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

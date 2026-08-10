@@ -1,0 +1,430 @@
+<div class="emails-container container-fluid p-0 animate-fade-in">
+  <!-- Header section -->
+  <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+    <div>
+      <h3 class="fw-bold mb-1 text-gradient-luxury">Hệ Thống Gửi Email Tự Động</h3>
+      <p class="text-muted mb-0 small">Theo dõi lịch sử gửi email tự động và quản lý các mẫu email hệ thống.</p>
+    </div>
+    
+    <div class="d-flex gap-2">
+      <button class="btn btn-sm px-3 rounded-pill glow-on-hover d-flex align-items-center gap-2"
+        [class.btn-primary]="activeSubTab() === 'logs'"
+        [class.btn-light]="activeSubTab() !== 'logs'"
+        (click)="activeSubTab.set('logs')">
+        <i class="bi bi-mailbox"></i> Nhật ký gửi
+      </button>
+      <button class="btn btn-sm px-3 rounded-pill glow-on-hover d-flex align-items-center gap-2"
+        [class.btn-primary]="activeSubTab() === 'templates'"
+        [class.btn-light]="activeSubTab() !== 'templates'"
+        (click)="activeSubTab.set('templates')">
+        <i class="bi bi-file-earmark-code"></i> Mẫu Email
+      </button>
+    </div>
+  </div>
+
+  <!-- Auto-cleanup notification -->
+  <div class="alert alert-success alert-dismissible rounded-3 py-2 px-3 d-flex align-items-center gap-2 mb-3 small animate-fade-in" *ngIf="cleanupMessage()">
+    <i class="bi bi-recycle"></i>
+    <span>{{ cleanupMessage() }}</span>
+    <button type="button" class="btn-close btn-close-sm" (click)="cleanupMessage.set('')"></button>
+  </div>
+
+  <!-- TAB 1: NHẬT KÝ GỬI EMAIL -->
+  <div *ngIf="activeSubTab() === 'logs'">
+
+    <!-- ═══ STATISTICS CARDS ═══ -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-lg-3">
+        <div class="stat-card card border-0 rounded-4 shadow-sm p-3 h-100">
+          <div class="d-flex align-items-center gap-3">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+              <i class="bi bi-envelope-fill text-white"></i>
+            </div>
+            <div>
+              <div class="stat-value">{{ totalEmails() }}</div>
+              <div class="stat-label">Tổng đã gửi</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="stat-card card border-0 rounded-4 shadow-sm p-3 h-100">
+          <div class="d-flex align-items-center gap-3">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d);">
+              <i class="bi bi-check-circle-fill text-white"></i>
+            </div>
+            <div>
+              <div class="stat-value">{{ successEmails() }} <span class="stat-badge text-success">{{ successRate() }}%</span></div>
+              <div class="stat-label">Thành công</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="stat-card card border-0 rounded-4 shadow-sm p-3 h-100">
+          <div class="d-flex align-items-center gap-3">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #eb3349, #f45c43);">
+              <i class="bi bi-exclamation-circle-fill text-white"></i>
+            </div>
+            <div>
+              <div class="stat-value">{{ failedEmails() }}</div>
+              <div class="stat-label">Thất bại</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="stat-card card border-0 rounded-4 shadow-sm p-3 h-100">
+          <div class="d-flex align-items-center gap-3">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #c5a880, #e8d5b7);">
+              <i class="bi bi-calendar-event text-white"></i>
+            </div>
+            <div>
+              <div class="stat-value">{{ todayEmails() }}</div>
+              <div class="stat-label">Hôm nay</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MAIN CARD ═══ -->
+    <div class="card border-0 rounded-4 shadow-sm">
+      <div class="card-body p-4">
+
+        <!-- Date filter pills -->
+        <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+          <span class="text-muted small fw-bold me-1"><i class="bi bi-funnel"></i> Thời gian:</span>
+          <button class="btn btn-sm rounded-pill px-3 date-pill"
+            [class.active]="dateFilter() === 'all'" (click)="dateFilter.set('all')">Tất cả</button>
+          <button class="btn btn-sm rounded-pill px-3 date-pill"
+            [class.active]="dateFilter() === 'today'" (click)="dateFilter.set('today')">Hôm nay</button>
+          <button class="btn btn-sm rounded-pill px-3 date-pill"
+            [class.active]="dateFilter() === 'yesterday'" (click)="dateFilter.set('yesterday')">Hôm qua</button>
+          <button class="btn btn-sm rounded-pill px-3 date-pill"
+            [class.active]="dateFilter() === '7days'" (click)="dateFilter.set('7days')">7 ngày</button>
+          <button class="btn btn-sm rounded-pill px-3 date-pill"
+            [class.active]="dateFilter() === '30days'" (click)="dateFilter.set('30days')">30 ngày</button>
+        </div>
+
+        <!-- Toolbar: Search & filters -->
+        <div class="row g-2 align-items-center justify-content-between mb-3">
+          <div class="col-12 col-md-9">
+            <div class="row g-2">
+              <div class="col-12 col-sm-5">
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text bg-white border-end-0 rounded-start-3 text-muted">
+                    <i class="bi bi-search"></i>
+                  </span>
+                  <input type="text" class="form-control form-control-sm border-start-0 rounded-end-3" 
+                    placeholder="Tìm email, tên, chủ đề..." 
+                    [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
+                </div>
+              </div>
+              <div class="col-6 col-sm-4">
+                <select class="form-select form-select-sm rounded-3" 
+                  [ngModel]="selectedTypeFilter()" (ngModelChange)="selectedTypeFilter.set($event)">
+                  <option value="all">Tất cả loại</option>
+                  <option value="ORDER_CONFIRMATION">Xác nhận đơn hàng</option>
+                  <option value="STATUS_UPDATE">Cập nhật vận chuyển</option>
+                  <option value="MANUAL">Thư thủ công</option>
+                </select>
+              </div>
+              <div class="col-6 col-sm-3">
+                <select class="form-select form-select-sm rounded-3" 
+                  [ngModel]="selectedStatusFilter()" (ngModelChange)="selectedStatusFilter.set($event)">
+                  <option value="all">Tất cả trạng thái</option>
+                  <option value="Thành công">✅ Thành công</option>
+                  <option value="Thất bại">❌ Thất bại</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-auto text-end">
+            <button class="btn btn-outline-primary btn-sm rounded-pill px-3 shadow-sm d-inline-flex align-items-center gap-1"
+              (click)="openManualEmailModal()">
+              <i class="bi bi-send-plus-fill"></i> Gửi Thư
+            </button>
+          </div>
+        </div>
+
+        <!-- ═══ BULK ACTIONS TOOLBAR ═══ -->
+        <div class="bulk-toolbar d-flex align-items-center gap-3 mb-3 p-2 px-3 rounded-3 animate-fade-in" *ngIf="selectedIds().size > 0">
+          <span class="small fw-bold">
+            <i class="bi bi-check2-square"></i> Đã chọn {{ selectedIds().size }} email
+          </span>
+          <div class="d-flex gap-2 ms-auto">
+            <button class="btn btn-sm btn-outline-danger rounded-pill px-3 d-flex align-items-center gap-1" (click)="deleteSelected()">
+              <i class="bi bi-trash3"></i> Xóa
+            </button>
+            <button class="btn btn-sm btn-outline-success rounded-pill px-3 d-flex align-items-center gap-1" (click)="exportSelectedCSV()">
+              <i class="bi bi-file-earmark-arrow-down"></i> Xuất CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="text-center py-5" *ngIf="filteredLogs().length === 0">
+          <div class="mb-3 text-muted">
+            <i class="bi bi-envelope-open fs-1"></i>
+          </div>
+          <h5 class="fw-bold">Không tìm thấy thư đã gửi nào</h5>
+          <p class="text-muted small">Hãy thử điều chỉnh từ khóa tìm kiếm hoặc lọc theo loại khác.</p>
+        </div>
+
+        <!-- ═══ LOGS TABLE (paginated) ═══ -->
+        <div class="table-responsive" *ngIf="filteredLogs().length > 0">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr class="text-muted small uppercase">
+                <th style="width: 35px;">
+                  <input type="checkbox" class="form-check-input m-0" style="width: 16px; height: 16px; cursor: pointer;"
+                    [checked]="isAllCurrentPageSelected()" (change)="toggleSelectAll()" />
+                </th>
+                <th style="width: 22%;">Khách Hàng</th>
+                <th style="width: 28%;">Tiêu Đề Email</th>
+                <th style="width: 14%;" class="text-center">Loại Thư</th>
+                <th style="width: 14%;" class="text-center">Thời Gian</th>
+                <th style="width: 10%;" class="text-center">Trạng Thái</th>
+                <th style="width: 5%;" class="text-end">Chi Tiết</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let log of paginatedLogs()" [class.table-active]="isSelected(log.id)">
+                <td>
+                  <input type="checkbox" class="form-check-input m-0" style="width: 16px; height: 16px; cursor: pointer;"
+                    [checked]="isSelected(log.id)" (change)="toggleSelect(log.id)" />
+                </td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="avatar-circle-sm bg-light text-dark rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                      {{ log.recipientName.substring(0, 1).toUpperCase() }}
+                    </div>
+                    <div>
+                      <div class="fw-bold text-dark text-truncate" style="max-width: 140px;">{{ log.recipientName }}</div>
+                      <div class="text-muted small text-truncate" style="max-width: 140px;">{{ log.toEmail }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="text-dark fw-medium text-truncate" style="max-width: 250px;" [title]="log.subject">
+                    {{ log.subject }}
+                  </div>
+                </td>
+                <td class="text-center">
+                  <span class="badge rounded-pill px-2 py-1 small" [className]="'badge rounded-pill px-2 py-1 ' + getTypeBadgeClass(log.type)">
+                    {{ getTypeLabel(log.type) }}
+                  </span>
+                </td>
+                <td class="text-center text-muted small">
+                  {{ formatDate(log.sentAt) }}
+                </td>
+                <td class="text-center">
+                  <span class="d-inline-flex align-items-center gap-1 small fw-bold" 
+                    [class.text-success]="log.status === 'Thành công'"
+                    [class.text-danger]="log.status === 'Thất bại'">
+                    <i class="bi" [class.bi-check-circle-fill]="log.status === 'Thành công'" [class.bi-exclamation-circle-fill]="log.status === 'Thất bại'"></i>
+                    {{ log.status }}
+                  </span>
+                </td>
+                <td class="text-end">
+                  <button class="btn btn-light btn-sm rounded-circle p-1" style="width: 28px; height: 28px;"
+                    (click)="selectedLog.set(log)" title="Xem nội dung thư">
+                    <i class="bi bi-eye text-primary"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ═══ PAGINATION ═══ -->
+        <div class="d-flex align-items-center justify-content-between mt-3 flex-wrap gap-2" *ngIf="filteredLogs().length > 0">
+          <div class="text-muted small">
+            Đang xem <strong>{{ displayStart() }}-{{ displayEnd() }}</strong> / <strong>{{ totalFilteredCount() }}</strong> email
+          </div>
+          <nav>
+            <ul class="pagination pagination-sm mb-0 gap-1">
+              <li class="page-item" [class.disabled]="currentPage() === 1">
+                <button class="page-link rounded-2 border-0" (click)="goToPage(currentPage() - 1)">
+                  <i class="bi bi-chevron-left"></i>
+                </button>
+              </li>
+              <li class="page-item" *ngFor="let p of pageNumbers()" [class.active]="p === currentPage()" [class.disabled]="p === '...'">
+                <button class="page-link rounded-2 border-0" (click)="goToPage(p)">{{ p }}</button>
+              </li>
+              <li class="page-item" [class.disabled]="currentPage() === totalPages()">
+                <button class="page-link rounded-2 border-0" (click)="goToPage(currentPage() + 1)">
+                  <i class="bi bi-chevron-right"></i>
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
+        <!-- Auto-cleanup settings (collapsible) -->
+        <div class="mt-4 pt-3 border-top">
+          <details class="cleanup-details">
+            <summary class="text-muted small fw-bold cursor-pointer">
+              <i class="bi bi-gear"></i> Cài đặt tự động dọn dẹp
+            </summary>
+            <div class="mt-3 p-3 bg-light rounded-3">
+              <div class="d-flex align-items-center gap-3 flex-wrap">
+                <label class="text-dark small fw-medium mb-0">Tự động xóa email cũ hơn</label>
+                <div class="d-flex align-items-center gap-2">
+                  <input type="number" class="form-control form-control-sm rounded-3" style="width: 80px;" min="7" max="365"
+                    [ngModel]="cleanupDays()" (ngModelChange)="cleanupDays.set($event)" />
+                  <span class="text-muted small">ngày</span>
+                </div>
+                <button class="btn btn-sm btn-primary rounded-pill px-3" (click)="saveCleanupDays(); runAutoCleanup()">
+                  <i class="bi bi-save"></i> Lưu & Dọn dẹp
+                </button>
+              </div>
+              <p class="text-muted small mt-2 mb-0">
+                <i class="bi bi-info-circle"></i> Hệ thống sẽ tự động xóa các bản ghi email cũ hơn {{ cleanupDays() }} ngày mỗi khi bạn truy cập trang này.
+              </p>
+            </div>
+          </details>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: QUẢN LÝ MẪU EMAIL (unchanged) -->
+  <div class="card border-0 rounded-4 shadow-sm" *ngIf="activeSubTab() === 'templates'">
+    <div class="card-body p-4">
+      <div class="row g-4">
+        <div class="col-12 col-lg-3 border-end">
+          <h6 class="fw-bold text-dark mb-3">Mẫu Thư Có Sẵn</h6>
+          <div class="d-flex flex-column gap-2">
+            <button class="btn btn-sm text-start rounded-3 p-3 transition d-flex align-items-center justify-content-between"
+              *ngFor="let tmpl of emailService.templates()"
+              [class.btn-primary]="selectedTemplate()?.type === tmpl.type"
+              [class.btn-light]="selectedTemplate()?.type !== tmpl.type"
+              (click)="selectTemplate(tmpl)">
+              <div>
+                <div class="fw-bold small">{{ tmpl.name }}</div>
+                <div class="text-muted" style="font-size: 0.7rem;" [class.text-white-50]="selectedTemplate()?.type === tmpl.type">
+                  {{ tmpl.type }}
+                </div>
+              </div>
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-12 col-lg-9" *ngIf="selectedTemplate()">
+          <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-4">
+            <div>
+              <h5 class="fw-bold text-dark mb-0">Cấu hình mẫu: {{ selectedTemplate()?.name }}</h5>
+              <p class="text-muted mb-0 small">Chỉnh sửa nội dung mẫu thư tự động gửi từ hệ thống.</p>
+            </div>
+            <button class="btn btn-primary btn-sm px-4 rounded-pill shadow-sm" (click)="saveTemplate()">
+              <i class="bi bi-save"></i> Lưu mẫu thư
+            </button>
+          </div>
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label fw-bold text-dark small">Tiêu đề Email (Subject)</label>
+              <input type="text" class="form-control rounded-3" [ngModel]="editSubject()" (ngModelChange)="editSubject.set($event)" />
+              <small class="text-muted">Có thể dùng các tham số: <code>&#123;orderId&#125;</code>, <code>&#123;newStatus&#125;</code></small>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold text-dark small">Nội dung mẫu HTML (Template Body)</label>
+              <textarea class="form-control rounded-3 font-monospace" rows="12" style="font-size: 0.85rem;" 
+                [ngModel]="editBody()" (ngModelChange)="editBody.set($event)"></textarea>
+              <div class="mt-2">
+                <span class="badge bg-light text-dark me-2">Biến hỗ trợ:</span>
+                <code>&#123;customerName&#125;</code>, <code>&#123;orderId&#125;</code>, <code>&#123;createdAt&#125;</code>, 
+                <code>&#123;address&#125;</code>, <code>&#123;paymentMethod&#125;</code>, <code>&#123;totalPrice&#125;</code>, 
+                <code>&#123;itemsTable&#125;</code>, <code>&#123;newStatus&#125;</code>
+              </div>
+            </div>
+            <div class="col-12 mt-4">
+              <label class="form-label fw-bold text-dark small">Bản xem trước mẫu thư (Preview)</label>
+              <div class="p-3 bg-light rounded-4 border" style="max-height: 400px; overflow-y: auto;">
+                <div class="bg-white p-3 rounded-3 shadow-xs border" [innerHTML]="editBody()"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: XEM CHI TIẾT EMAIL ĐÃ GỬI -->
+  <div class="modal-backdrop-luxury" *ngIf="selectedLog()" (click)="selectedLog.set(null)"></div>
+  <div class="modal-container-luxury card border-0 rounded-4 shadow-lg p-0" *ngIf="selectedLog()" style="width: 90%; max-width: 650px;">
+    <div class="card-header border-0 bg-light p-3 d-flex align-items-center justify-content-between rounded-top-4">
+      <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-envelope-paper-fill text-primary fs-5"></i>
+        <div>
+          <h6 class="fw-bold mb-0 text-dark">Nội Dung Chi Tiết Thư</h6>
+          <span class="badge rounded-pill small" [className]="'badge ' + getTypeBadgeClass(selectedLog()!.type)">
+            {{ getTypeLabel(selectedLog()!.type) }}
+          </span>
+        </div>
+      </div>
+      <button class="btn-close" (click)="selectedLog.set(null)"></button>
+    </div>
+    <div class="card-body p-4" style="max-height: 70vh; overflow-y: auto;">
+      <div class="mb-4 p-3 bg-light rounded-3 border-start border-4 border-primary">
+        <div class="row g-2 small">
+          <div class="col-2 text-muted">Từ:</div>
+          <div class="col-10 text-dark fw-bold">Sachweb Mailer Service &lt;noreply&#64;sachweb.vn&gt;</div>
+          <div class="col-2 text-muted">Đến:</div>
+          <div class="col-10 text-dark fw-bold">{{ selectedLog()!.recipientName }} &lt;{{ selectedLog()!.toEmail }}&gt;</div>
+          <div class="col-2 text-muted">Tiêu đề:</div>
+          <div class="col-10 text-dark fw-bold text-primary">{{ selectedLog()!.subject }}</div>
+          <div class="col-2 text-muted">Thời gian:</div>
+          <div class="col-10 text-muted">{{ formatDate(selectedLog()!.sentAt) }}</div>
+        </div>
+      </div>
+      <div class="email-rendered-body border rounded-4 p-3 bg-light">
+        <div class="bg-white p-3 rounded-3 shadow-xs border" [innerHTML]="selectedLog()!.htmlContent"></div>
+      </div>
+    </div>
+    <div class="card-footer bg-light border-0 p-3 text-end rounded-bottom-4">
+      <button class="btn btn-secondary btn-sm px-4 rounded-pill" (click)="selectedLog.set(null)">Đóng</button>
+    </div>
+  </div>
+
+  <!-- MODAL: GỬI THƯ THỦ CÔNG MỚI -->
+  <div class="modal-backdrop-luxury" *ngIf="isManualEmailModalOpen()" (click)="closeManualEmailModal()"></div>
+  <div class="modal-container-luxury card border-0 rounded-4 shadow-lg p-0" *ngIf="isManualEmailModalOpen()" style="width: 90%; max-width: 550px;">
+    <div class="card-header border-0 bg-light p-3 d-flex align-items-center justify-content-between rounded-top-4">
+      <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+        <i class="bi bi-send-plus text-primary"></i> Gửi Thư Mới Cho Khách Hàng
+      </h6>
+      <button class="btn-close" (click)="closeManualEmailModal()"></button>
+    </div>
+    <div class="card-body p-4">
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label small fw-bold text-dark">Email khách hàng nhận</label>
+          <input type="email" class="form-control rounded-3" placeholder="nhapemail@gmail.com"
+            [ngModel]="manualToEmail()" (ngModelChange)="manualToEmail.set($event)" />
+        </div>
+        <div class="col-12">
+          <label class="form-label small fw-bold text-dark">Họ tên khách hàng</label>
+          <input type="text" class="form-control rounded-3" placeholder="Nguyễn Văn A"
+            [ngModel]="manualRecipientName()" (ngModelChange)="manualRecipientName.set($event)" />
+        </div>
+        <div class="col-12">
+          <label class="form-label small fw-bold text-dark">Tiêu đề thư (Subject)</label>
+          <input type="text" class="form-control rounded-3" placeholder="Nhập tiêu đề thư..."
+            [ngModel]="manualSubject()" (ngModelChange)="manualSubject.set($event)" />
+        </div>
+        <div class="col-12">
+          <label class="form-label small fw-bold text-dark">Nội dung thư gửi</label>
+          <textarea class="form-control rounded-3" rows="6" placeholder="Nhập nội dung thư..."
+            [ngModel]="manualContent()" (ngModelChange)="manualContent.set($event)"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer bg-light border-0 p-3 text-end rounded-bottom-4 d-flex justify-content-end gap-2">
+      <button class="btn btn-secondary btn-sm px-4 rounded-pill" (click)="closeManualEmailModal()">Hủy</button>
+      <button class="btn btn-primary btn-sm px-4 rounded-pill" (click)="sendManualEmail()">Gửi Ngay</button>
+    </div>
+  </div>
+</div>
